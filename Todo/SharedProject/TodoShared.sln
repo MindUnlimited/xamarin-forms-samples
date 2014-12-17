@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30501.0
+VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Todo", "Todo\Todo.shproj", "{EAC7244C-09D6-4922-A662-58743AE6D868}"
 EndProject
@@ -71,6 +71,7 @@ Global
 		{0286BCC0-AAC9-492B-A940-A1260837ECDE}.AppStore|x86.ActiveCfg = Debug|Any CPU
 		{0286BCC0-AAC9-492B-A940-A1260837ECDE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0286BCC0-AAC9-492B-A940-A1260837ECDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0286BCC0-AAC9-492B-A940-A1260837ECDE}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
 		{0286BCC0-AAC9-492B-A940-A1260837ECDE}.Debug|ARM.ActiveCfg = Debug|Any CPU
 		{0286BCC0-AAC9-492B-A940-A1260837ECDE}.Debug|iPhone.ActiveCfg = Debug|Any CPU
 		{0286BCC0-AAC9-492B-A940-A1260837ECDE}.Debug|iPhone.Build.0 = Debug|Any CPU
