@@ -10,12 +10,12 @@ namespace Todo
 			var label = new Label {
 				YAlign = TextAlignment.Center
 			};
-			label.SetBinding (Label.TextProperty, "Name");
+			label.SetBinding (Label.TextProperty, "Text");
 
 			var tick = new Image {
 				Source = FileImageSource.FromFile ("check.png"),
 			};
-			tick.SetBinding (Image.IsVisibleProperty, "Done");
+			tick.SetBinding (Image.IsVisibleProperty, "Complete");
 
 			var layout = new StackLayout {
 				Padding = new Thickness(20, 0, 0, 0),

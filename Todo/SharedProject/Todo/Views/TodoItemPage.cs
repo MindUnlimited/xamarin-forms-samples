@@ -12,21 +12,21 @@ namespace Todo
 	{
 		public TodoItemPage ()
 		{
-			this.SetBinding (ContentPage.TitleProperty, "Name");
+			this.SetBinding (ContentPage.TitleProperty, "Text");
 
 			NavigationPage.SetHasNavigationBar (this, true);
-			var nameLabel = new Label { Text = "Name" };
+			var nameLabel = new Label { Text = "Text" };
 			var nameEntry = new Entry ();
 			
-			nameEntry.SetBinding (Entry.TextProperty, "Name");
+			nameEntry.SetBinding (Entry.TextProperty, "Text");
 
-			var notesLabel = new Label { Text = "Notes" };
-			var notesEntry = new Entry ();
-			notesEntry.SetBinding (Entry.TextProperty, "Notes");
+            //var notesLabel = new Label { Text = "Notes" };
+            //var notesEntry = new Entry ();
+            //notesEntry.SetBinding (Entry.TextProperty, "Notes");
 
-			var doneLabel = new Label { Text = "Done" };
+			var doneLabel = new Label { Text = "Complete" };
 			var doneEntry = new Xamarin.Forms.Switch ();
-			doneEntry.SetBinding (Xamarin.Forms.Switch.IsToggledProperty, "Done");
+			doneEntry.SetBinding (Xamarin.Forms.Switch.IsToggledProperty, "Complete");
 
 			var saveButton = new Button { Text = "Save" };
 			saveButton.Clicked += (sender, e) => {
@@ -38,7 +38,7 @@ namespace Todo
 			var deleteButton = new Button { Text = "Delete" };
 			deleteButton.Clicked += (sender, e) => {
 				var todoItem = (TodoItem)BindingContext;
-				App.Database.DeleteItem(todoItem.ID);
+				App.Database.DeleteItem(todoItem.Id);
                 this.Navigation.PopAsync();
 			};
 							
@@ -52,7 +52,7 @@ namespace Todo
 			var speakButton = new Button { Text = "Speak" };
 			speakButton.Clicked += (sender, e) => {
 				var todoItem = (TodoItem)BindingContext;
-				DependencyService.Get<ITextToSpeech>().Speak(todoItem.Name + " " + todoItem.Notes);
+				DependencyService.Get<ITextToSpeech>().Speak(todoItem.Text + " " + todoItem.Id);
 			};
 
 			Content = new StackLayout {
@@ -60,7 +60,7 @@ namespace Todo
 				Padding = new Thickness(20),
 				Children = {
 					nameLabel, nameEntry, 
-					notesLabel, notesEntry,
+					//notesLabel, notesEntry,
 					doneLabel, doneEntry,
 					saveButton, deleteButton, cancelButton,
 					speakButton
