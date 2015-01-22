@@ -29,17 +29,17 @@ namespace Todo
 			doneEntry.SetBinding (Xamarin.Forms.Switch.IsToggledProperty, "Complete");
 
 			var saveButton = new Button { Text = "Save" };
-			saveButton.Clicked += (sender, e) => {
+			saveButton.Clicked += async (sender, e) => {
 				var todoItem = (TodoItem)BindingContext;
-				App.Database.SaveItem(todoItem);
-				this.Navigation.PopAsync();
+				await App.Database.SaveItem(todoItem);
+				await this.Navigation.PopAsync();
 			};
 
 			var deleteButton = new Button { Text = "Delete" };
-			deleteButton.Clicked += (sender, e) => {
+			deleteButton.Clicked += async (sender, e) => {
 				var todoItem = (TodoItem)BindingContext;
-				App.Database.DeleteItem(todoItem.Id);
-                this.Navigation.PopAsync();
+				await App.Database.DeleteItem(todoItem.Id);
+                await this.Navigation.PopAsync();
 			};
 							
 			var cancelButton = new Button { Text = "Cancel" };
@@ -52,7 +52,12 @@ namespace Todo
 			var speakButton = new Button { Text = "Speak" };
 			speakButton.Clicked += (sender, e) => {
 				var todoItem = (TodoItem)BindingContext;
-				DependencyService.Get<ITextToSpeech>().Speak(todoItem.Text + " " + todoItem.Id);
+                string spokenText;
+                if (todoItem.Complete)
+                    spokenText = todoItem.Text + ", dit item is voltooid.";
+                else
+                    spokenText = todoItem.Text + ", dit item is nog niet klaar";
+				DependencyService.Get<ITextToSpeech>().Speak(spokenText);
 			};
 
 			Content = new StackLayout {

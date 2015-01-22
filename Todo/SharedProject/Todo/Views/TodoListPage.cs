@@ -98,10 +98,10 @@ namespace Todo
 
 		}
 
-		protected override void OnAppearing ()
+		protected async override void OnAppearing ()
 		{
 			base.OnAppearing ();
-			listView.ItemsSource = App.Database.GetItems().Result;
+			listView.ItemsSource = await App.Database.GetItems();
 		}
 	}
 }

@@ -18,7 +18,7 @@ namespace Todo
 	public class TodoItemDatabase 
 	{
         //Mobile Service Client reference
-        private MobileServiceClient client;
+        public MobileServiceClient client;
 
         //Mobile Service sync table used to access data
         private IMobileServiceSyncTable<TodoItem> toDoTable;
@@ -56,18 +56,6 @@ namespace Todo
 
 	    public TodoItemDatabase()
 	    {
-	        initDatabase();
-	    }
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="Tasky.DL.TaskDatabase"/> TaskDatabase. 
-		/// if the database doesn't exist, it will create the database and all the tables.
-		/// </summary>
-		/// <param name='path'>
-		/// Path.
-		/// </param>
-		public async Task initDatabase()
-		{
             try
             {
                 //CurrentPlatform.Init();
@@ -75,7 +63,9 @@ namespace Todo
                 // Create the Mobile Service Client instance, using the provided
                 // Mobile Service URL and key
                 client = new MobileServiceClient(applicationURL, applicationKey);
-                await InitLocalStoreAsync();
+                InitLocalStoreAsync();
+                //Task.Run(async () => { await InitLocalStoreAsync(); }); //task.run part is necessary, behaves as await
+
 
                 // Get the Mobile Service sync table instance to use
                 toDoTable = client.GetSyncTable<TodoItem>();
@@ -108,7 +98,8 @@ namespace Todo
 
             // Create the Mobile Service Client instance, using the provided
             // Mobile Service URL and key
-		}
+            
+	    }
 
         private async Task InitLocalStoreAsync()
         {
