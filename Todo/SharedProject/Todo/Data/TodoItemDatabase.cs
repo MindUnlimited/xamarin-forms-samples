@@ -281,6 +281,12 @@ namespace Todo
         //}
 
 
+        public async Task<List<Group>> getGroups(string userID)
+        {
+            var groups = await groupTable.ToListAsync();
+            return groups;
+        }
+
         public async Task<IEnumerable<TodoItem>> GetItems()
         {
             //lock (locker)
