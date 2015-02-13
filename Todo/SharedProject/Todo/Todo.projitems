@@ -12,6 +12,11 @@
     <Compile Include="$(MSBuildThisFileDirectory)App.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Data\TodoItemDatabase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ITextToSpeech.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\Group.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\GroupGroupMembership.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\Item.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\UserGroupMembership.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\User.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\TodoItem_bak.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\TodoItemCell.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\TodoItemPage.cs" />

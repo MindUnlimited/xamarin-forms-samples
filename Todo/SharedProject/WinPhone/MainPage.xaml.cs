@@ -28,6 +28,7 @@ namespace Todo.WinPhone
                 {
                     user = await Todo.App.Database.client.
                         LoginAsync(MobileServiceAuthenticationProvider.MicrosoftAccount);
+                    await Todo.App.Database.newUser(user.UserId);
                     message =
                         string.Format("You are now logged in - {0}", user.UserId);
                 }

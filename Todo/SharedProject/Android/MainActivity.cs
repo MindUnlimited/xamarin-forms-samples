@@ -26,6 +26,8 @@ namespace Todo.Android
                 user = await App.Database.client.
                     LoginAsync(this, MobileServiceAuthenticationProvider.MicrosoftAccount);
                 //CreateAndShowDialog(string.Format("you are now logged in - {0}", user.UserId), "Logged in!");
+                await App.Database.
+                    newUser(user.UserId);
             }
             catch (Exception ex)
             {

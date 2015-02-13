@@ -22,6 +22,12 @@ namespace Todo
 
         //Mobile Service sync table used to access data
         private IMobileServiceSyncTable<TodoItem> toDoTable;
+        private IMobileServiceSyncTable<Item> itemTable;
+        private IMobileServiceSyncTable<User> userTable;
+        private IMobileServiceSyncTable<Group> groupTable;
+        private IMobileServiceSyncTable<UserGroupMembership> userGroupMembershipTable;
+        private IMobileServiceSyncTable<GroupGroupMembership> groupGroupMembershipTable;
+
 
         const string applicationURL = @"https://mindunlimited.azure-mobile.net/";
         const string applicationKey = @"RMFULNJBBVHwffaZeDYYhndAjEQzoT88";
@@ -69,8 +75,11 @@ namespace Todo
 
                 // Get the Mobile Service sync table instance to use
                 toDoTable = client.GetSyncTable<TodoItem>();
-
-
+                itemTable = client.GetSyncTable<Item>();
+                userTable = client.GetSyncTable<User>();
+                userGroupMembershipTable = client.GetSyncTable<UserGroupMembership>();
+                groupTable = client.GetSyncTable<Group>();
+                groupGroupMembershipTable = client.GetSyncTable<GroupGroupMembership>();
 
                 //textNewToDo = FindViewById<EditText>(Resource.Id.textNewToDo);
 
@@ -113,6 +122,12 @@ namespace Todo
 
             var store = new MobileServiceSQLiteStore(path);
             store.DefineTable<TodoItem>();
+            store.DefineTable<Item>();
+            store.DefineTable<User>();
+            store.DefineTable<Group>();
+            store.DefineTable<UserGroupMembership>();
+            store.DefineTable<GroupGroupMembership>();
+
 
             // Uses the default conflict handler, which fails on conflict
             // To use a different conflict handler, pass a parameter to InitializeAsync. For more details, see http://go.microsoft.com/fwlink/?LinkId=521416
@@ -240,7 +255,7 @@ namespace Todo
             }
             catch (Exception e)
             {
-                CreateAndShowDialog(e, "Error");
+                CreateAndShowDialog(e, "Error: " + e.Message);
             }
 
             //textNewToDo.Text = "";
@@ -248,7 +263,7 @@ namespace Todo
 
 	    private void CreateAndShowDialog(Exception exception, String title)
 	    {
-	        
+            Debug.WriteLine(exception.InnerException.Message);
 	    }
 
         //private void CreateAndShowDialog(Exception exception, String title)
@@ -367,6 +382,71 @@ namespace Todo
             //}
         }
 
+        public async Task newUser(string microsoftID)
+        {
+            try
+            {
+                // does the user already exist?
+                var existing_user = await userTable.Where(u => u.MicrosoftID == microsoftID).ToListAsync();
+
+                if (existing_user.Count == 0)
+                {
+                    User user = new User
+                    {
+                        MicrosoftID = microsoftID
+                    };
+
+                    // insert new user
+                    await userTable.InsertAsync(user);
+
+
+                    Group group = new Group
+                    {
+                        Name = user.ID
+                    };
+
+                    // add default group voor user
+                    await groupTable.InsertAsync(group);
+
+                    UserGroupMembership ugm = new UserGroupMembership
+                    {
+                        ID = user.ID,
+                        MembershipID = group.ID
+                    };
+
+                    await userGroupMembershipTable.InsertAsync(ugm);
+
+                }
+                else if (existing_user.Count == 1)
+                {
+                    Debug.WriteLine("user exists, exactly one ID found: " + existing_user.FirstOrDefault<User>().ID);
+                }
+                else
+                {
+                    Debug.WriteLine("something weird happened, more than one user with the same ID found");
+                }
+
+
+                //Debug.WriteLine(
+                //userGroupMembershipTable.Where(ugm => ugm.ID == microsofID).ToListAsync().Result
+                //);
+
+                //await userGroupMembershipTable.LookupAsync
+
+                //var tmp = await groupTable.ToListAsync();
+
+
+
+                //await MobileService.GetSyncTable<User>().InsertAsync(user);
+
+                await SyncAsync(); // offline sync
+                //adapter.Clear();
+            }
+            catch (Exception e)
+            {
+                CreateAndShowDialog(e, "Error: " + e.Message);
+            }
+        }
 
         public async Task SaveItem(TodoItem item)
         {
