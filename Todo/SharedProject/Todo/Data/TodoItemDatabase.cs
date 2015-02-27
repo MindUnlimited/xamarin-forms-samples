@@ -19,9 +19,10 @@ namespace Todo
 	{
         //Mobile Service Client reference
         public MobileServiceClient client;
+        public string userID { get; set; }
 
         //Mobile Service sync table used to access data
-        private IMobileServiceSyncTable<TodoItem> toDoTable;
+        //private IMobileServiceSyncTable<TodoItem> toDoTable;
         private IMobileServiceSyncTable<Item> itemTable;
         private IMobileServiceSyncTable<User> userTable;
         private IMobileServiceSyncTable<Group> groupTable;
@@ -69,17 +70,31 @@ namespace Todo
                 // Create the Mobile Service Client instance, using the provided
                 // Mobile Service URL and key
                 client = new MobileServiceClient(applicationURL, applicationKey);
-                InitLocalStoreAsync();
+                
+                
+                
+                //InitLocalStoreAsync(); useless since not logged in yet..
+                
+                
+                
+                
                 //Task.Run(async () => { await InitLocalStoreAsync(); }); //task.run part is necessary, behaves as await
 
 
                 // Get the Mobile Service sync table instance to use
-                toDoTable = client.GetSyncTable<TodoItem>();
-                itemTable = client.GetSyncTable<Item>();
+                //toDoTable = client.GetSyncTable<TodoItem>();
+
+                var test = client.GetTable("Item");
+                var test_output = test.ToString();
+                var test2 = client.GetTable<Item>();
+                var test2_output = test2.ToListAsync();
+
+                
                 userTable = client.GetSyncTable<User>();
                 userGroupMembershipTable = client.GetSyncTable<UserGroupMembership>();
                 groupTable = client.GetSyncTable<Group>();
                 groupGroupMembershipTable = client.GetSyncTable<GroupGroupMembership>();
+                itemTable = client.GetSyncTable<Item>();
 
                 //textNewToDo = FindViewById<EditText>(Resource.Id.textNewToDo);
 
@@ -89,7 +104,10 @@ namespace Todo
                 //listViewToDo.Adapter = adapter;
 
                 // Load the items from the Mobile Service
-                OnRefreshItemsSelected();
+                
+                
+                
+                // OnRefreshItemsSelected(); useless since not logged in yet
             }
             //catch (Java.Net.MalformedURLException)
             //{
@@ -110,7 +128,60 @@ namespace Todo
             
 	    }
 
-        private async Task InitLocalStoreAsync()
+        public async Task getTables()
+        {
+            //var test = client.GetTable("Item");
+            //var test_output = test.ToString();
+            //var test2 = client.GetTable<Item>();
+            //var items_sync = await test2.ToListAsync();
+
+            //var test3 = client.GetTable<User>();
+            //var users_sync = await test3.ToListAsync();
+
+            //itemTable = client.GetSyncTable<Item>();
+            //var userTable3 = client.GetSyncTable("User");
+            //var users_sync_weak = await userTable3.ReadAsync("$top=5");
+            //var userTable2 = client.GetSyncTable<User>();
+            //await userTable2.PullAsync(null, userTable.CreateQuery());
+            //var users_new_sync = await userTable2.ToListAsync();
+            //userGroupMembershipTable = client.GetSyncTable<UserGroupMembership>();
+            //groupTable = client.GetSyncTable<Group>();
+            //groupGroupMembershipTable = client.GetSyncTable<GroupGroupMembership>();
+
+            //await userTable.PullAsync(null, userTable.Where(u => u.MicrosoftID != "MicrosoftAccount:f410857f6effabd4b6a47afc0ba2ef71"));
+            //var items = await itemTable.ToListAsync();
+            //var users = await userTable.ToListAsync();
+            //var ugms = await userGroupMembershipTable.ToListAsync();
+            //var groups = await groupTable.ToListAsync();
+            //var ggms = await groupGroupMembershipTable.ToListAsync();
+
+            var u1 = client.GetSyncTable<User>();
+            var u2 = client.GetSyncTable<User>();
+            var u3 = client.GetSyncTable<User>();
+            var u4 = client.GetSyncTable<User>();
+            var u5 = client.GetSyncTable<User>();
+
+            var u1_ = await u1.ToListAsync();
+            var u2_ = await u2.ToListAsync();
+            var u3_ = await u3.ToListAsync();
+            var u4_ = await u4.ToListAsync();
+            var u5_ = await u5.ToListAsync();
+
+            await u1.PullAsync(null, u1.CreateQuery());
+            await u2.PullAsync(null, u2.Where(u => u.ID != "test"));
+            //u3.pul
+            //await u3.PullAsync<User>(null, u3.CreateQuery());
+            //await u4.PullAsync<User>(null, u4.Where(u => u.ID != "test"));
+            await u5.PullAsync("u5", u5.CreateQuery());
+
+            var u1__ = await u1.ToListAsync();
+            var u2__ = await u2.ToListAsync();
+            var u3__ = await u3.ToListAsync();
+            var u4__ = await u4.ToListAsync();
+            var u5__ = await u5.ToListAsync();
+        }
+
+        public async Task InitLocalStoreAsync()
         {
             // new code to initialize the SQLite store
             string path = DatabasePath;
@@ -121,13 +192,12 @@ namespace Todo
             }
 
             var store = new MobileServiceSQLiteStore(path);
-            store.DefineTable<TodoItem>();
-            store.DefineTable<Item>();
+            //store.DefineTable<TodoItem>();
             store.DefineTable<User>();
             store.DefineTable<Group>();
             store.DefineTable<UserGroupMembership>();
             store.DefineTable<GroupGroupMembership>();
-
+            store.DefineTable<Item>();
 
             // Uses the default conflict handler, which fails on conflict
             // To use a different conflict handler, pass a parameter to InitializeAsync. For more details, see http://go.microsoft.com/fwlink/?LinkId=521416
@@ -150,7 +220,25 @@ namespace Todo
             try
             {
                 await client.SyncContext.PushAsync();
-                await toDoTable.PullAsync("allTodoItems", toDoTable.CreateQuery()); // first param is query ID, used for incremental sync
+
+
+                await userTable.PullAsync("Users", userTable.CreateQuery());// first param is query ID, used for incremental sync
+                await userGroupMembershipTable.PullAsync("UserGroupMemberships", userGroupMembershipTable.CreateQuery()); // first param is query ID, used for incremental sync
+                await groupTable.PullAsync("Groups", groupTable.CreateQuery()); // first param is query ID, used for incremental sync
+                await groupGroupMembershipTable.PullAsync("GroupGroupMemberships", groupGroupMembershipTable.CreateQuery()); // first param is query ID, used for incremental sync
+                await itemTable.PullAsync("Items", itemTable.CreateQuery());// first param is query ID, used for incremental sync
+
+                //itemTable.PullAsync("Items", itemTable.CreateQuery());
+                //userTable.PullAsync("Users", userTable.CreateQuery());
+                //userGroupMembershipTable.PullAsync("UserGroupMemberships", userGroupMembershipTable.CreateQuery()); // first param is query ID, used for incremental sync
+                //groupTable.PullAsync("Groups", groupTable.CreateQuery()); // first param is query ID, used for incremental sync
+                //groupGroupMembershipTable.PullAsync("GroupGroupMemberships", groupGroupMembershipTable.CreateQuery()); // first param is query ID, used for incremental sync
+
+                //await itemTable.PullAsync("Items", itemTable.CreateQuery()); // first param is query ID, used for incremental sync
+                //await userTable.PullAsync("Users", itemTable.CreateQuery()); // first param is query ID, used for incremental sync
+                //await userGroupMembershipTable.PullAsync("UserGroupMemberships", itemTable.CreateQuery()); // first param is query ID, used for incremental sync
+                //await groupTable.PullAsync("Groups", itemTable.CreateQuery()); // first param is query ID, used for incremental sync
+                //await groupGroupMembershipTable.PullAsync("GroupGroupMemberships", itemTable.CreateQuery()); // first param is query ID, used for incremental sync
             }
 
             catch (MobileServicePushFailedException ex)
@@ -173,7 +261,7 @@ namespace Todo
         }
 
         // Called when the refresh menu option is selected
-        private async void OnRefreshItemsSelected()
+        public async void OnRefreshItemsSelected()
         {
             await SyncAsync(); // get changes from the mobile service
             await RefreshItemsFromTableAsync(); // refresh view using local database
@@ -185,7 +273,7 @@ namespace Todo
             try
             {
                 // Get the items that weren't marked as completed and add them in the adapter
-                var list = await toDoTable.Where(item => item.Complete == false).ToListAsync();
+                var list = await itemTable.Where(item => item.Status != 7).ToListAsync();
 
 
 
@@ -201,7 +289,7 @@ namespace Todo
             }
         }
 
-        public async Task CheckItem(TodoItem item)
+        public async Task CheckItem(Item item)
         {
             if (client == null)
             {
@@ -209,10 +297,10 @@ namespace Todo
             }
 
             // Set the item as completed and update it in the table
-            item.Complete = true;
+            item.Status = 7;
             try
             {
-                await toDoTable.UpdateAsync(item); // update the new item in the local database
+                await itemTable.UpdateAsync(item); // update the new item in the local database
                 await SyncAsync(); // send changes to the mobile service
 
                 //if (item.Done)
@@ -235,16 +323,17 @@ namespace Todo
             }
 
             // Create a new item
-            var item = new TodoItem
+            var item = new Item
             {
                 
                 //Name = textNewToDo.Text,
-                Complete = false
+
+                Status = 0
             };
 
             try
             {
-                await toDoTable.InsertAsync(item); // insert the new item into the local database
+                await itemTable.InsertAsync(item); // insert the new item into the local database
                 await SyncAsync(); // send changes to the mobile service
 
 
@@ -280,56 +369,131 @@ namespace Todo
         //    builder.Create().Show();
         //}
 
+        public async Task<Group> getDefaultGroup(string userID)
+        {
+            var defGroupMembershipList = await userGroupMembershipTable.Where(ugm => ugm.ID == userID).ToListAsync();
+            UserGroupMembership defUserGroupMembership = defGroupMembershipList.FirstOrDefault();
+
+            if (defUserGroupMembership != null)
+            {
+                string defGroupID = defUserGroupMembership.MembershipID;
+                // default's group ID to it's actual group
+                List<Group> defGroupList = await groupTable.Where(grp => grp.ID == defGroupID).ToListAsync();
+                Group defGroup = defGroupList.FirstOrDefault();
+                return defGroup;
+            }
+            return null;
+        }
+
 
         public async Task<List<Group>> getGroups(string userID)
         {
-            var groups = await groupTable.ToListAsync();
-            return groups;
+            // from userID to GroupID from the users default group (defGroup)
+            List<Group> resultGroups = new List<Group>();
+            List<Group> groups = await groupTable.ToListAsync();
+
+            Group defGroup = await getDefaultGroup(userID);
+
+            var queue = new Queue<Group>();
+            queue.Enqueue(defGroup);
+
+            while (queue.Count > 0)
+            {
+                // Take the next node from the front of the queue
+                var node = queue.Dequeue();
+
+                // Process the node 'node'
+                if (resultGroups.Contains(node) == false)
+                    resultGroups.Add(node);
+
+                List<GroupGroupMembership> ggms = await groupGroupMembershipTable.Where(ggm => ggm.MemberID == node.ID).ToListAsync();
+
+                IEnumerable<Group> children = from g in groups
+                             where ggms.Any(ggm => ggm.MembershipID == g.ID)
+                             select g;
+
+                //List<Group> children = await groupTable.Where(group => ids.Contains(group.ID)).ToListAsync();
+
+                //List<Group> groups = await groupTable.ToListAsync();
+                //List<GroupGroupMembership> ggms = await groupGroupMembershipTable.ToListAsync();
+
+                //var childrrren = from g in groups
+                //                 join ggm in ggms
+                //                     on g.ID equals ggm.
+                //                 select g;
+
+                // Add the node’s children to the back of the queue
+                foreach (var child in children)
+                    queue.Enqueue(child);
+            }
+
+            return resultGroups;
         }
 
-        public async Task<IEnumerable<TodoItem>> GetItems()
+        public async Task<IEnumerable<Item>> GetItems()
         {
-            //lock (locker)
-            //{
-            //    return (from i in database.Table<TodoItem>() select i).ToList();
-            //}
-            IEnumerable<TodoItem> items = null;
-
-            try
+            IEnumerable<Item> items = null;
+            if (userID != null)
             {
-                // Get the items that weren't marked as completed and add them in the adapter
-                //await SyncAsync(); // offline sync
-                items = await toDoTable.ToListAsync();
+                List<Group> groups = await getGroups(userID);
+                IEnumerable<string> groups_ids = from grp in groups select grp.ID;
 
-
-
-                //adapter.Clear();
-
-                //foreach (ToDoItem current in list)
-                //    adapter.Add(current);
-
+                try
+                {
+                    items = await itemTable.Where(it => groups_ids.Contains(it.OwnedBy)).ToListAsync();
+                }
+                catch (Exception e)
+                {
+                    CreateAndShowDialog(e, "Error");
+                }
             }
-            catch (Exception e)
-            {
-                CreateAndShowDialog(e, "Error");
-            }
+
             return items;
         }
 
+        //public async Task<IEnumerable<TodoItem>> GetItems()
+        //{
+        //    //lock (locker)
+        //    //{
+        //    //    return (from i in database.Table<TodoItem>() select i).ToList();
+        //    //}
+        //    IEnumerable<TodoItem> items = null;
 
-        public async Task<IEnumerable<TodoItem>> GetItemsNotDone()
+        //    try
+        //    {
+        //        // Get the items that weren't marked as completed and add them in the adapter
+        //        //await SyncAsync(); // offline sync
+        //        items = await toDoTable.ToListAsync();
+
+
+
+        //        //adapter.Clear();
+
+        //        //foreach (ToDoItem current in list)
+        //        //    adapter.Add(current);
+
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        CreateAndShowDialog(e, "Error");
+        //    }
+        //    return items;
+        //}
+
+
+        public async Task<IEnumerable<Item>> GetItemsNotDone()
         {
             //lock (locker)
             //{
             //    return database.Query<TodoItem>("SELECT * FROM [TodoItem] WHERE [Done] = 0");
             //}
 
-            IEnumerable<TodoItem> list = null;
+            IEnumerable<Item> list = null;
             try
             {
                 // Get the items that weren't marked as completed and add them in the adapter
                 //await SyncAsync(); // offline sync
-                list = await toDoTable.Where(item => item.Complete == false).ToListAsync();
+                list = await itemTable.Where(item => item.Status != 7).ToListAsync();
 
 
 
@@ -347,7 +511,7 @@ namespace Todo
             return list;
         }
 
-        public async Task<TodoItem> GetItem(string id)
+        public async Task<Item> GetItem(string id)
         {
             //lock (locker)
             //{
@@ -357,7 +521,7 @@ namespace Todo
             try
             {
                 //await SyncAsync();
-                return await toDoTable.LookupAsync(id);
+                return await itemTable.LookupAsync(id);
             }
             catch (MobileServiceInvalidOperationException msioe)
             {
@@ -392,8 +556,19 @@ namespace Todo
         {
             try
             {
+                await SyncAsync();
+                //userTable = client.GetSyncTable<User>();
+                //await userTable.PullAsync(null, userTable.CreateQuery());
                 // does the user already exist?
+
+                var userTable = client.GetSyncTable<User>();
+                await userTable.PullAsync(null, userTable.CreateQuery());
+
+                var users = await userTable.ToListAsync();
+
+                var all_users = await userTable.ToListAsync();
                 var existing_user = await userTable.Where(u => u.MicrosoftID == microsoftID).ToListAsync();
+                var groups = await groupTable.ToListAsync();
 
                 if (existing_user.Count == 0)
                 {
@@ -404,7 +579,9 @@ namespace Todo
 
                     // insert new user
                     await userTable.InsertAsync(user);
+                    await client.SyncContext.PushAsync();
 
+                    userID = user.ID;
 
                     Group group = new Group
                     {
@@ -413,6 +590,7 @@ namespace Todo
 
                     // add default group voor user
                     await groupTable.InsertAsync(group);
+                    await client.SyncContext.PushAsync();
 
                     UserGroupMembership ugm = new UserGroupMembership
                     {
@@ -421,15 +599,19 @@ namespace Todo
                     };
 
                     await userGroupMembershipTable.InsertAsync(ugm);
+                    await client.SyncContext.PushAsync();
 
                 }
                 else if (existing_user.Count == 1)
                 {
-                    Debug.WriteLine("user exists, exactly one ID found: " + existing_user.FirstOrDefault<User>().ID);
+                    string ID = existing_user.FirstOrDefault<User>().ID;
+                    Debug.WriteLine("user exists, exactly one ID found: " + ID);
+                    userID = ID;
                 }
                 else
                 {
                     Debug.WriteLine("something weird happened, more than one user with the same ID found");
+                    Debugger.Break();
                 }
 
 
@@ -454,7 +636,7 @@ namespace Todo
             }
         }
 
-        public async Task SaveItem(TodoItem item)
+        public async Task SaveItem(Item item)
         {
             //lock (locker)
             //{
@@ -472,7 +654,7 @@ namespace Todo
             try
             {
                 // Get the items that weren't marked as completed and add them in the adapter
-                await toDoTable.InsertAsync(item);
+                await itemTable.InsertAsync(item);
 
                 await SyncAsync(); // offline sync
                 //adapter.Clear();
@@ -496,8 +678,8 @@ namespace Todo
 
             try 
             {
-                TodoItem to_be_deleted = GetItem(id).Result;
-                await toDoTable.DeleteAsync(to_be_deleted);
+                Item to_be_deleted = GetItem(id).Result;
+                await itemTable.DeleteAsync(to_be_deleted);
                 await SyncAsync(); // offline sync
             } 
             catch (MobileServiceInvalidOperationException msioe)

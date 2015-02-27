@@ -8,10 +8,6 @@ namespace Todo
 {
     public class Item
     {
-        public Item()
-        {
-        }
-
         public string ID { get; set; }
 
         public string OwnedBy { get; set; }
@@ -31,9 +27,6 @@ namespace Todo
         public int Order { get; set; }
 
         public string Notes { get; set; }
-
-        //[Version]
-        public string Version { get; set; }
 
         public string CreatedBy { get; set; }
 
@@ -60,6 +53,9 @@ namespace Todo
         public float PunishmentAmount { get; set; }
 
         public string DependentOn { get; set; }
+
+        [Version]
+        public string Version { get; set; }
 
         public override string ToString()
         {

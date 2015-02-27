@@ -36,9 +36,9 @@ namespace Todo
 				listView.ItemsSource = new string [1] {""};
 
 			listView.ItemSelected += (sender, e) => {
-				var todoItem = (TodoItem)e.SelectedItem;
+				var Item = (Item)e.SelectedItem;
 				var todoPage = new TodoItemPage();
-				todoPage.BindingContext = todoItem;
+				todoPage.BindingContext = Item;
 				Navigation.PushAsync(todoPage);
 			};
 
@@ -56,17 +56,17 @@ namespace Todo
 			{
 				tbi = new ToolbarItem("+", null, () =>
 					{
-						var todoItem = new TodoItem();
+						var Item = new Item();
 						var todoPage = new TodoItemPage();
-						todoPage.BindingContext = todoItem;
+						todoPage.BindingContext = Item;
 						Navigation.PushAsync(todoPage);
 					}, 0, 0);
 			}
 			if (Device.OS == TargetPlatform.Android) { // BUG: Android doesn't support the icon being null
 				tbi = new ToolbarItem ("+", "plus", () => {
-					var todoItem = new TodoItem();
+					var Item = new Item();
 					var todoPage = new TodoItemPage();
-					todoPage.BindingContext = todoItem;
+					todoPage.BindingContext = Item;
 					Navigation.PushAsync(todoPage);
 				}, 0, 0);
 			}
@@ -74,9 +74,9 @@ namespace Todo
 			{
 				tbi = new ToolbarItem("Add", "add.png", () =>
 					{
-						var todoItem = new TodoItem();
+						var Item = new Item();
 						var todoPage = new TodoItemPage();
-						todoPage.BindingContext = todoItem;
+						todoPage.BindingContext = Item;
 						Navigation.PushAsync(todoPage);
 					}, 0, 0);
 			}
@@ -88,7 +88,7 @@ namespace Todo
                     var todos = App.Database.GetItemsNotDone().Result;
 					var tospeak = "";
                     foreach (var t in todos)
-                        tospeak += t.Text + " ";
+                        tospeak += t.Name + " ";
                     if (tospeak == "") tospeak = "there are no tasks to do";
 
 					DependencyService.Get<ITextToSpeech>().Speak(tospeak);
@@ -97,6 +97,14 @@ namespace Todo
 			}
 
 		}
+
+        public async void Refresh ()
+        {
+            if (Todo.App.Database != null && Todo.App.Database.userID != null)
+            {
+                listView.ItemsSource = await App.Database.GetItems();
+            }
+        }
 
 		protected async override void OnAppearing ()
 		{

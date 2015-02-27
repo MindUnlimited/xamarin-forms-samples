@@ -17,22 +17,42 @@ namespace Todo.Android
 	[Activity (Label = "Todo.Android.Android", MainLauncher = true)]
 	public class MainActivity : AndroidActivity
 	{
-        private MobileServiceUser user;
+        private MobileServiceUser user = null;
+        private bool justAuthenticated = false;
 
         private async Task Authenticate()
         {
-            try
+            while (user == null)
             {
-                user = await App.Database.client.
-                    LoginAsync(this, MobileServiceAuthenticationProvider.MicrosoftAccount);
-                //CreateAndShowDialog(string.Format("you are now logged in - {0}", user.UserId), "Logged in!");
-                await App.Database.
-                    newUser(user.UserId);
+                try
+                {
+                    user = await App.Database.client.
+                        LoginAsync(this, MobileServiceAuthenticationProvider.MicrosoftAccount);
+                    await Todo.App.Database.InitLocalStoreAsync();
+                    await Todo.App.Database.newUser(user.UserId);
+                    Todo.App.Database.OnRefreshItemsSelected(); // pull database tables
+                    CreateAndShowDialog(string.Format("you are now logged in - {0}", user.UserId), "Logged in!");
+                    justAuthenticated = true;
+                }
+                catch (Exception ex)
+                {
+                    CreateAndShowDialog(ex, "Authentication failed");
+                }
             }
-            catch (Exception ex)
-            {
-                //CreateAndShowDialog(ex, "Authentication failed");
-            }
+        }
+
+        void CreateAndShowDialog(Exception exception, String title)
+        {
+            CreateAndShowDialog(exception.Message, title);
+        }
+
+        void CreateAndShowDialog(string message, string title)
+        {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+            builder.SetMessage(message);
+            builder.SetTitle(title);
+            builder.Create().Show();
         }
 
 		protected override void OnCreate (Bundle bundle)
@@ -41,13 +61,21 @@ namespace Todo.Android
 
 			Xamarin.Forms.Forms.Init (this, bundle);
 
-            var mainpage = App.GetMainPage();
+            //var mainpage = App.GetMainPage();
 
-            //Authenticate();
-            Task.Run(async () => { await Authenticate(); }); //task.run part is necessary, behaves as await
+            Todo.App.createDatabase();
 
-			SetPage (mainpage);
+            Authenticate();
+            //Task.Run(() => { Authenticate(); }).Wait(); //task.run part is necessary, behaves as await     
+
+            SetPage(App.GetMainPage());
 		}
+
+        protected override void OnStart()
+        {
+            base.OnStart();
+            // something to refresh the page
+        }
 	}
 }
 

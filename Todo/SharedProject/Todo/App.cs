@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Xamarin.Forms;
 
 namespace Todo
@@ -7,16 +8,21 @@ namespace Todo
 	{
 		public static Page GetMainPage ()
 		{
-			database = new TodoItemDatabase();
+            TodoListPage listPage = new TodoListPage();
+            listPage.Refresh();
 
-			var mainNav = new NavigationPage (new TodoListPage ());
-
+			var mainNav = new NavigationPage (listPage);
 			return mainNav;
 		}
 
+        public static void createDatabase()
+        {
+            App.database = new TodoItemDatabase();
+        }
+
 		static TodoItemDatabase database;
 		public static TodoItemDatabase Database {
-			get { return database; }
+			get { return App.database; }
 		}
 	}
 }

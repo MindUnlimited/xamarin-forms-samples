@@ -19,6 +19,8 @@ namespace Todo.WinPhone
     public partial class MainPage : PhoneApplicationPage
     {
         private MobileServiceUser user;
+        private bool justAuthenticated;
+
         private async System.Threading.Tasks.Task Authenticate()
         {
             while (user == null)
@@ -28,9 +30,13 @@ namespace Todo.WinPhone
                 {
                     user = await Todo.App.Database.client.
                         LoginAsync(MobileServiceAuthenticationProvider.MicrosoftAccount);
+                    await Todo.App.Database.InitLocalStoreAsync();
                     await Todo.App.Database.newUser(user.UserId);
+                    Todo.App.Database.OnRefreshItemsSelected(); // pull database tables
+                    
                     message =
                         string.Format("You are now logged in - {0}", user.UserId);
+                    justAuthenticated = true;
                 }
                 catch (InvalidOperationException)
                 {
@@ -44,7 +50,12 @@ namespace Todo.WinPhone
         async void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
             await Authenticate();
-            //RefreshTodoItems();
+            //await Todo.App.Database.getTables();
+            if (justAuthenticated)
+            {
+                Content = Todo.App.GetMainPage().ConvertPageToUIElement(this); // Refresh items
+                justAuthenticated = false;
+            }
         }
 
         public MainPage()
@@ -52,6 +63,8 @@ namespace Todo.WinPhone
             InitializeComponent();
 
             Forms.Init();
+
+            Todo.App.createDatabase();
 
             this.Loaded += MainPage_Loaded; // when loaded authenticate
 

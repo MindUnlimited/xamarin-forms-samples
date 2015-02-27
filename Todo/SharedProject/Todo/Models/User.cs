@@ -8,15 +8,11 @@ namespace Todo
 {
     public class User
     {
-        public User()
-        {
-        }
-
         public string ID { get; set; }
 
         public string Name { get; set; }
 
-        public Boolean isCoach { get; set; }
+        public bool isCoach { get; set; }
 
         public string Email { get; set; }
 
@@ -34,21 +30,7 @@ namespace Todo
 
         public string TrainingProgramLanguages { get; set; }
 
-        //[JsonProperty(PropertyName = "text")]
-        //public string Text { get; set; }
-
-        //[JsonProperty(PropertyName = "complete")]
-        //public bool Complete { get; set; }
-
-        ////[JsonProperty(PropertyName = "notes")]
-        ////public string Notes { get; set; }
-
         [Version]
         public string Version { get; set; }
-
-        //public override string ToString()
-        //{
-        //    return "    Title: " + Text + "\n    Complete: " + Complete;
-        //}
     }
 }
