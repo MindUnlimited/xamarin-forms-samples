@@ -11,8 +11,18 @@ namespace Todo
             TodoListPage listPage = new TodoListPage();
             listPage.Refresh();
 
-			var mainNav = new NavigationPage (listPage);
-			return mainNav;
+            var itemNav = new NavigationPage(listPage) { Title = "Items"};
+
+            TodoGroupListPage groupListPage = new TodoGroupListPage();
+            groupListPage.Refresh();
+
+            var groupNav = new NavigationPage(groupListPage) { Title = "Groups"};
+
+            TabbedPage tabbedPage = new TabbedPage();
+            tabbedPage.Children.Add(itemNav);
+            tabbedPage.Children.Add(groupNav);
+
+            return tabbedPage;
 		}
 
         public static void createDatabase()

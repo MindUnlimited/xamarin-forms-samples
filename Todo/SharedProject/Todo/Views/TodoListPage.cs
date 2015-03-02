@@ -12,7 +12,7 @@ namespace Todo
 		ListView listView;
 		public TodoListPage ()
 		{
-			Title = "Todo";
+			Title = "Items";
 
 			NavigationPage.SetHasNavigationBar (this, true);
 
@@ -43,9 +43,9 @@ namespace Todo
 			};
 
 			var layout = new StackLayout();
-			if (Device.OS == TargetPlatform.WinPhone) { // WinPhone doesn't have the title showing
-				layout.Children.Add(new Label{Text="Todo", Font=Font.BoldSystemFontOfSize(NamedSize.Large)});
-			}
+            //if (Device.OS == TargetPlatform.WinPhone) { // WinPhone doesn't have the title showing
+            //    layout.Children.Add(new Label{Text="Todo", Font=Font.BoldSystemFontOfSize(NamedSize.Large)});
+            //}
 			layout.Children.Add(listView);
 			layout.VerticalOptions = LayoutOptions.FillAndExpand;
 			Content = layout;

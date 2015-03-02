@@ -19,8 +19,12 @@ namespace Todo
             //Task.Run(async () => { defGroup = await Todo.App.Database.getDefaultGroup(Todo.App.Database.userID); });
             //Task.Run(async () => { availableGroups = await Todo.App.Database.getGroups(Todo.App.Database.userID); }); //task.run part is necessary, behaves as await
 
-            var _groups = Todo.App.Database.getGroups(Todo.App.Database.userID);
-            availableGroups.AddRange(_groups.Result);
+            if (Todo.App.Database.userID != null)
+            {
+                var _groups = Todo.App.Database.getGroups(Todo.App.Database.userID);
+                availableGroups.AddRange(_groups.Result);
+            }
+
 
 			this.SetBinding (ContentPage.TitleProperty, "Name");
 
@@ -108,7 +112,7 @@ namespace Todo
 			var deleteButton = new Button { Text = "Delete" };
 			deleteButton.Clicked += async (sender, e) => {
 				var Item = (Item)BindingContext;
-				await App.Database.DeleteItem(Item.ID);
+				await App.Database.DeleteItem(Item);
                 await this.Navigation.PopAsync();
 			};
 							

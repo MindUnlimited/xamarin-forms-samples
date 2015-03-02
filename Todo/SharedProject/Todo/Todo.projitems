@@ -18,7 +18,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)Models\UserGroupMembership.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\User.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\TodoItem_bak.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Views\TodoGroupCell.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Views\TodoGroupListPage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\Controls\BindablePicker.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Views\TodoGroupPage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\TodoItemCell.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\TodoItemPage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\TodoListPage.cs" />

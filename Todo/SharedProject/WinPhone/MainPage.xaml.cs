@@ -12,30 +12,32 @@ using Xamarin.Forms;
 using System.IO;
 using Windows.Storage;
 using Microsoft.WindowsAzure.MobileServices;
+using System.Net.Http;
 
 
 namespace Todo.WinPhone
 {
     public partial class MainPage : PhoneApplicationPage
     {
-        private MobileServiceUser user;
         private bool justAuthenticated;
 
         private async System.Threading.Tasks.Task Authenticate()
         {
-            while (user == null)
+            while (Todo.App.Database.mobileServiceUser == null)
             {
                 string message;
                 try
                 {
-                    user = await Todo.App.Database.client.
+                    Todo.App.Database.mobileServiceUser = 
+                    await Todo.App.Database.client.
                         LoginAsync(MobileServiceAuthenticationProvider.MicrosoftAccount);
+
                     await Todo.App.Database.InitLocalStoreAsync();
-                    await Todo.App.Database.newUser(user.UserId);
+                    await Todo.App.Database.newUser(Todo.App.Database.mobileServiceUser.UserId);
                     Todo.App.Database.OnRefreshItemsSelected(); // pull database tables
                     
                     message =
-                        string.Format("You are now logged in - {0}", user.UserId);
+                        string.Format("You are now logged in - {0}", Todo.App.Database.mobileServiceUser.UserId);
                     justAuthenticated = true;
                 }
                 catch (InvalidOperationException)

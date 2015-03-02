@@ -19,6 +19,8 @@ namespace Todo
 	{
         //Mobile Service Client reference
         public MobileServiceClient client;
+        public MobileServiceUser mobileServiceUser;
+        public string userName { get; set; }
         public string userID { get; set; }
 
         //Mobile Service sync table used to access data
@@ -388,46 +390,51 @@ namespace Todo
 
         public async Task<List<Group>> getGroups(string userID)
         {
-            // from userID to GroupID from the users default group (defGroup)
-            List<Group> resultGroups = new List<Group>();
-            List<Group> groups = await groupTable.ToListAsync();
-
-            Group defGroup = await getDefaultGroup(userID);
-
-            var queue = new Queue<Group>();
-            queue.Enqueue(defGroup);
-
-            while (queue.Count > 0)
+            if (userID == null)
+                return null;
+            else
             {
-                // Take the next node from the front of the queue
-                var node = queue.Dequeue();
+                // from userID to GroupID from the users default group (defGroup)
+                List<Group> resultGroups = new List<Group>();
+                List<Group> groups = await groupTable.ToListAsync();
 
-                // Process the node 'node'
-                if (resultGroups.Contains(node) == false)
-                    resultGroups.Add(node);
+                Group defGroup = await getDefaultGroup(userID);
 
-                List<GroupGroupMembership> ggms = await groupGroupMembershipTable.Where(ggm => ggm.MemberID == node.ID).ToListAsync();
+                var queue = new Queue<Group>();
+                queue.Enqueue(defGroup);
 
-                IEnumerable<Group> children = from g in groups
-                             where ggms.Any(ggm => ggm.MembershipID == g.ID)
-                             select g;
+                while (queue.Count > 0)
+                {
+                    // Take the next node from the front of the queue
+                    var node = queue.Dequeue();
 
-                //List<Group> children = await groupTable.Where(group => ids.Contains(group.ID)).ToListAsync();
+                    // Process the node 'node'
+                    if (resultGroups.Contains(node) == false)
+                        resultGroups.Add(node);
 
-                //List<Group> groups = await groupTable.ToListAsync();
-                //List<GroupGroupMembership> ggms = await groupGroupMembershipTable.ToListAsync();
+                    List<GroupGroupMembership> ggms = await groupGroupMembershipTable.Where(ggm => ggm.MemberID == node.ID).ToListAsync();
 
-                //var childrrren = from g in groups
-                //                 join ggm in ggms
-                //                     on g.ID equals ggm.
-                //                 select g;
+                    IEnumerable<Group> children = from g in groups
+                                                  where ggms.Any(ggm => ggm.MembershipID == g.ID)
+                                                  select g;
 
-                // Add the node’s children to the back of the queue
-                foreach (var child in children)
-                    queue.Enqueue(child);
+                    //List<Group> children = await groupTable.Where(group => ids.Contains(group.ID)).ToListAsync();
+
+                    //List<Group> groups = await groupTable.ToListAsync();
+                    //List<GroupGroupMembership> ggms = await groupGroupMembershipTable.ToListAsync();
+
+                    //var childrrren = from g in groups
+                    //                 join ggm in ggms
+                    //                     on g.ID equals ggm.
+                    //                 select g;
+
+                    // Add the node’s children to the back of the queue
+                    foreach (var child in children)
+                        queue.Enqueue(child);
+                }
+
+                return resultGroups;
             }
-
-            return resultGroups;
         }
 
         public async Task<IEnumerable<Item>> GetItems()
@@ -561,6 +568,10 @@ namespace Todo
                 //await userTable.PullAsync(null, userTable.CreateQuery());
                 // does the user already exist?
 
+                // fetch username not just the id
+                Newtonsoft.Json.Linq.JObject userInfo = (Newtonsoft.Json.Linq.JObject)await client.InvokeApiAsync("userInfo", HttpMethod.Get, null);
+                userName = userInfo.Value<string>("name");
+
                 var userTable = client.GetSyncTable<User>();
                 await userTable.PullAsync(null, userTable.CreateQuery());
 
@@ -574,7 +585,8 @@ namespace Todo
                 {
                     User user = new User
                     {
-                        MicrosoftID = microsoftID
+                        MicrosoftID = microsoftID,
+                        Name = userName
                     };
 
                     // insert new user
@@ -585,7 +597,7 @@ namespace Todo
 
                     Group group = new Group
                     {
-                        Name = user.ID
+                        Name = userName
                     };
 
                     // add default group voor user
@@ -636,6 +648,61 @@ namespace Todo
             }
         }
 
+        public async Task SaveItem(Group group)
+        {
+            //lock (locker)
+            //{
+            //    if (item.ID != 0)
+            //    {
+            //        database.Update(item);
+            //        return item.ID;
+            //    }
+            //    else
+            //    {
+            //        return database.Insert(item);
+            //    }
+            //}
+
+            try
+            {
+                await SyncAsync(); // offline sync, push and pull changes. Maybe results in conflict with the item to be saved
+
+                // if version is not null then the item already exists, so update is needed instead of insert
+                if (group.Version != null)
+                {
+                    await groupTable.UpdateAsync(group);
+                }
+                else
+                {
+
+                    await groupTable.InsertAsync(group);
+                    await client.SyncContext.PushAsync();
+
+                    GroupGroupMembership ggm = new GroupGroupMembership();
+                    Group defGroup = await getDefaultGroup(userID);
+
+                    ggm.MemberID = defGroup.ID;
+                    ggm.MembershipID = group.ID;
+
+                    await groupGroupMembershipTable.InsertAsync(ggm);
+                }
+
+
+                await client.SyncContext.PushAsync();
+
+
+                //adapter.Clear();
+
+                //foreach (ToDoItem current in list)
+                //    adapter.Add(current);
+
+            }
+            catch (Exception e)
+            {
+                CreateAndShowDialog(e, "Error");
+            }
+        }
+
         public async Task SaveItem(Item item)
         {
             //lock (locker)
@@ -653,10 +720,22 @@ namespace Todo
 
             try
             {
-                // Get the items that weren't marked as completed and add them in the adapter
-                await itemTable.InsertAsync(item);
+                await SyncAsync(); // offline sync, push and pull changes. Maybe results in conflict with the item to be saved
 
-                await SyncAsync(); // offline sync
+                // if version is not null then the item already exists, so update is needed instead of insert
+                if (item.Version != null)
+                {
+                    await itemTable.UpdateAsync(item);
+                }
+                else
+                {
+                    await itemTable.InsertAsync(item);
+                }
+                
+
+                await client.SyncContext.PushAsync();
+
+                
                 //adapter.Clear();
 
                 //foreach (ToDoItem current in list)
@@ -669,28 +748,72 @@ namespace Todo
             }
         }
 
-        public async Task DeleteItem(string id)
+        public async Task DeleteItem(Item item)
         {
             //lock (locker)
             //{
             //    return database.Delete<TodoItem>(id);
             //}
 
-            try 
+            try
             {
-                Item to_be_deleted = GetItem(id).Result;
-                await itemTable.DeleteAsync(to_be_deleted);
+                await itemTable.DeleteAsync(item);
                 await SyncAsync(); // offline sync
-            } 
+            }
             catch (MobileServiceInvalidOperationException msioe)
             {
-               CreateAndShowDialog(msioe, msioe.Message);
+                CreateAndShowDialog(msioe, msioe.Message);
             }
             catch (Exception e)
             {
                 CreateAndShowDialog(e, "Error");
             }
         }
+
+        public async Task DeleteItem(Group group)
+        {
+            //lock (locker)
+            //{
+            //    return database.Delete<TodoItem>(id);
+            //}
+
+            try
+            {
+                await groupTable.DeleteAsync(group);
+                await SyncAsync(); // offline sync
+            }
+            catch (MobileServiceInvalidOperationException msioe)
+            {
+                CreateAndShowDialog(msioe, msioe.Message);
+            }
+            catch (Exception e)
+            {
+                CreateAndShowDialog(e, "Error");
+            }
+        }
+
+        //public async Task DeleteItem(string id)
+        //{
+        //    //lock (locker)
+        //    //{
+        //    //    return database.Delete<TodoItem>(id);
+        //    //}
+
+        //    try 
+        //    {
+        //        Item to_be_deleted = GetItem(id).Result;
+        //        await itemTable.DeleteAsync(to_be_deleted);
+        //        await SyncAsync(); // offline sync
+        //    } 
+        //    catch (MobileServiceInvalidOperationException msioe)
+        //    {
+        //       CreateAndShowDialog(msioe, msioe.Message);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        CreateAndShowDialog(e, "Error");
+        //    }
+        //}
 
         //public async Task DeleteTaskAsync(TodoItem item)
         //{

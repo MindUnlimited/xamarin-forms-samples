@@ -10,6 +10,7 @@ using Android.OS;
 using Xamarin.Forms.Platform.Android;
 using Microsoft.WindowsAzure.MobileServices;
 using System.Threading.Tasks;
+using System.Net.Http;
 
 
 namespace Todo.Android
@@ -17,22 +18,24 @@ namespace Todo.Android
 	[Activity (Label = "Todo.Android.Android", MainLauncher = true)]
 	public class MainActivity : AndroidActivity
 	{
-        private MobileServiceUser user = null;
         private bool justAuthenticated = false;
 
         private async Task Authenticate()
         {
-            while (user == null)
+            while (Todo.App.Database.mobileServiceUser == null)
             {
                 try
                 {
-                    user = await App.Database.client.
+                    Todo.App.Database.mobileServiceUser = await App.Database.client.
                         LoginAsync(this, MobileServiceAuthenticationProvider.MicrosoftAccount);
+
                     await Todo.App.Database.InitLocalStoreAsync();
-                    await Todo.App.Database.newUser(user.UserId);
+                    await Todo.App.Database.newUser(Todo.App.Database.mobileServiceUser.UserId);
                     Todo.App.Database.OnRefreshItemsSelected(); // pull database tables
-                    CreateAndShowDialog(string.Format("you are now logged in - {0}", user.UserId), "Logged in!");
+                    CreateAndShowDialog(string.Format("you are now logged in - {0}", Todo.App.Database.mobileServiceUser.UserId), "Logged in!");
                     justAuthenticated = true;
+
+
                 }
                 catch (Exception ex)
                 {
