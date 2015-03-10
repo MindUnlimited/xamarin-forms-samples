@@ -40,6 +40,8 @@ namespace Todo.Views.Controls
                 {
                     picker.Items.Add(item.ToString());
                 }
+
+                OnSelectedItemChanged(bindable, null, picker.SelectedItem);
             }
         }
 

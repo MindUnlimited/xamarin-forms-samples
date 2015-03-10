@@ -15,15 +15,16 @@ using Microsoft.WindowsAzure.MobileServices;
 using System.Net.Http;
 
 
+
 namespace Todo.WinPhone
 {
     public partial class MainPage : PhoneApplicationPage
     {
-        private bool justAuthenticated;
+        private bool justAuthenticated = false;
 
         private async System.Threading.Tasks.Task Authenticate()
         {
-            while (Todo.App.Database.mobileServiceUser == null)
+            while (!justAuthenticated)
             {
                 string message;
                 try
@@ -51,8 +52,10 @@ namespace Todo.WinPhone
 
         async void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
-            await Authenticate();
-            //await Todo.App.Database.getTables();
+            if (Todo.App.Database.mobileServiceUser == null)
+                await Authenticate();
+
+            // refresh the page if just Authenticated, to update the items/groups
             if (justAuthenticated)
             {
                 Content = Todo.App.GetMainPage().ConvertPageToUIElement(this); // Refresh items

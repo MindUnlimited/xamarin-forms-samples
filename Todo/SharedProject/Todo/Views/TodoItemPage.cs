@@ -7,6 +7,8 @@ using Xamarin.Forms;
 using System.Diagnostics;
 using Todo.Views;
 using Todo.Views.Controls;
+using SolTech.Forms;
+//using SolTech.Forms;
 
 namespace Todo
 {
@@ -15,7 +17,7 @@ namespace Todo
 		public TodoItemPage ()
 		{
             List<Group> availableGroups = new List<Group>();
-            //Group defGroup = new Group();
+            Group defGroup;
             //Task.Run(async () => { defGroup = await Todo.App.Database.getDefaultGroup(Todo.App.Database.userID); });
             //Task.Run(async () => { availableGroups = await Todo.App.Database.getGroups(Todo.App.Database.userID); }); //task.run part is necessary, behaves as await
 
@@ -23,6 +25,9 @@ namespace Todo
             {
                 var _groups = Todo.App.Database.getGroups(Todo.App.Database.userID);
                 availableGroups.AddRange(_groups.Result);
+
+                var _defGroup = Todo.App.Database.getDefaultGroup(Todo.App.Database.userID);
+                defGroup = _defGroup.Result;
             }
 
 
@@ -49,54 +54,74 @@ namespace Todo
             //ownedEntry.SetBinding(Entry.TextProperty, "OwnedBy");
 
 
+
+
+
             var ownedLabel = new Label { Text = "Owned By" };
 
-            BindablePicker ownedPicker = new BindablePicker
+
+
+
+
+            BoundPicker ownedPicker = new BoundPicker
             {
                 Title = "Owned By",
                 VerticalOptions = LayoutOptions.CenterAndExpand
             };
 
+            List<PickerItem<String>> groupNameIDList = new List<PickerItem<String>>();
+
+            Dictionary<string, String> groups = new Dictionary<string, String>();
+
             foreach (Group group in availableGroups)
             {
-                ownedPicker.Items.Add(group.ID);
+                PickerItem<String> it = new PickerItem<String>(group.Name, group.ID);
+                groupNameIDList.Add(it);
+
+                groups[group.Name] = group.ID;
             }
 
-            ownedPicker.SetBinding(BindablePicker.SelectedItemProperty, "OwnedBy", BindingMode.TwoWay);          
-            //picker.SetBinding((BindableProperty)(picker.SelectedItem), "OwnedBy");
+            var groupNameIDIENumerable = (IEnumerable<PickerItem<String>>)groupNameIDList;
 
-            //BindableProperty bind = BindablePicker.SelectedItemProperty;
+            ownedPicker.ItemsSource = groupNameIDIENumerable;
+            ownedPicker.SetBinding(BoundPicker.SelectedItemProperty, "OwnedBy", BindingMode.TwoWay);
 
-            //var pickerLabel = new Label { Text = "OwnedBy" };
-            //this.SetBinding(picker., "OwnedBy");
-            
 
-            //var tmp = picker.SelectedItemProperty;
-            //picker.SetBinding(picker.ItemsSourceProperty, "OwnedBy");
 
-            //picker.SelectedIndexChanged += (sender, args) =>
+
+
+
+
+
+            //BindablePicker ownedPicker = new BindablePicker
             //{
-                
-            //    //if (picker.SelectedIndex == -1)
-            //    //{
-            //    //    boxView.Color = Color.Default;
-            //    //}
-            //    //else
-            //    //{
-            //    //    string colorName = picker.Items[picker.SelectedIndex];
-            //    //    boxView.Color = nameToColor[colorName];
-            //    //}
+            //    Title = "Owned By",
+            //    VerticalOptions = LayoutOptions.CenterAndExpand
             //};
+
+            //Dictionary<string, string> groups = new Dictionary<string, string>();
+            //foreach (Group group in availableGroups)
+            //{
+            //    ownedPicker.Items.Add(group.Name);
+            //    ownedPicker.Items.Add(group.ID);
+            //    groups[group.Name] = group.ID;
+            //}
+            ////ownedPicker.ItemsSource = groupNameIDIENumerable;
+            ////ownedPicker2.ItemsSource = groupNameIDList;
+
+            //ownedPicker.SetBinding(BindablePicker.SelectedItemProperty, "OwnedBy", BindingMode.TwoWay);
+
+
 
             var typeLabel = new Label { Text = "Type" };
             var typeEntry = new Entry();
 
             typeEntry.SetBinding(Entry.TextProperty, "Type");
 
-            var createdLabel = new Label { Text = "Created By" };
-            var createdEntry = new Entry();
+            //var createdLabel = new Label { Text = "Created By" };
+            //var createdEntry = new Entry();
 
-            createdEntry.SetBinding(Entry.TextProperty, "CreatedBy");
+            //createdEntry.SetBinding(Entry.TextProperty, "CreatedBy");
 
             //var doneLabel = new Label { Text = "Complete" };
             //var doneEntry = new Xamarin.Forms.Switch ();
@@ -104,28 +129,41 @@ namespace Todo
 
 			var saveButton = new Button { Text = "Save" };
 			saveButton.Clicked += async (sender, e) => {
-				var Item = (Item)BindingContext;
-				await App.Database.SaveItem(Item);
-				await this.Navigation.PopAsync();
+                var selected = ownedPicker.SelectedItem;
+				Item Item = (Item)BindingContext;
+                if (Item.OwnedBy != null)
+                {
+                    
+                    //ownedPicker.OnSelectedItemChanged(BoundPicker.SelectedItemProperty, Item.OwnedBy, Item.OwnedBy);
+                    //var old_value = Item.OwnedBy;
+                    Item.OwnedBy = groups[Item.OwnedBy];
+                    //ownedPicker.SelectedItem = 
+                    //var ownedByGroup = await Todo.App.Database.getGroup(Item.OwnedBy);
+                    //Item.OwnedBy = ownedByGroup.ID;
+                    await App.Database.SaveItem(Item);
+                    //Item.OwnedBy = old_value;
+
+                    await this.Navigation.PopAsync();
+                }
 			};
 
 			var deleteButton = new Button { Text = "Delete" };
 			deleteButton.Clicked += async (sender, e) => {
-				var Item = (Item)BindingContext;
+				Item Item = (Item)BindingContext;
 				await App.Database.DeleteItem(Item);
                 await this.Navigation.PopAsync();
 			};
 							
 			var cancelButton = new Button { Text = "Cancel" };
 			cancelButton.Clicked += (sender, e) => {
-				var Item = (Item)BindingContext;
+				Item Item = (Item)BindingContext;
                 this.Navigation.PopAsync();
 			};
 
 
 			var speakButton = new Button { Text = "Speak" };
 			speakButton.Clicked += (sender, e) => {
-				var Item = (Item)BindingContext;
+				Item Item = (Item)BindingContext;
                 string spokenText;
                 if (Item.Status == 7)
                     spokenText = Item.Name + ", this item is completed";
@@ -163,8 +201,7 @@ namespace Todo
 					            statusLabel, statusEntry,
                                 //ownedLabel, ownedEntry,
                                 ownedLabel, ownedPicker,
-                                typeLabel, typeEntry,
-                                createdLabel, createdEntry
+                                typeLabel, typeEntry
 				            }
                         }
 

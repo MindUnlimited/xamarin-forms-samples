@@ -7,6 +7,7 @@ using Xamarin.Forms;
 using System.Diagnostics;
 using Todo.Views;
 using Todo.Views.Controls;
+using SolTech.Forms;
 
 namespace Todo
 {
@@ -15,12 +16,31 @@ namespace Todo
         public TodoGroupPage()
         {
             List<Group> availableGroups = new List<Group>();
-            //Group defGroup = new Group();
-            //Task.Run(async () => { defGroup = await Todo.App.Database.getDefaultGroup(Todo.App.Database.userID); });
-            //Task.Run(async () => { availableGroups = await Todo.App.Database.getGroups(Todo.App.Database.userID); }); //task.run part is necessary, behaves as await
-
             var _groups = Todo.App.Database.getGroups(Todo.App.Database.userID);
             availableGroups.AddRange(_groups.Result);
+
+            var parentLabel = new Label { Text = "Parent of Group" };
+
+            BoundPicker parentPicker = new BoundPicker
+            {
+                Title = "Parent of Group",
+                VerticalOptions = LayoutOptions.CenterAndExpand
+            };
+
+            List<PickerItem<Group>> groupNameIDList = new List<PickerItem<Group>>();
+            Dictionary<string, string> groups = new Dictionary<string, string>();
+
+            foreach (Group group in availableGroups)
+            {
+                PickerItem<Group> it = new PickerItem<Group>(group.Name, group);
+                groupNameIDList.Add(it);
+
+                groups[group.Name] = group.ID;
+            }
+
+            var groupNameIDIENumerable = (IEnumerable<PickerItem<Group>>)groupNameIDList;
+
+            parentPicker.ItemsSource = groupNameIDIENumerable;
 
             this.SetBinding(ContentPage.TitleProperty, "Name");
 
@@ -30,24 +50,23 @@ namespace Todo
 
             nameEntry.SetBinding(Entry.TextProperty, "Name");
 
-            //var notesLabel = new Label { Text = "Notes" };
-            //var notesEntry = new Entry ();
-            //notesEntry.SetBinding (Entry.TextProperty, "Notes");
 
             var coachLabel = new Label { Text = "is Coach" };
             var coachEntry = new Entry();
 
             coachEntry.SetBinding(Entry.TextProperty, "isCoach");
 
-            //var doneLabel = new Label { Text = "Complete" };
-            //var doneEntry = new Xamarin.Forms.Switch ();
-            //doneEntry.SetBinding (Xamarin.Forms.Switch.IsToggledProperty, "Complete");
 
             var saveButton = new Button { Text = "Save" };
             saveButton.Clicked += async (sender, e) =>
             {
-                var Group = (Group)BindingContext;
-                await App.Database.SaveItem(Group);
+                PickerItem<Group> parentGroup = (PickerItem<Group>) parentPicker.SelectedItem;
+                string parentID = parentGroup.Item.ID;
+                GroupGroupMembership ggm = new GroupGroupMembership();
+                ggm.MemberID = parentID;
+
+                var group = (Group)BindingContext;
+                await App.Database.SaveItem(group, ggm);
                 await this.Navigation.PopAsync();
             };
 
@@ -105,6 +124,7 @@ namespace Todo
                             Children =
                             {
 					            nameLabel, nameEntry, 
+                                parentLabel, parentPicker,
 					            coachLabel, coachEntry
 				            }
                         }

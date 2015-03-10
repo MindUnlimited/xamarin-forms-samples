@@ -12,6 +12,8 @@ using Microsoft.WindowsAzure.MobileServices;
 using Microsoft.WindowsAzure.MobileServices.Sync;
 using Microsoft.WindowsAzure.MobileServices.SQLiteStore;
 using Xamarin.Forms;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Todo
 {
@@ -21,7 +23,9 @@ namespace Todo
         public MobileServiceClient client;
         public MobileServiceUser mobileServiceUser;
         public string userName { get; set; }
+        public string email { get; set; }
         public string userID { get; set; }
+        public Group defGroup { get; set; }
 
         //Mobile Service sync table used to access data
         //private IMobileServiceSyncTable<TodoItem> toDoTable;
@@ -388,6 +392,23 @@ namespace Todo
         }
 
 
+        public async Task<Group> getGroup(string groupName)
+        {
+            if (userID == null)
+                return null;
+            else
+            {
+                var groups = await getGroups(userID);
+                foreach (Group group in groups)
+                {
+                    if (group.Name == groupName)
+                        return group;
+                }
+            }
+            return null;
+        }
+
+
         public async Task<List<Group>> getGroups(string userID)
         {
             if (userID == null)
@@ -398,7 +419,8 @@ namespace Todo
                 List<Group> resultGroups = new List<Group>();
                 List<Group> groups = await groupTable.ToListAsync();
 
-                Group defGroup = await getDefaultGroup(userID);
+                if (defGroup == null)
+                    defGroup = await getDefaultGroup(userID);
 
                 var queue = new Queue<Group>();
                 queue.Enqueue(defGroup);
@@ -569,24 +591,36 @@ namespace Todo
                 // does the user already exist?
 
                 // fetch username not just the id
-                Newtonsoft.Json.Linq.JObject userInfo = (Newtonsoft.Json.Linq.JObject)await client.InvokeApiAsync("userInfo", HttpMethod.Get, null);
-                userName = userInfo.Value<string>("name");
+                //Newtonsoft.Json.Linq.JObject userInfo = (Newtonsoft.Json.Linq.JObject) await client.InvokeApiAsync("userInfo", HttpMethod.Get, null);
+                //userName = userInfo.Value<string>("name");
+                //var emails = userInfo.Value<strting>("emails");
+
+                var json = (Newtonsoft.Json.Linq.JObject) await client.InvokeApiAsync("userInfo", HttpMethod.Get, null);
+
+                //var jsonString = json.ToString();
+                //var results = JsonConvert.DeserializeObject<dynamic>(jsonString);
+                //email = results.emails.account;
+                //userName = results.name;
+
+                userName = (string) json["name"];
+                email = (string) json["emails"]["account"];
 
                 var userTable = client.GetSyncTable<User>();
                 await userTable.PullAsync(null, userTable.CreateQuery());
 
-                var users = await userTable.ToListAsync();
+                //var users = await userTable.ToListAsync();
+                //var all_users = await userTable.ToListAsync();
 
-                var all_users = await userTable.ToListAsync();
                 var existing_user = await userTable.Where(u => u.MicrosoftID == microsoftID).ToListAsync();
-                var groups = await groupTable.ToListAsync();
+                //var groups = await groupTable.ToListAsync();
 
                 if (existing_user.Count == 0)
                 {
                     User user = new User
                     {
                         MicrosoftID = microsoftID,
-                        Name = userName
+                        Name = userName,
+                        Email = email
                     };
 
                     // insert new user
@@ -603,6 +637,8 @@ namespace Todo
                     // add default group voor user
                     await groupTable.InsertAsync(group);
                     await client.SyncContext.PushAsync();
+
+                    defGroup = group;
 
                     UserGroupMembership ugm = new UserGroupMembership
                     {
@@ -648,21 +684,8 @@ namespace Todo
             }
         }
 
-        public async Task SaveItem(Group group)
+        public async Task SaveItem(Group group, GroupGroupMembership ggm)
         {
-            //lock (locker)
-            //{
-            //    if (item.ID != 0)
-            //    {
-            //        database.Update(item);
-            //        return item.ID;
-            //    }
-            //    else
-            //    {
-            //        return database.Insert(item);
-            //    }
-            //}
-
             try
             {
                 await SyncAsync(); // offline sync, push and pull changes. Maybe results in conflict with the item to be saved
@@ -671,6 +694,7 @@ namespace Todo
                 if (group.Version != null)
                 {
                     await groupTable.UpdateAsync(group);
+                    await groupGroupMembershipTable.UpdateAsync(ggm);
                 }
                 else
                 {
@@ -678,10 +702,6 @@ namespace Todo
                     await groupTable.InsertAsync(group);
                     await client.SyncContext.PushAsync();
 
-                    GroupGroupMembership ggm = new GroupGroupMembership();
-                    Group defGroup = await getDefaultGroup(userID);
-
-                    ggm.MemberID = defGroup.ID;
                     ggm.MembershipID = group.ID;
 
                     await groupGroupMembershipTable.InsertAsync(ggm);
@@ -689,13 +709,6 @@ namespace Todo
 
 
                 await client.SyncContext.PushAsync();
-
-
-                //adapter.Clear();
-
-                //foreach (ToDoItem current in list)
-                //    adapter.Add(current);
-
             }
             catch (Exception e)
             {
@@ -729,6 +742,10 @@ namespace Todo
                 }
                 else
                 {
+                    if (defGroup == null)
+                        defGroup = await getDefaultGroup(userID);
+
+                    item.CreatedBy = defGroup.ID;
                     await itemTable.InsertAsync(item);
                 }
                 

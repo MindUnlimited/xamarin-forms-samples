@@ -10,7 +10,7 @@ namespace Todo
     {
         public string ID { get; set; }
 
-        public string OwnedBy { get; set; }
+        public String OwnedBy { get; set; }
 
         public string Parent { get; set; }
 
@@ -59,7 +59,7 @@ namespace Todo
 
         public override string ToString()
         {
-            return "    Text: " + Name + "\n    Status: " + Status;
+            return "    Text: " + Name + "\n    Status: " + Status + "\n    Owned by: " + OwnedBy;
         }
     }
 }
