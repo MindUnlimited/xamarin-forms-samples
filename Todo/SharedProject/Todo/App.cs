@@ -4,8 +4,15 @@ using Xamarin.Forms;
 
 namespace Todo
 {
-	public class App
-	{
+    public class App : Application // superclass new in 1.3
+    {
+        public App()
+        {
+            // The root page of your application
+            MainPage = GetMainPage(); // property new in 1.3
+        }
+
+
 		public static Page GetMainPage ()
 		{
             TodoListPage listPage = new TodoListPage();
@@ -29,6 +36,11 @@ namespace Todo
         {
             App.database = new TodoItemDatabase();
         }
+
+        //protected override void OnStart()
+        //{
+        //    MainPage = GetMainPage();
+        //}
 
 		static TodoItemDatabase database;
 		public static TodoItemDatabase Database {

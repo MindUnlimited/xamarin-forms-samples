@@ -14,6 +14,7 @@ using Microsoft.WindowsAzure.MobileServices.SQLiteStore;
 using Xamarin.Forms;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Xamarin.Contacts;
 
 namespace Todo
 {
@@ -26,6 +27,7 @@ namespace Todo
         public string email { get; set; }
         public string userID { get; set; }
         public Group defGroup { get; set; }
+        public List<User> contacts { get; set; }
 
         //Mobile Service sync table used to access data
         //private IMobileServiceSyncTable<TodoItem> toDoTable;
@@ -71,21 +73,17 @@ namespace Todo
 	    {
             try
             {
+                getContacts();
+
                 //CurrentPlatform.Init();
 
                 // Create the Mobile Service Client instance, using the provided
                 // Mobile Service URL and key
                 client = new MobileServiceClient(applicationURL, applicationKey);
                 
-                
-                
                 //InitLocalStoreAsync(); useless since not logged in yet..
                 
-                
-                
-                
                 //Task.Run(async () => { await InitLocalStoreAsync(); }); //task.run part is necessary, behaves as await
-
 
                 // Get the Mobile Service sync table instance to use
                 //toDoTable = client.GetSyncTable<TodoItem>();
@@ -133,6 +131,56 @@ namespace Todo
             // Mobile Service URL and key
             
 	    }
+
+        public void getContacts()
+        {
+            contacts = new List<User>();
+
+            #if __ANDROID__
+            var book = new AddressBook(Forms.Context);
+            #else
+            var book = new AddressBook();
+            #endif
+
+            if (!book.RequestPermission().Result)
+            {
+                Console.WriteLine("Permission denied by user or manifest");
+            }
+
+            foreach (Contact contact in book)
+            {
+                Console.WriteLine("{0} {1}", contact.FirstName, contact.LastName);
+
+                //enum emailAddressImportance {EmailType.Home, EmailType.Work, EmailType.Other};
+
+                List<EmailType> emailImportance = new List<EmailType>(new EmailType[]
+	            {
+	                EmailType.Home,
+	                EmailType.Work,     // River 2
+	                EmailType.Other
+	            });
+
+                string emailAddress = null;
+                int index = 0;
+                while (emailAddress == null)
+                {
+                    if (index >= emailImportance.Count)
+                        break;
+                    emailAddress = (from email in contact.Emails
+                                    where email.Address != null && email.Type == emailImportance[index]
+                                    select email.Address).FirstOrDefault();
+                    index += 1;
+                }
+
+                if (emailAddress != null)
+                {
+                    User user = new User();
+                    user.Email = emailAddress;
+                    user.Name = contact.FirstName + " " + contact.LastName;
+                    contacts.Add(user);
+                }
+            }
+        }
 
         public async Task getTables()
         {
@@ -581,6 +629,28 @@ namespace Todo
             //}
         }
 
+        public async Task<User> existingUser(User user)
+        {
+            try
+            {
+                var userTable = client.GetSyncTable<User>();
+                await userTable.PullAsync(null, userTable.CreateQuery());
+
+                //var users = await userTable.ToListAsync();
+                //var all_users = await userTable.ToListAsync();
+
+                var existingUserList = await userTable.Where(u => u.MicrosoftID == user.Email).ToListAsync();
+                User foundUser = existingUserList.FirstOrDefault();
+                return foundUser;
+            }
+            catch (Exception e)
+            {
+                CreateAndShowDialog(e, "Error: " + e.Message);
+            }
+
+            return null;
+        }
+
         public async Task newUser(string microsoftID)
         {
             try
@@ -709,6 +779,56 @@ namespace Todo
 
 
                 await client.SyncContext.PushAsync();
+            }
+            catch (Exception e)
+            {
+                CreateAndShowDialog(e, "Error");
+            }
+        }
+
+        public async Task SaveItem(Group group, List<User> usersToAdd, GroupGroupMembership ggm)
+        {
+            try
+            {
+                await SyncAsync(); // offline sync, push and pull changes. Maybe results in conflict with the item to be saved
+
+                // if version is not null then the item already exists, so update is needed instead of insert
+                if (group.Version != null)
+                {
+                    await groupTable.UpdateAsync(group);
+                    await groupGroupMembershipTable.UpdateAsync(ggm);
+
+
+
+                    //TODO! 
+                }
+                else
+                {
+
+                    await groupTable.InsertAsync(group);
+                    await client.SyncContext.PushAsync();
+
+                    ggm.MembershipID = group.ID;
+                    await groupGroupMembershipTable.InsertAsync(ggm);
+                    await client.SyncContext.PushAsync();
+
+                    foreach (User user in usersToAdd)
+                    {
+                        User userInDB = await existingUser(user);
+                        if (userInDB != null)
+                        {
+                            GroupGroupMembership ggmUser = new GroupGroupMembership();
+                            ggmUser.MembershipID = group.ID;
+                            ggmUser.MemberID = userInDB.ID;
+                            await groupGroupMembershipTable.InsertAsync(ggmUser);
+                            await client.SyncContext.PushAsync();
+                        }
+                        // else email them?
+                    }
+                }
+
+
+                //await client.SyncContext.PushAsync();
             }
             catch (Exception e)
             {

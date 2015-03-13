@@ -52,7 +52,10 @@ namespace SolTech.Forms
         {
             get
             {
-                return base.GetValue(SelectedItemProperty);
+                var pickerItem = base.GetValue(SelectedItemProperty);
+                if (pickerItem != null)
+                    return pickerItem;
+                return null;
             }
             set
             {

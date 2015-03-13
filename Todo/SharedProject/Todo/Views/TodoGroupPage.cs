@@ -19,8 +19,9 @@ namespace Todo
             var _groups = Todo.App.Database.getGroups(Todo.App.Database.userID);
             availableGroups.AddRange(_groups.Result);
 
-            var parentLabel = new Label { Text = "Parent of Group" };
 
+
+            var parentLabel = new Label { Text = "Parent of Group" };
             BoundPicker parentPicker = new BoundPicker
             {
                 Title = "Parent of Group",
@@ -38,9 +39,36 @@ namespace Todo
                 groups[group.Name] = group.ID;
             }
 
-            var groupNameIDIENumerable = (IEnumerable<PickerItem<Group>>)groupNameIDList;
+            //IEnumerable<PickerItem<String>> groupNameIDIENumerable = (IEnumerable<PickerItem<String>>)groupNameIDList;
+            parentPicker.ItemsSource = groupNameIDList;
 
-            parentPicker.ItemsSource = groupNameIDIENumerable;
+
+
+
+
+            var userLabel = new Label { Text = "Add users" };
+            BoundPicker userPicker = new BoundPicker
+            {
+                Title = "Parent of Group",
+                VerticalOptions = LayoutOptions.CenterAndExpand
+            };
+
+            List<PickerItem<User>> userNameUserList = new List<PickerItem<User>>();
+            Dictionary<string, User> users = new Dictionary<string, User>();
+
+            foreach (User user in Todo.App.Database.contacts)
+            {
+                PickerItem<User> us = new PickerItem<User>(user.Name, user);
+                userNameUserList.Add(us);
+
+                users[user.Name] = user;
+            }
+
+            //IEnumerable<PickerItem<String>> groupNameIDIENumerable = (IEnumerable<PickerItem<String>>)groupNameIDList;
+            userPicker.ItemsSource = userNameUserList;
+
+
+
 
             this.SetBinding(ContentPage.TitleProperty, "Name");
 
@@ -66,7 +94,27 @@ namespace Todo
                 ggm.MemberID = parentID;
 
                 var group = (Group)BindingContext;
-                await App.Database.SaveItem(group, ggm);
+                //await App.Database.SaveItem(group, ggm);
+
+                User pickedUser = ((PickerItem<User>) userPicker.SelectedItem).Item;
+
+                List<User> pickerUserList = new List<User>();
+                pickerUserList.Add(pickedUser);
+
+                await App.Database.SaveItem(group, pickerUserList, ggm);
+
+                //if (Todo.App.Database.existingUser(pickedUser) != null)
+                //{
+                //    Group userDefGroup = await Todo.App.Database.getDefaultGroup(pickedUser.ID);
+                //    GroupGroupMembership userGGM = new GroupGroupMembership();
+
+                //    userGGM.MemberID = userDefGroup.ID;
+                //    userGGM.MembershipID = group.ID;
+                //}
+
+
+
+
                 await this.Navigation.PopAsync();
             };
 
@@ -125,6 +173,7 @@ namespace Todo
                             {
 					            nameLabel, nameEntry, 
                                 parentLabel, parentPicker,
+                                userLabel, userPicker,
 					            coachLabel, coachEntry
 				            }
                         }

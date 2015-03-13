@@ -9,6 +9,7 @@ using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 
 using Xamarin.Forms;
+using Xamarin.Contacts;
 using System.IO;
 using Windows.Storage;
 using Microsoft.WindowsAzure.MobileServices;
@@ -18,7 +19,7 @@ using System.Net.Http;
 
 namespace Todo.WinPhone
 {
-    public partial class MainPage : PhoneApplicationPage
+    public partial class MainPage : global::Xamarin.Forms.Platform.WinPhone.FormsApplicationPage // superclass new in 1.3
     {
         private bool justAuthenticated = false;
 
@@ -73,7 +74,8 @@ namespace Todo.WinPhone
 
             this.Loaded += MainPage_Loaded; // when loaded authenticate
 
-            Content = Todo.App.GetMainPage().ConvertPageToUIElement(this);
+            LoadApplication(new Todo.App()); // new in 1.3
+            //Content = Todo.App.GetMainPage().ConvertPageToUIElement(this);
         }
     }
 }
