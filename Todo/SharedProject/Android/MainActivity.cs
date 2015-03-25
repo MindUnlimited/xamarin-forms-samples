@@ -9,46 +9,82 @@ using Android.OS;
 
 using Xamarin.Forms.Platform.Android;
 using Xamarin.Contacts;
+using Xamarin.Auth;
+
 using Microsoft.WindowsAzure.MobileServices;
 using System.Threading.Tasks;
 using System.Net.Http;
 using Android.Content.PM;
+using System.Collections.Generic;
+using System.Linq;
+
+using Gcm.Client; // google cloud messaging (push)
 
 
 namespace Todo.Android
 {
-	[Activity (Label = "Mind Unlimited", Icon = "@drawable/icon", MainLauncher = true, ConfigurationChanges = 
+	[Activity (Label = "MindSet", Icon = "@drawable/icon", MainLauncher = true, ConfigurationChanges = 
         ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsApplicationActivity // superclass new in 1.3
 	{
         private bool justAuthenticated = false;
-        private MobileServiceUser mobServiceUser = new MobileServiceUser(null);
+        private MobileServiceUser mobServiceUser;// = new MobileServiceUser(null);
+        AccountStore accountStore; // for saving the authentication token
 
         private async Task Authenticate()
         {
-            mobServiceUser = Todo.App.Database.mobileServiceUser;
+            //mobServiceUser = Todo.App.Database.mobileServiceUser;
+            accountStore = AccountStore.Create(this); 
+
             while (mobServiceUser == null)
             {
                 try
                 {
-                    mobServiceUser = await Todo.App.Database.client.LoginAsync(this, MobileServiceAuthenticationProvider.MicrosoftAccount);
-                    //mobServiceUser = await Todo.App.Database.client.
-                    //    LoginAsync(this, MobileServiceAuthenticationProvider.MicrosoftAccount);
+                    // Log in 
+                    var accounts = accountStore.FindAccountsForService ("Microsoft").ToArray();
+                    if (accounts.Length != 0)
+                    {
+                        mobServiceUser = new MobileServiceUser (accounts[0].Username);
+                        mobServiceUser.MobileServiceAuthenticationToken = accounts[0].Properties["token"];
 
-                    await Todo.App.Database.InitLocalStoreAsync();
-                    await Todo.App.Database.newUser(mobServiceUser.UserId);
-                    Todo.App.Database.OnRefreshItemsSelected(); // pull database tables
+                        Todo.App.Database.client.CurrentUser = mobServiceUser;
+                    }
+                    else
+                    {
+                        //// Regular login flow
+                        //user = new MobileServiceuser( await client
+                        //    .LoginAsync(MobileServiceAuthenticationProvider.Facebook, token);
+                        //var token = new JObject();
+                        //// Replace access_token_value with actual value of your access token
+                        //token.Add("access_token", "access_token_value");
+
+                        mobServiceUser = await Todo.App.Database.client.LoginAsync(this, MobileServiceAuthenticationProvider.MicrosoftAccount);
+
+                        // After logging in
+                        var account = new Account(mobServiceUser.UserId, new Dictionary<string, string> { { "token", mobServiceUser.MobileServiceAuthenticationToken } });
+                        accountStore.Save(account, "Microsoft");
+                    }
+
+                    Todo.App.Database.mobileServiceUser = mobServiceUser;
+                    
+
                     CreateAndShowDialog(string.Format("you are now logged in - {0}", mobServiceUser.UserId), "Logged in!");
                     justAuthenticated = true;
 
-
+                    await Todo.App.Database.InitLocalStoreAsync();
+                    await Todo.App.Database.newUser(mobServiceUser.UserId);
+                    await Todo.App.Database.OnRefreshItemsSelected(); // pull database tables
                 }
                 catch (Exception ex)
                 {
                     CreateAndShowDialog(ex, "Authentication failed");
                 }
             }
-            Todo.App.Database.mobileServiceUser = mobServiceUser;
+            
+
+            //// Log out
+            //client.Logout();
+            //accountStore.Delete(account, "Facebook");
         }
 
         void CreateAndShowDialog(Exception exception, String title)

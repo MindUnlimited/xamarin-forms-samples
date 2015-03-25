@@ -19,8 +19,6 @@ namespace Todo
             var _groups = Todo.App.Database.getGroups(Todo.App.Database.userID);
             availableGroups.AddRange(_groups.Result);
 
-
-
             var parentLabel = new Label { Text = "Parent of Group" };
             BoundPicker parentPicker = new BoundPicker
             {

@@ -68,12 +68,59 @@ namespace Todo
 			}
 		}
 
+        public async Task getContactsThatUseApp()
+        {
+            if (contacts.Count > 0 && userID != null)
+            {
+                var contactsString = "";
+                foreach (User contact in contacts)
+                {
+                    contactsString += "'" + contact.Email + "'" + ",";
+                }
+                contactsString = contactsString.TrimEnd(',');
+
+                //var json = (Newtonsoft.Json.Linq.JObject) await client.InvokeApiAsync("userInfo", HttpMethod.Get, null);
+
+
+                var parameters = new Dictionary<string, string>
+                {
+                    { "contacts", contactsString }
+                };
+
+                var contactsThatUseAppAPIResult = await client.InvokeApiAsync("contactsthatuseapp", HttpMethod.Get, parameters);
+                //if (contactsThatUseAppAPIResult != null)
+                //{
+                //    Newtonsoft.Json.Linq.JObject calcResult = (Newtonsoft.Json.Linq.JObject)contactsThatUseAppAPIResult.Result;
+                //}
+            }
+        }
 
 	    public TodoItemDatabase()
 	    {
             try
             {
                 getContacts();
+
+                //var json = (Newtonsoft.Json.Linq.JObject) client.InvokeApiAsync("contactsthatuseapp", HttpMethod.Get, parameters: {contacts: contactsString}).Result;
+
+                //client.InvokeApiAsync("contactsthatuseapp" 
+                //{
+                //        method: "get",
+                //        parameters: {
+                //        "contacts": contactsString 
+                //        }
+                //    });
+
+
+
+                    //.then(function(response) {
+                    //    console.log('Here is my response object');
+                    //    console.log(response)
+                    //}, function(err) {
+                    //    console.error('Azure Error: ' + err);
+                    //});
+
+                //var json = client.InvokeApiAsync("contactsthatuseapp", HttpMethod.Get);
 
                 //CurrentPlatform.Init();
 
@@ -315,7 +362,7 @@ namespace Todo
         }
 
         // Called when the refresh menu option is selected
-        public async void OnRefreshItemsSelected()
+        public async Task OnRefreshItemsSelected()
         {
             await SyncAsync(); // get changes from the mobile service
             await RefreshItemsFromTableAsync(); // refresh view using local database
@@ -665,88 +712,100 @@ namespace Todo
                 //userName = userInfo.Value<string>("name");
                 //var emails = userInfo.Value<strting>("emails");
 
-                var json = (Newtonsoft.Json.Linq.JObject) await client.InvokeApiAsync("userInfo", HttpMethod.Get, null);
+                var usr = client.CurrentUser;
+                JObject userObject = (JObject) await client.InvokeApiAsync("userInfo", HttpMethod.Get, null);
+
+                if (userObject != null)
+                {
+                    userName = (string)userObject["name"];
+                    email = (string)userObject["emails"]["account"];
+
+                    var userTable = client.GetSyncTable<User>();
+                    await userTable.PullAsync(null, userTable.CreateQuery());
+
+                    //var users = await userTable.ToListAsync();
+                    //var all_users = await userTable.ToListAsync();
+
+                    var existing_user = await userTable.Where(u => u.MicrosoftID == microsoftID).ToListAsync();
+                    //var groups = await groupTable.ToListAsync();
+
+                    if (existing_user.Count == 0)
+                    {
+                        User user = new User
+                        {
+                            MicrosoftID = microsoftID,
+                            Name = userName,
+                            Email = email
+                        };
+
+                        // insert new user
+                        await userTable.InsertAsync(user);
+                        await client.SyncContext.PushAsync();
+
+                        userID = user.ID;
+
+                        Group group = new Group
+                        {
+                            Name = userName
+                        };
+
+                        // add default group voor user
+                        await groupTable.InsertAsync(group);
+                        await client.SyncContext.PushAsync();
+
+                        defGroup = group;
+
+                        UserGroupMembership ugm = new UserGroupMembership
+                        {
+                            ID = user.ID,
+                            MembershipID = group.ID
+                        };
+
+                        await userGroupMembershipTable.InsertAsync(ugm);
+                        await client.SyncContext.PushAsync();
+
+                    }
+                    else if (existing_user.Count == 1)
+                    {
+                        string ID = existing_user.FirstOrDefault<User>().ID;
+                        Debug.WriteLine("user exists, exactly one ID found: " + ID);
+                        userID = ID;
+                    }
+                    else
+                    {
+                        Debug.WriteLine("something weird happened, more than one user with the same ID found");
+                        Debugger.Break();
+                    }
+
+
+                    //Debug.WriteLine(
+                    //userGroupMembershipTable.Where(ugm => ugm.ID == microsofID).ToListAsync().Result
+                    //);
+
+                    //await userGroupMembershipTable.LookupAsync
+
+                    //var tmp = await groupTable.ToListAsync();
+
+
+
+                    //await MobileService.GetSyncTable<User>().InsertAsync(user);
+
+                    await SyncAsync(); // offline sync
+                    //adapter.Clear();
+                }
+                    
+
+
+                //var json = (Newtonsoft.Json.Linq.JObject) await client.InvokeApiAsync("userInfo", HttpMethod.Get, null);
+
+
 
                 //var jsonString = json.ToString();
                 //var results = JsonConvert.DeserializeObject<dynamic>(jsonString);
                 //email = results.emails.account;
                 //userName = results.name;
 
-                userName = (string) json["name"];
-                email = (string) json["emails"]["account"];
 
-                var userTable = client.GetSyncTable<User>();
-                await userTable.PullAsync(null, userTable.CreateQuery());
-
-                //var users = await userTable.ToListAsync();
-                //var all_users = await userTable.ToListAsync();
-
-                var existing_user = await userTable.Where(u => u.MicrosoftID == microsoftID).ToListAsync();
-                //var groups = await groupTable.ToListAsync();
-
-                if (existing_user.Count == 0)
-                {
-                    User user = new User
-                    {
-                        MicrosoftID = microsoftID,
-                        Name = userName,
-                        Email = email
-                    };
-
-                    // insert new user
-                    await userTable.InsertAsync(user);
-                    await client.SyncContext.PushAsync();
-
-                    userID = user.ID;
-
-                    Group group = new Group
-                    {
-                        Name = userName
-                    };
-
-                    // add default group voor user
-                    await groupTable.InsertAsync(group);
-                    await client.SyncContext.PushAsync();
-
-                    defGroup = group;
-
-                    UserGroupMembership ugm = new UserGroupMembership
-                    {
-                        ID = user.ID,
-                        MembershipID = group.ID
-                    };
-
-                    await userGroupMembershipTable.InsertAsync(ugm);
-                    await client.SyncContext.PushAsync();
-
-                }
-                else if (existing_user.Count == 1)
-                {
-                    string ID = existing_user.FirstOrDefault<User>().ID;
-                    Debug.WriteLine("user exists, exactly one ID found: " + ID);
-                    userID = ID;
-                }
-                else
-                {
-                    Debug.WriteLine("something weird happened, more than one user with the same ID found");
-                    Debugger.Break();
-                }
-
-
-                //Debug.WriteLine(
-                //userGroupMembershipTable.Where(ugm => ugm.ID == microsofID).ToListAsync().Result
-                //);
-
-                //await userGroupMembershipTable.LookupAsync
-
-                //var tmp = await groupTable.ToListAsync();
-
-
-
-                //await MobileService.GetSyncTable<User>().InsertAsync(user);
-
-                await SyncAsync(); // offline sync
-                //adapter.Clear();
             }
             catch (Exception e)
             {

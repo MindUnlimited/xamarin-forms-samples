@@ -23,6 +23,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)Views\Controls\DescriptionAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\Controls\ILocalizer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\Controls\PickerItem.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Views\Controls\StringToImageConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Views\GridDemoPage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Views\KategorienViewCell.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Views\MultiSelect.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\TodoGroupCell.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\TodoGroupListPage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\Controls\BindablePicker.cs" />
@@ -33,5 +37,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Models\TodoItem.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Data\TodoItemDatabase_bak.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Data\SQLite_bak.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="$(MSBuildThisFileDirectory)Views\CheckWeiss.png" />
   </ItemGroup>
 </Project>
