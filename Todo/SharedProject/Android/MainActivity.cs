@@ -30,6 +30,7 @@ namespace Todo.Android
         private bool justAuthenticated = false;
         private MobileServiceUser mobServiceUser;// = new MobileServiceUser(null);
         AccountStore accountStore; // for saving the authentication token
+        Account currentAccount; // for logout purposes
 
         private async Task Authenticate()
         {
@@ -61,8 +62,8 @@ namespace Todo.Android
                         mobServiceUser = await Todo.App.Database.client.LoginAsync(this, MobileServiceAuthenticationProvider.MicrosoftAccount);
 
                         // After logging in
-                        var account = new Account(mobServiceUser.UserId, new Dictionary<string, string> { { "token", mobServiceUser.MobileServiceAuthenticationToken } });
-                        accountStore.Save(account, "Microsoft");
+                        currentAccount = new Account(mobServiceUser.UserId, new Dictionary<string, string> { { "token", mobServiceUser.MobileServiceAuthenticationToken } });
+                        accountStore.Save(currentAccount, "Microsoft");
                     }
 
                     Todo.App.Database.mobileServiceUser = mobServiceUser;

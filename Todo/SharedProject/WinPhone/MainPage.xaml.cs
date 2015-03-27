@@ -26,6 +26,7 @@ namespace Todo.WinPhone
     public partial class MainPage : global::Xamarin.Forms.Platform.WinPhone.FormsApplicationPage // superclass new in 1.3
     {
         private bool justAuthenticated = false;
+        private bool useToken = false;
 
         private async System.Threading.Tasks.Task Authenticate()
         {
@@ -48,7 +49,7 @@ namespace Todo.WinPhone
                 try
                 {
                     // Try to get an existing encrypted credential from isolated storage.                    
-                    if (settings.Contains(provider))
+                    if (settings.Contains(provider) && useToken)
                     {
                         // Get the encrypted byte array, decrypt and deserialize the user.
                         var encryptedUser = settings[provider] as byte[];
@@ -90,14 +91,18 @@ namespace Todo.WinPhone
                             await Todo.App.Database.client.
                                 LoginAsync(MobileServiceAuthenticationProvider.MicrosoftAccount);
 
-                            // Serialize the user into an array of bytes and encrypt with DPAPI.
-                            var userBytes = System.Text.Encoding.Unicode
-                                .GetBytes(JsonConvert.SerializeObject(Todo.App.Database.mobileServiceUser));
-                            byte[] encryptedUser = ProtectedData.Protect(userBytes, entropy);
 
-                            // Store the encrypted user credentials in local settings.
-                            settings.Add(provider, encryptedUser);
-                            settings.Save();
+                            if (useToken)
+                            {
+                                // Serialize the user into an array of bytes and encrypt with DPAPI.
+                                var userBytes = System.Text.Encoding.Unicode
+                                    .GetBytes(JsonConvert.SerializeObject(Todo.App.Database.mobileServiceUser));
+                                byte[] encryptedUser = ProtectedData.Protect(userBytes, entropy);
+
+                                // Store the encrypted user credentials in local settings.
+                                settings.Add(provider, encryptedUser);
+                                settings.Save();
+                            }
                         }
                         catch (MobileServiceInvalidOperationException ex)
                         {

@@ -10,13 +10,13 @@ namespace Todo
         public App()
         {
             // The root page of your application
-            MainPage = new FormsGallery.GridDemoPage();//GetMainPage(); // property new in 1.3
+            MainPage = new NavigationPage(new FormsGallery.GridDemoPage());//GetMainPage(); // property new in 1.3
         }
 
 
 		public static Page GetMainPage ()
 		{
-            return new FormsGallery.GridDemoPage();
+            return new NavigationPage( new FormsGallery.GridDemoPage());
 
             //TodoListPage listPage = new TodoListPage();
             //listPage.Refresh();
@@ -121,6 +121,7 @@ namespace Todo
             App.database = new TodoItemDatabase();
         }
 
+
         //protected override void OnStart()
         //{
         //    MainPage = GetMainPage();
@@ -130,6 +131,10 @@ namespace Todo
 		public static TodoItemDatabase Database {
 			get { return App.database; }
 		}
+
+        public static INavigation Navigation;
+
+
 	}
 }
 

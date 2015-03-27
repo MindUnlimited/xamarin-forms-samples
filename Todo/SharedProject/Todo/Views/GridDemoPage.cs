@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Todo;
 using Xamarin.Forms;
 
@@ -8,98 +9,111 @@ namespace FormsGallery
     {
         public GridDemoPage()
         {
-            Grid grid = new Grid
+            var layout = new StackLayout
             {
-                VerticalOptions = LayoutOptions.FillAndExpand,
-                RowDefinitions = 
-                {
-                    new RowDefinition { Height = GridLength.Auto },
-                    new RowDefinition { Height = GridLength.Auto },
-                    new RowDefinition { Height = new GridLength(1, GridUnitType.Star) },
-                    new RowDefinition { Height = new GridLength(100, GridUnitType.Absolute) }
-                },
-                ColumnDefinitions = 
-                {
-                    new ColumnDefinition { Width = GridLength.Auto },
-                    new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
-                    new ColumnDefinition { Width = new GridLength(100, GridUnitType.Absolute) }
-                }
+                Orientation = StackOrientation.Vertical,
+                //Padding = 20
             };
 
-            grid.Children.Add(new Label
-            {
-                Text = "Grid",
-                Font = Font.BoldSystemFontOfSize(50),
-                HorizontalOptions = LayoutOptions.Center
-            }, 0, 3, 0, 1);
 
-            //grid.Children.Add(new Label
-            //{
-            //    Text = "Autosized cell",
-            //    TextColor = Color.White,
-            //    BackgroundColor = Color.Blue
-            //}, 0, 1);
 
-            //grid.Children.Add(new BoxView
+            //var grid = new Grid
             //{
-            //    Color = Color.Silver,
-            //    HeightRequest = 0
-            //}, 1, 1);
+            //    RowSpacing = 50
+            //};
 
-            //grid.Children.Add(new BoxView
-            //{
-            //    Color = Color.Teal
-            //}, 0, 2);
+            //grid.Children.Add(new Label { Text = "This" }, 0, 0); // Left, First element
+            //grid.Children.Add(new Label { Text = "text is" }, 1, 0); // Right, First element
+            //grid.Children.Add(new Label { Text = "in a" }, 0, 1); // Left, Second element
+            //grid.Children.Add(new Label { Text = "grid!" }, 1, 1); // Right, Second element
 
-            //grid.Children.Add(new Label
+            //var gridButton = new Button { Text = "So is this Button! Click me." };
+            //gridButton.Clicked += delegate
             //{
-            //    Text = "Leftover space",
-            //    TextColor = Color.Purple,
-            //    BackgroundColor = Color.Aqua,
-            //    XAlign = TextAlignment.Center,
-            //    YAlign = TextAlignment.Center,
-            //}, 1, 2);
+            //    gridButton.Text = string.Format("Thanks! {0} clicks.", count++);
+            //};
+            //grid.Children.Add(gridButton, 0, 2); // Left, Third element
+
+            int count = 1;
+
+            Grid grid = new Grid();
+            grid.VerticalOptions = LayoutOptions.StartAndExpand;
 
             TodoListPage itemList = new TodoListPage();
             itemList.Refresh();
-            grid.Children.Add(itemList.Content, 0, 1);
-
             TodoListPage itemList2 = new TodoListPage();
             itemList2.Refresh();
-            grid.Children.Add(itemList2.Content, 0, 2);
+            TodoListPage itemList3 = new TodoListPage();
+            itemList3.Refresh();
+            TodoListPage itemList4 = new TodoListPage();
+            itemList4.Refresh();
 
-            //grid.Children.Add(new Label
-            //{
-            //    Text = "Span two rows (or more if you want)",
-            //    TextColor = Color.Yellow,
-            //    BackgroundColor = Color.Navy,
-            //    XAlign = TextAlignment.Center,
-            //    YAlign = TextAlignment.Center
-            //}, 2, 3, 1, 3);
 
-            //grid.Children.Add(new Label
-            //{
-            //    Text = "Span 2 columns",
-            //    TextColor = Color.Blue,
-            //    BackgroundColor = Color.Yellow,
-            //    XAlign = TextAlignment.Center,
-            //    YAlign = TextAlignment.Center
-            //}, 0, 2, 3, 4);
+            //var navPage = new NavigationPage(itemList) { Title = "Items" };
 
-            grid.Children.Add(new Label
+            // column, row
+            grid.Children.Add(new Label { Text = "Personal" }, 0, 0); // Left, First row
+            grid.Children.Add(new Label { Text = "Family" }, 1, 0); // Right, First row
+            grid.Children.Add(itemList.Content, 0, 1); // Left, Second row
+            grid.Children.Add(itemList2.Content, 1, 1); // Right, Second row
+
+            grid.Children.Add(new Label { Text = "Work" }, 0, 2); // Left, Third row
+            grid.Children.Add(new Label { Text = "Other" }, 1, 2); // Right, Third row
+            grid.Children.Add(itemList3.Content, 0, 3); // Left, Fourth row
+            grid.Children.Add(itemList4.Content, 1, 3); // Right, Fourt row
+
+            var refreshButton = new Button { Text = "Go to Items" };
+            refreshButton.Clicked += delegate
             {
-                Text = "Fixed 100x100",
-                TextColor = Color.Aqua,
-                BackgroundColor = Color.Red,
-                XAlign = TextAlignment.Center,
-                YAlign = TextAlignment.Center
-            }, 2, 3);
+                itemList.Refresh();
+                itemList2.Refresh();
+                itemList3.Refresh();
+                itemList4.Refresh();
+                Navigation.PushAsync(itemList);
+            };
+            grid.Children.Add(refreshButton, 0, 4); // Left, Fifth row
 
-            // Accomodate iPhone status bar.
-            this.Padding = new Thickness(10, Device.OnPlatform(20, 0, 0), 10, 5);
+            var logoutButton = new Button { Text = "Logout" };
+            logoutButton.Clicked += delegate
+            {
+                Logout();
+                var test = Todo.App.Database.client;
+            };
+            grid.Children.Add(logoutButton, 1, 4); // Right, Fifth row
+
+
+            //grid.Children.Add(new Label
+            //{
+            //    Text = "Fixed 100x100",
+            //    TextColor = Color.Aqua,
+            //    BackgroundColor = Color.Red,
+            //    XAlign = TextAlignment.Center,
+            //    YAlign = TextAlignment.Center
+            //}, 2, 3);
+
+            //// Accomodate iPhone status bar.
+            //this.Padding = new Thickness(10, Device.OnPlatform(20, 0, 0), 10, 5);
 
             // Build the page.
-            this.Content = grid;
+
+            //layout.Children.Add(grid);
+            //Content = layout;
+            Content = grid;
+        }
+
+        public void Logout(string serviceId = "Facebook")
+        {
+            if (Device.OS == TargetPlatform.Android)
+            {
+                //// Log out
+                Todo.App.Database.client.Logout();
+                //accountStore.Delete(currentAccount, serviceId);
+            }
+            else if (Device.OS == TargetPlatform.WinPhone)
+            {
+                // logout
+                Todo.App.Database.client.Logout();
+            }
         }
     }
 }

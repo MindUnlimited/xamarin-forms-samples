@@ -13,9 +13,10 @@ namespace Todo
 		ListView listView;
 		public TodoListPage ()
 		{
-			Title = "Items";
+			//Title = "Items";
 
-			NavigationPage.SetHasNavigationBar (this, true);
+			//NavigationPage.SetHasNavigationBar (this, true);
+            NavigationPage.SetHasNavigationBar(this, false);
 
 			listView = new ListView {
 			    RowHeight = 40
