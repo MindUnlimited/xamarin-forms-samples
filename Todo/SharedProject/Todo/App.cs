@@ -1,63 +1,93 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Todo.Views;
 using Xamarin.Forms;
 
 namespace Todo
 {
     public class App : Application // superclass new in 1.3
     {
+        public static DomainPage domainPage = new DomainPage();
+        public static DomainPage domainPage2 = new DomainPage();
+        public static DomainPage domainPage3 = new DomainPage();
+        public static DomainPage domainPage4 = new DomainPage();
+
         public App()
         {
-            // The root page of your application
-            MainPage = new NavigationPage(new FormsGallery.GridDemoPage());//GetMainPage(); // property new in 1.3
+            
+            
+
+            var importantPage = new NavigationPage(domainPage);
+            importantPage.Title = "Important";
+
+            var urgentPage = new NavigationPage(domainPage2);
+            urgentPage.Title = "Urgent";
+
+            var currentPage = new NavigationPage(domainPage3);
+            currentPage.Title = "Current";
+
+            var completedPage = new NavigationPage(domainPage4);
+            completedPage.Title = "Completed";
+
+            TabbedPage domainTabsPage = new TabbedPage();
+            domainTabsPage.Children.Add(importantPage);
+            domainTabsPage.Children.Add(urgentPage);
+            domainTabsPage.Children.Add(currentPage);
+            domainTabsPage.Children.Add(completedPage);
+            MainPage = domainTabsPage;//new NavigationPage(domainTabsPage); // The root page of your application
+
+            //MainPage = new NavigationPage(new FormsGallery.GridDemoPage());//GetMainPage(); // property new in 1.3
+            //MainPage = new FormsGallery.GridDemoPage();//GetMainPage(); // property new in 1.3
         }
 
 
-		public static Page GetMainPage ()
-		{
-            return new NavigationPage( new FormsGallery.GridDemoPage());
+        //public static Page GetMainPage ()
+        //{
+        //    return new NavigationPage(domainPage);
+        //    //return new NavigationPage(new FormsGallery.GridDemoPage());
+        //    //return new FormsGallery.GridDemoPage();
 
-            //TodoListPage listPage = new TodoListPage();
-            //listPage.Refresh();
+        //    //TodoListPage listPage = new TodoListPage();
+        //    //listPage.Refresh();
 
-            //var itemNav = new NavigationPage(listPage) { Title = "Items" };
+        //    //var itemNav = new NavigationPage(listPage) { Title = "Items" };
 
-            //TodoGroupListPage groupListPage = new TodoGroupListPage();
-            //groupListPage.Refresh();
+        //    //TodoGroupListPage groupListPage = new TodoGroupListPage();
+        //    //groupListPage.Refresh();
 
-            //var groupNav = new NavigationPage(groupListPage) { Title = "Groups" };
+        //    //var groupNav = new NavigationPage(groupListPage) { Title = "Groups" };
 
-            //TabbedPage tabbedPage = new TabbedPage();
-            //tabbedPage.Children.Add(itemNav);
-            //tabbedPage.Children.Add(groupNav);
+        //    //TabbedPage tabbedPage = new TabbedPage();
+        //    //tabbedPage.Children.Add(itemNav);
+        //    //tabbedPage.Children.Add(groupNav);
 
-            //return tabbedPage;
-
-
+        //    //return tabbedPage;
 
 
 
-            //var layout = new StackLayout();
-            ////if (Device.OS == TargetPlatform.WinPhone)
-            ////{ // WinPhone doesn't have the title showing
-            ////    layout.Children.Add(new Label { Text = "Todo", Font = Font.BoldSystemFontOfSize(NamedSize.Large) });
-            ////}
-            //layout.Children.Add(getMultiSelect());
-            //layout.VerticalOptions = LayoutOptions.FillAndExpand;
 
-            //var listView = getMultiSelect();
 
-            //var page = new ContentPage
-            //{
-            //    Title = "Multi Select",
-            //    Content = listView
-            //};
+        //    //var layout = new StackLayout();
+        //    ////if (Device.OS == TargetPlatform.WinPhone)
+        //    ////{ // WinPhone doesn't have the title showing
+        //    ////    layout.Children.Add(new Label { Text = "Todo", Font = Font.BoldSystemFontOfSize(NamedSize.Large) });
+        //    ////}
+        //    //layout.Children.Add(getMultiSelect());
+        //    //layout.VerticalOptions = LayoutOptions.FillAndExpand;
 
-            //var itemNav = new NavigationPage(page) { Title = "Items" };
+        //    //var listView = getMultiSelect();
 
-            //return itemNav;
-		}
+        //    //var page = new ContentPage
+        //    //{
+        //    //    Title = "Multi Select",
+        //    //    Content = listView
+        //    //};
+
+        //    //var itemNav = new NavigationPage(page) { Title = "Items" };
+
+        //    //return itemNav;
+        //}
 
         public static ListView getMultiSelect()
         {

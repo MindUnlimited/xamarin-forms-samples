@@ -11,10 +11,12 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)App.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Data\TodoItemDatabase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logout.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ITextToSpeech.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Group.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\GroupGroupMembership.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Item.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\ItemListViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\MicrosoftAccountInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\UserGroupMembership.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\User.cs" />
@@ -22,8 +24,11 @@
     <Compile Include="$(MSBuildThisFileDirectory)Views\Controls\BoundPicker.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\Controls\DescriptionAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\Controls\ILocalizer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Views\Controls\MyBoundPicker.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\Controls\PickerItem.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\Controls\StringToImageConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Views\DomainPage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Views\DomainRow.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\GridDemoPage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\KategorienViewCell.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\MultiSelect.cs" />

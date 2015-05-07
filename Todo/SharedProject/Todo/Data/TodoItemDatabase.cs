@@ -22,7 +22,7 @@ namespace Todo
 	{
         //Mobile Service Client reference
         public MobileServiceClient client;
-        public MobileServiceUser mobileServiceUser;
+        public MobileServiceUser mobileServiceUser = null;
         public string userName { get; set; }
         public string email { get; set; }
         public string userID { get; set; }
@@ -196,7 +196,7 @@ namespace Todo
 
             foreach (Contact contact in book)
             {
-                Console.WriteLine("{0} {1}", contact.FirstName, contact.LastName);
+                //Console.WriteLine("{0} {1}", contact.FirstName, contact.LastName);
 
                 //enum emailAddressImportance {EmailType.Home, EmailType.Work, EmailType.Other};
 
@@ -293,7 +293,7 @@ namespace Todo
             }
 
             var store = new MobileServiceSQLiteStore(path);
-            //store.DefineTable<TodoItem>();
+            store.DefineTable<TodoItem>();
             store.DefineTable<User>();
             store.DefineTable<Group>();
             store.DefineTable<UserGroupMembership>();
@@ -552,6 +552,48 @@ namespace Todo
 
                 return resultGroups;
             }
+        }
+
+        public async Task<IEnumerable<Item>> GetDomains()
+        {
+            IEnumerable<Item> domains = null;
+            if (userID != null)
+            {
+                List<Group> groups = await getGroups(userID);
+                IEnumerable<string> groups_ids = from grp in groups select grp.ID;
+
+                try
+                {
+                    domains = await itemTable.Where(it => groups_ids.Contains(it.OwnedBy) && it.Type == 1).ToListAsync();
+                }
+                catch (Exception e)
+                {
+                    CreateAndShowDialog(e, "Error");
+                }
+            }
+
+            return domains;
+        }
+
+        public async Task<IEnumerable<Item>> GetChildItems(Item parent)
+        {
+            IEnumerable<Item> items = null;
+            if (userID != null)
+            {
+                List<Group> groups = await getGroups(userID);
+                IEnumerable<string> groups_ids = from grp in groups select grp.ID;
+
+                try
+                {
+                    items = await itemTable.Where(it => groups_ids.Contains(it.OwnedBy) && it.Parent == parent.ID).ToListAsync();
+                }
+                catch (Exception e)
+                {
+                    CreateAndShowDialog(e, "Error");
+                }
+            }
+
+            return items;
         }
 
         public async Task<IEnumerable<Item>> GetItems()

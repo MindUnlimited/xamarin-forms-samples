@@ -11,7 +11,8 @@ namespace GridLayoutDemo
     {
         public static Page GetMainPage()
         {
-            return new GridLayoutPage();
+            //return new GridLayout();
+            return new NavigationPage(new RelativeLayoutPage3());
         }
     }
 }

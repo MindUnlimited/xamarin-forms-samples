@@ -50,11 +50,14 @@ namespace FormsGallery
 
 
             //var navPage = new NavigationPage(itemList) { Title = "Items" };
+            var stack1 = new StackLayout();
+            stack1.Children.Add(itemList.Content);
+
 
             // column, row
             grid.Children.Add(new Label { Text = "Personal" }, 0, 0); // Left, First row
             grid.Children.Add(new Label { Text = "Family" }, 1, 0); // Right, First row
-            grid.Children.Add(itemList.Content, 0, 1); // Left, Second row
+            grid.Children.Add(stack1, 0, 1); // Left, Second row
             grid.Children.Add(itemList2.Content, 1, 1); // Right, Second row
 
             grid.Children.Add(new Label { Text = "Work" }, 0, 2); // Left, Third row
@@ -69,6 +72,8 @@ namespace FormsGallery
                 itemList2.Refresh();
                 itemList3.Refresh();
                 itemList4.Refresh();
+                
+                //Navigation.PushAsync(new NavigationPage(itemList));
                 Navigation.PushAsync(itemList);
             };
             grid.Children.Add(refreshButton, 0, 4); // Left, Fifth row
@@ -76,8 +81,10 @@ namespace FormsGallery
             var logoutButton = new Button { Text = "Logout" };
             logoutButton.Clicked += delegate
             {
-                Logout();
-                var test = Todo.App.Database.client;
+                DependencyService.Get<Logout>().Logout();
+                //Logout();
+                //Forms.Context.
+                //var test = Todo.App.Database.client;
             };
             grid.Children.Add(logoutButton, 1, 4); // Right, Fifth row
 
@@ -99,21 +106,6 @@ namespace FormsGallery
             //layout.Children.Add(grid);
             //Content = layout;
             Content = grid;
-        }
-
-        public void Logout(string serviceId = "Facebook")
-        {
-            if (Device.OS == TargetPlatform.Android)
-            {
-                //// Log out
-                Todo.App.Database.client.Logout();
-                //accountStore.Delete(currentAccount, serviceId);
-            }
-            else if (Device.OS == TargetPlatform.WinPhone)
-            {
-                // logout
-                Todo.App.Database.client.Logout();
-            }
         }
     }
 }

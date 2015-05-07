@@ -63,53 +63,71 @@ namespace Todo
 
 
 
-            BoundPicker ownedPicker = new BoundPicker
-            {
-                Title = "Owned By",
-                VerticalOptions = LayoutOptions.CenterAndExpand
-            };
-
-            List<PickerItem<String>> groupNameIDList = new List<PickerItem<String>>();
-
-            Dictionary<string, String> groups = new Dictionary<string, String>();
-
-            foreach (Group group in availableGroups)
-            {
-                PickerItem<String> it = new PickerItem<String>(group.Name, group.ID);
-                groupNameIDList.Add(it);
-
-                groups[group.Name] = group.ID;
-            }
-
-            var groupNameIDIENumerable = (IEnumerable<PickerItem<String>>)groupNameIDList;
-
-            ownedPicker.ItemsSource = groupNameIDIENumerable;
-            ownedPicker.SetBinding(BoundPicker.SelectedItemProperty, "OwnedBy", BindingMode.TwoWay);
-
-
-
-
-
-
-
-
-            //BindablePicker ownedPicker = new BindablePicker
+            //BoundPicker ownedPicker = new BoundPicker
             //{
             //    Title = "Owned By",
             //    VerticalOptions = LayoutOptions.CenterAndExpand
             //};
 
-            //Dictionary<string, string> groups = new Dictionary<string, string>();
+            //List<PickerItem<String>> groupNameIDList = new List<PickerItem<String>>();
+
+            //Dictionary<string, String> groups = new Dictionary<string, String>();
+
             //foreach (Group group in availableGroups)
             //{
-            //    ownedPicker.Items.Add(group.Name);
-            //    ownedPicker.Items.Add(group.ID);
+            //    PickerItem<String> it = new PickerItem<String>(group.Name, group.ID);
+            //    groupNameIDList.Add(it);
+
             //    groups[group.Name] = group.ID;
             //}
-            ////ownedPicker.ItemsSource = groupNameIDIENumerable;
-            ////ownedPicker2.ItemsSource = groupNameIDList;
 
-            //ownedPicker.SetBinding(BindablePicker.SelectedItemProperty, "OwnedBy", BindingMode.TwoWay);
+            //var groupNameIDIENumerable = (IEnumerable<PickerItem<String>>)groupNameIDList;
+
+            //ownedPicker.ItemsSource = groupNameIDIENumerable;
+            //ownedPicker.SetBinding(BoundPicker.SelectedItemProperty, "OwnedBy", BindingMode.TwoWay);
+
+
+
+
+            //Style pickerStyle = new Style(ownedPicker.GetType());
+            //pickerStyle.Setters.
+
+            //ownedPicker.Style
+
+        //<Style.Triggers>
+        //    <DataTrigger Binding="{Binding IsChecked,ElementName=chk}" Value="True">
+        //        <Setter Property="ItemTemplate">
+        //            <Setter.Value>
+        //                <DataTemplate>
+        //                    <StackPanel Orientation="Horizontal">
+        //                        <TextBlock Text="{Binding ID}" />
+        //                        <TextBlock Text=": " />
+        //                        <TextBlock Text="{Binding Name}" />
+        //                    </StackPanel>
+        //                </DataTemplate>
+        //            </Setter.Value>
+        //        </Setter>
+        //    </DataTrigger>
+        //</Style.Triggers>
+
+
+            BindablePicker ownedPicker = new BindablePicker
+            {
+                Title = "Owned By",
+                VerticalOptions = LayoutOptions.CenterAndExpand
+            };
+
+            Dictionary<string, string> groups = new Dictionary<string, string>();
+            foreach (Group group in availableGroups)
+            {
+                ownedPicker.Items.Add(group.Name);
+                ownedPicker.Items.Add(group.ID);
+                groups[group.Name] = group.ID;
+            }
+            //ownedPicker.ItemsSource = groupNameIDIENumerable;
+            //ownedPicker2.ItemsSource = groupNameIDList;
+
+            ownedPicker.SetBinding(BindablePicker.SelectedItemProperty, "OwnedBy", BindingMode.TwoWay);
 
 
 
@@ -133,10 +151,11 @@ namespace Todo
 				Item Item = (Item)BindingContext;
                 if (Item.OwnedBy != null)
                 {
-                    
+                    if (!groups.ContainsValue(Item.OwnedBy))
+                        Item.OwnedBy = groups[Item.OwnedBy];
                     //ownedPicker.OnSelectedItemChanged(BoundPicker.SelectedItemProperty, Item.OwnedBy, Item.OwnedBy);
                     //var old_value = Item.OwnedBy;
-                    Item.OwnedBy = groups[Item.OwnedBy];
+                        
                     //ownedPicker.SelectedItem = 
                     //var ownedByGroup = await Todo.App.Database.getGroup(Item.OwnedBy);
                     //Item.OwnedBy = ownedByGroup.ID;
