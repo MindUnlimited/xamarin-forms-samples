@@ -8,34 +8,36 @@ namespace Todo
 {
     public class App : Application // superclass new in 1.3
     {
-        public static DomainPage domainPage = new DomainPage();
-        public static DomainPage domainPage2 = new DomainPage();
-        public static DomainPage domainPage3 = new DomainPage();
-        public static DomainPage domainPage4 = new DomainPage();
+        public static DomainPage importantDPage = new DomainPage();
+        public static DomainPage urgentDPage = new DomainPage();
+        public static DomainPage currentDPage = new DomainPage();
+        public static DomainPage completedDPage = new DomainPage();
+        
+
 
         public App()
         {
-            
-            
-
-            var importantPage = new NavigationPage(domainPage);
+            var importantPage = new NavigationPage(importantDPage);
             importantPage.Title = "Important";
 
-            var urgentPage = new NavigationPage(domainPage2);
+            var urgentPage = new NavigationPage(urgentDPage);
             urgentPage.Title = "Urgent";
 
-            var currentPage = new NavigationPage(domainPage3);
+            var currentPage = new NavigationPage(currentDPage);
             currentPage.Title = "Current";
 
-            var completedPage = new NavigationPage(domainPage4);
+            var completedPage = new NavigationPage(completedDPage);
             completedPage.Title = "Completed";
 
             TabbedPage domainTabsPage = new TabbedPage();
+
             domainTabsPage.Children.Add(importantPage);
             domainTabsPage.Children.Add(urgentPage);
             domainTabsPage.Children.Add(currentPage);
             domainTabsPage.Children.Add(completedPage);
-            MainPage = domainTabsPage;//new NavigationPage(domainTabsPage); // The root page of your application
+
+            MainPage = domainTabsPage;
+            //MainPage = new NavigationPage(domainTabsPage); // The root page of your application
 
             //MainPage = new NavigationPage(new FormsGallery.GridDemoPage());//GetMainPage(); // property new in 1.3
             //MainPage = new FormsGallery.GridDemoPage();//GetMainPage(); // property new in 1.3

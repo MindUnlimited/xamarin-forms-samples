@@ -37,11 +37,30 @@ namespace Todo
 			if (Device.OS == TargetPlatform.iOS)
 				listView.ItemsSource = new string [1] {""};
 
-			listView.ItemSelected += (sender, e) => {
+			listView.ItemSelected += async (sender, e) => {
 				var Item = (Item)e.SelectedItem;
+
+                List<Group> availableGroups = new List<Group>();
+                if (Todo.App.Database.userID != null)
+                {
+                    var _groups = await Todo.App.Database.getGroups(Todo.App.Database.userID);
+                    availableGroups.AddRange(_groups);
+                }
+
+                Dictionary<string, string> groups = new Dictionary<string, string>();
+                foreach (Group group in availableGroups)
+                {
+                    groups[group.ID] = group.Name;
+                }
+
+                if (Item.OwnedBy != null && groups.ContainsKey(Item.OwnedBy))
+                {
+                    Item.OwnedBy = groups[Item.OwnedBy];
+                }
+
 				var todoPage = new TodoItemPage();
 				todoPage.BindingContext = Item;
-				Navigation.PushAsync(todoPage);
+				await Navigation.PushAsync(todoPage);
 			};
 
 			var layout = new StackLayout();
@@ -56,30 +75,87 @@ namespace Todo
 			ToolbarItem tbi = null;
 			if (Device.OS == TargetPlatform.iOS)
 			{
-				tbi = new ToolbarItem("+", null, () =>
+				tbi = new ToolbarItem("+", null, async () =>
 					{
 						var Item = new Item();
 						var todoPage = new TodoItemPage();
+
+                        List<Group> availableGroups = new List<Group>();
+                        if (Todo.App.Database.userID != null)
+                        {
+                            var _groups = await Todo.App.Database.getGroups(Todo.App.Database.userID);
+                            availableGroups.AddRange(_groups);
+                        }
+
+                        Dictionary<string, string> groups = new Dictionary<string, string>();
+                        foreach (Group group in availableGroups)
+                        {
+                            groups[group.ID] = group.Name;
+                        }
+
+                        if (Item.OwnedBy != null && groups.ContainsKey(Item.OwnedBy))
+                        {
+                            Item.OwnedBy = groups[Item.OwnedBy];
+                        }
+
 						todoPage.BindingContext = Item;
-						Navigation.PushAsync(todoPage);
+						await Navigation.PushAsync(todoPage);
 					}, 0, 0);
 			}
 			if (Device.OS == TargetPlatform.Android) { // BUG: Android doesn't support the icon being null
-				tbi = new ToolbarItem ("+", "plus", () => {
-					var Item = new Item();
-					var todoPage = new TodoItemPage();
-					todoPage.BindingContext = Item;
-					Navigation.PushAsync(todoPage);
+				tbi = new ToolbarItem ("+", "plus", async () => {
+                    var Item = new Item();
+                    var todoPage = new TodoItemPage();
+
+                    List<Group> availableGroups = new List<Group>();
+                    if (Todo.App.Database.userID != null)
+                    {
+                        var _groups = await Todo.App.Database.getGroups(Todo.App.Database.userID);
+                        availableGroups.AddRange(_groups);
+                    }
+
+                    Dictionary<string, string> groups = new Dictionary<string, string>();
+                    foreach (Group group in availableGroups)
+                    {
+                        groups[group.ID] = group.Name;
+                    }
+
+                    if (Item.OwnedBy != null && groups.ContainsKey(Item.OwnedBy))
+                    {
+                        Item.OwnedBy = groups[Item.OwnedBy];
+                    }
+
+                    todoPage.BindingContext = Item;
+                    await Navigation.PushAsync(todoPage);
 				}, 0, 0);
 			}
 			if (Device.OS == TargetPlatform.WinPhone)
 			{
-				tbi = new ToolbarItem("Add", "add.png", () =>
+				tbi = new ToolbarItem("Add", "add.png", async () =>
 					{
-						var Item = new Item();
-						var todoPage = new TodoItemPage();
-						todoPage.BindingContext = Item;
-						Navigation.PushAsync(todoPage);
+                        var Item = new Item();
+                        var todoPage = new TodoItemPage();
+
+                        List<Group> availableGroups = new List<Group>();
+                        if (Todo.App.Database.userID != null)
+                        {
+                            var _groups = await Todo.App.Database.getGroups(Todo.App.Database.userID);
+                            availableGroups.AddRange(_groups);
+                        }
+
+                        Dictionary<string, string> groups = new Dictionary<string, string>();
+                        foreach (Group group in availableGroups)
+                        {
+                            groups[group.ID] = group.Name;
+                        }
+
+                        if (Item.OwnedBy != null && groups.ContainsKey(Item.OwnedBy))
+                        {
+                            Item.OwnedBy = groups[Item.OwnedBy];
+                        }
+
+                        todoPage.BindingContext = Item;
+                        await Navigation.PushAsync(todoPage);
 					}, 0, 0);
 			}
 

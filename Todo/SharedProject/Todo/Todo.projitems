@@ -16,6 +16,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Models\Group.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\GroupGroupMembership.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Item.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\ItemListViewModel - Copy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\ItemListViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\MicrosoftAccountInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\UserGroupMembership.cs" />
@@ -36,6 +37,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Views\TodoGroupListPage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\Controls\BindablePicker.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\TodoGroupPage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Views\TodoItemCellBig.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Views\TodoItemCellInvisible.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\TodoItemCell.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\TodoItemPage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\TodoListPage.cs" />

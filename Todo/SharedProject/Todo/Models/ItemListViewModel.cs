@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Todo.Models
 {
-    class ItemListViewModel : INotifyPropertyChanged
+    public class ItemListViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
         private ObservableCollection<Item> _reports;
@@ -29,25 +29,55 @@ namespace Todo.Models
             Reports = new ObservableCollection<Item>();
 
             var domains = (List<Item>) Todo.App.Database.GetDomains().Result;
-            var family = domains[0];
+            var personal = domains[0];
             var friends = domains[1];
             var work = domains[2];
             var community = domains[3];
 
-            if (domain.Equals("family"))
-                Reports = (ObservableCollection<Item>)Todo.App.Database.GetChildItems(family).Result;
+            if (domain.Equals("personal"))
+            {
+                var childElements = Todo.App.Database.GetChildItems(personal);
+                if (Todo.App.Database.GetChildItems(personal) != null)
+                {
+                    foreach (Item it in childElements.Result)
+                    {
+                        Reports.Add(it);
+                    }
+                }
+            }
             else if (domain.Equals("friends"))
             {
                 var childElements = Todo.App.Database.GetChildItems(friends);
-                if (childElements != null){
-                    Reports = (ObservableCollection<Item>) childElements.Result;
+                if (childElements != null)
+                {
+                    foreach (Item it in childElements.Result)
+                    {
+                        Reports.Add(it);
+                    }
                 }
             }
-                
             else if (domain.Equals("work"))
-                Reports = (ObservableCollection<Item>)Todo.App.Database.GetChildItems(work).Result;
+            {
+                var childElements = Todo.App.Database.GetChildItems(work);
+                if (Todo.App.Database.GetChildItems(personal) != null)
+                {
+                    foreach (Item it in childElements.Result)
+                    {
+                        Reports.Add(it);
+                    }
+                }
+            }
             else if (domain.Equals("community"))
-                Reports = (ObservableCollection<Item>)Todo.App.Database.GetChildItems(community).Result;
+            {
+                var childElements = Todo.App.Database.GetChildItems(community);
+                if (Todo.App.Database.GetChildItems(personal) != null)
+                {
+                    foreach (Item it in childElements.Result)
+                    {
+                        Reports.Add(it);
+                    }
+                }
+            }
             else
                 Reports = null;
         }

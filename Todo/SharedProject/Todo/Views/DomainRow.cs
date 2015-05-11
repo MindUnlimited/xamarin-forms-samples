@@ -14,12 +14,25 @@ namespace Todo.Views
         IEnumerable<Item> rightItems;
         public BoxView middleBorder;
 
+        Style invisibleListView = new Style(typeof(ListView))
+        {
+            Setters =   {
+                            new Setter {Property = ListView.OpacityProperty, Value = 0}
+                        }
+        };
+
+        Style visibleListView = new Style(typeof(ListView))
+        {
+            Setters =   {
+                            new Setter {Property = ListView.OpacityProperty, Value = 1}
+                        }
+        };
 
         // MAYBE ALS A LABEL INSTEAD OF HEADER?
 
 
 
-        public DomainRow(ListView leftLV, ListView rightLV, int borderSize)
+        public DomainRow(ListView leftLV, ListView rightLV, int borderSize, RelativeLayout parentLayout, int rows)
         {
             this.leftLV = leftLV;
             this.rightLV = rightLV;
@@ -68,6 +81,7 @@ namespace Todo.Views
             Children.Add(topBorder);
             Children.Add(row);
 
+            HeightRequest = parentLayout.Height / rows;
         }
 
         public void changeLeftHeader(StackLayout header)
@@ -82,14 +96,14 @@ namespace Todo.Views
 
         public void hideItems()
         {
-            leftLV.ItemsSource = null;
-            rightLV.ItemsSource = null;
+            leftLV.ItemTemplate = new DataTemplate(typeof (TodoItemCellInvisible));
+            rightLV.ItemTemplate = new DataTemplate(typeof(TodoItemCellInvisible));
         }
 
         public void showItems()
         {
-            leftLV.ItemsSource = leftItems;
-            rightLV.ItemsSource = rightItems;
+            leftLV.ItemTemplate = new DataTemplate(typeof(TodoItemCell));
+            rightLV.ItemTemplate = new DataTemplate(typeof(TodoItemCell));
 
             //middleBorder.HeightRequest = leftLV.Height;
         }

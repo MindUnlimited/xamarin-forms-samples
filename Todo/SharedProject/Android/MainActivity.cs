@@ -67,83 +67,80 @@ namespace Todo.Android
             currentAccount = null;
             bool useToken = true;
 
-            while (!justAuthenticated)
+            try
             {
-                try
+                var accounts = accountStore.FindAccountsForService("Microsoft").ToArray();
+                // Log in 
+                if (useToken)
                 {
-                    var accounts = accountStore.FindAccountsForService("Microsoft").ToArray();
-                    // Log in 
-                    if (useToken)
+                    if (accounts.Length != 0)
                     {
-                        if (accounts.Length != 0)
-                        {
-                            Todo.App.Database.mobileServiceUser = new MobileServiceUser(accounts[0].Username);
-                            Todo.App.Database.mobileServiceUser.MobileServiceAuthenticationToken = accounts[0].Properties["token"];
+                        Todo.App.Database.mobileServiceUser = new MobileServiceUser(accounts[0].Username);
+                        Todo.App.Database.mobileServiceUser.MobileServiceAuthenticationToken = accounts[0].Properties["token"];
 
-                            Todo.App.Database.client.CurrentUser = Todo.App.Database.mobileServiceUser;
-                        }
-                    }
-                    if (Todo.App.Database.mobileServiceUser != null) // Set the user from the stored credentials.
-                    {
                         Todo.App.Database.client.CurrentUser = Todo.App.Database.mobileServiceUser;
-                        //App.MobileService.CurrentUser = user;
-
-                        try
-                        {
-                            // Try to return an item now to determine if the cached credential has expired.
-                            //var test = await Todo.App.Database.client.GetTable<Item>().Take(1).ToListAsync();
-                            var userInfo = await Todo.App.Database.client.InvokeApiAsync("userInfo", HttpMethod.Get, null);
-
-                            //CreateAndShowDialog(string.Format("you are now logged in - {0}", Todo.App.Database.mobileServiceUser.UserId), "Logged in!");
-                            justAuthenticated = true;
-                            currentAccount = accounts[0];
-
-                            await Todo.App.Database.InitLocalStoreAsync();
-                            await Todo.App.Database.newUser(Todo.App.Database.mobileServiceUser.UserId);
-                            await Todo.App.Database.OnRefreshItemsSelected(); // pull database tables                 
-                        }
-                        catch (MobileServiceInvalidOperationException ex)
-                        {
-                            if (ex.Response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
-                            {
-                                // Remove the credential with the expired token.
-                                accountStore.Delete(accounts[0], "Microsoft");
-                                Todo.App.Database.mobileServiceUser = null;
-                                Todo.App.Database.client.CurrentUser = null;
-                                justAuthenticated = false;
-                                continue;
-                            }
-                        }
                     }
-                    else // Regular login flow
+                }
+                if (Todo.App.Database.mobileServiceUser != null) // Set the user from the stored credentials.
+                {
+                    Todo.App.Database.client.CurrentUser = Todo.App.Database.mobileServiceUser;
+                    //App.MobileService.CurrentUser = user;
+
+                    try
                     {
-                        //user = new MobileServiceuser( await client
-                        //    .LoginAsync(MobileServiceAuthenticationProvider.Facebook, token);
-                        //var token = new JObject();
-                        //// Replace access_token_value with actual value of your access token
-                        //token.Add("access_token", "access_token_value");
-
-                        Todo.App.Database.mobileServiceUser = await Todo.App.Database.client.LoginAsync(this, MobileServiceAuthenticationProvider.MicrosoftAccount);
-
-                        if (useToken)
-                        {
-                            // After logging in
-                            currentAccount = new Account(Todo.App.Database.mobileServiceUser.UserId, new Dictionary<string, string> { { "token", Todo.App.Database.mobileServiceUser.MobileServiceAuthenticationToken } });
-                            accountStore.Save(currentAccount, "Microsoft");
-                        }
+                        // Try to return an item now to determine if the cached credential has expired.
+                        //var test = await Todo.App.Database.client.GetTable<Item>().Take(1).ToListAsync();
+                        var userInfo = await Todo.App.Database.client.InvokeApiAsync("userInfo", HttpMethod.Get, null);
 
                         //CreateAndShowDialog(string.Format("you are now logged in - {0}", Todo.App.Database.mobileServiceUser.UserId), "Logged in!");
                         justAuthenticated = true;
+                        currentAccount = accounts[0];
 
                         await Todo.App.Database.InitLocalStoreAsync();
                         await Todo.App.Database.newUser(Todo.App.Database.mobileServiceUser.UserId);
-                        await Todo.App.Database.OnRefreshItemsSelected(); // pull database tables
+                        await Todo.App.Database.OnRefreshItemsSelected(); // pull database tables                 
+                    }
+                    catch (MobileServiceInvalidOperationException ex)
+                    {
+                        //System.Diagnostics.Debug.WriteLine(ex.InnerException.ToString());
+                        if (ex.Response.StatusCode == System.Net.HttpStatusCode.Unauthorized || ex.Response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+                        {
+                            // Remove the credential with the expired token.
+                            accountStore.Delete(accounts[0], "Microsoft");
+                            Todo.App.Database.mobileServiceUser = null;
+                            Todo.App.Database.client.CurrentUser = null;
+                            justAuthenticated = false;
+                        }
                     }
                 }
-                catch (Exception ex)
+                else // Regular login flow
                 {
-                    CreateAndShowDialog(ex, "Authentication failed");
+                    //user = new MobileServiceuser( await client
+                    //    .LoginAsync(MobileServiceAuthenticationProvider.Facebook, token);
+                    //var token = new JObject();
+                    //// Replace access_token_value with actual value of your access token
+                    //token.Add("access_token", "access_token_value");
+
+                    Todo.App.Database.mobileServiceUser = await Todo.App.Database.client.LoginAsync(this, MobileServiceAuthenticationProvider.MicrosoftAccount);
+
+                    if (useToken)
+                    {
+                        // After logging in
+                        currentAccount = new Account(Todo.App.Database.mobileServiceUser.UserId, new Dictionary<string, string> { { "token", Todo.App.Database.mobileServiceUser.MobileServiceAuthenticationToken } });
+                        accountStore.Save(currentAccount, "Microsoft");
+                    }
+
+                    //CreateAndShowDialog(string.Format("you are now logged in - {0}", Todo.App.Database.mobileServiceUser.UserId), "Logged in!");
+                    justAuthenticated = true;
+
+                    await Todo.App.Database.InitLocalStoreAsync();
+                    await Todo.App.Database.newUser(Todo.App.Database.mobileServiceUser.UserId);
+                    await Todo.App.Database.OnRefreshItemsSelected(); // pull database tables
                 }
+            }
+            catch (Exception ex)
+            {
+                CreateAndShowDialog(ex, "Authentication failed");
             }
             
 
@@ -178,7 +175,8 @@ namespace Todo.Android
 
             LoadApplication(new App()); // method is new in 1.3
 
-            await Authenticate();
+            while (Todo.App.Database.mobileServiceUser == null)
+                await Authenticate();
             //Task.Run(() => { Authenticate(); LoadApplication(new App()); }).Wait(); //task.run part is necessary, behaves as await     
             
             //// PUSH

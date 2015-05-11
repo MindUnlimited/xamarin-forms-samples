@@ -28,7 +28,7 @@ namespace Todo.WinPhone
     public partial class MainPage : global::Xamarin.Forms.Platform.WinPhone.FormsApplicationPage // superclass new in 1.3
     {
         private bool justAuthenticated = false;
-        private bool useToken = false;
+        private bool useToken = true;
 
         private async Task Authenticate()
         {
@@ -46,94 +46,140 @@ namespace Todo.WinPhone
             IsolatedStorageSettings settings =
                 IsolatedStorageSettings.ApplicationSettings;
 
-            try
+            // Try to get an existing encrypted credential from isolated storage.                    
+            if (useToken && settings != null && settings.Contains(provider))
             {
-                // Try to get an existing encrypted credential from isolated storage.                    
-                if (settings.Contains(provider) && useToken)
-                {
-                    // Get the encrypted byte array, decrypt and deserialize the user.
-                    var encryptedUser = settings[provider] as byte[];
-                    var userBytes = ProtectedData.Unprotect(encryptedUser, entropy);
-                    Todo.App.Database.mobileServiceUser = JsonConvert.DeserializeObject<MobileServiceUser>(
-                        System.Text.Encoding.Unicode.GetString(userBytes, 0, userBytes.Length));
-                }
-                if (Todo.App.Database.mobileServiceUser != null)
-                {
-                    // Set the user from the stored credentials.
-                    Todo.App.Database.client.CurrentUser = Todo.App.Database.mobileServiceUser;
-                    //App.MobileService.CurrentUser = user;
+                // Get the encrypted byte array, decrypt and deserialize the user.
+                var encryptedUser = settings[provider] as byte[];
+                var userBytes = ProtectedData.Unprotect(encryptedUser, entropy);
+                Todo.App.Database.mobileServiceUser = JsonConvert.DeserializeObject<MobileServiceUser>(
+                    System.Text.Encoding.Unicode.GetString(userBytes, 0, userBytes.Length));
+            }
+            if (Todo.App.Database.mobileServiceUser != null)
+            {
+                // Set the user from the stored credentials.
+                Todo.App.Database.client.CurrentUser = Todo.App.Database.mobileServiceUser;
+                //App.MobileService.CurrentUser = user;
 
-                    try
+                try
+                {
+                    // Try to return an item now to determine if the cached credential has expired.
+                    var test = await Todo.App.Database.client.GetTable<Item>().Take(1).ToListAsync();
+                    var test2 = await Todo.App.Database.client.InvokeApiAsync("userInfo", HttpMethod.Get, null);
+                    justAuthenticated = true;
+                }
+                catch (Exception ex)
+                {
+                    justAuthenticated = false;
+                    //if (ex is MobileServiceInvalidOperationException)
+                    //    Debug.WriteLine(ex.InnerException.ToString());
+
+                    // Remove the credential with the expired token.
+                    if (settings != null)
                     {
-                        // Try to return an item now to determine if the cached credential has expired.
-                        var test = await Todo.App.Database.client.GetTable<Item>().Take(1).ToListAsync();
-                        var test2 = await Todo.App.Database.client.InvokeApiAsync("userInfo", HttpMethod.Get, null);
-                    }
-                    catch (MobileServiceInvalidOperationException ex)
-                    {
-                        Debug.WriteLine(ex.InnerException.ToString());
-                        // Remove the credential with the expired token.
                         settings.Remove(provider);
                         settings.Clear();
+                    }
+                    if (Todo.App.Database.mobileServiceUser != null)
                         Todo.App.Database.mobileServiceUser = null;
+                    if (Todo.App.Database.client != null)
                         Todo.App.Database.client.CurrentUser = null;
-                    }
-                }
-                else
-                {
-                    try
-                    {
-                        // Login with the identity provider.
-                        //Todo.App.Database.mobileServiceUser = await Todo.App.Database.client.LoginAsync(provider);
-
-                        Todo.App.Database.mobileServiceUser =
-                        await Todo.App.Database.client.
-                            LoginAsync(MobileServiceAuthenticationProvider.MicrosoftAccount);
-
-
-                        if (useToken)
-                        {
-                            // Serialize the user into an array of bytes and encrypt with DPAPI.
-                            var userBytes = System.Text.Encoding.Unicode
-                                .GetBytes(JsonConvert.SerializeObject(Todo.App.Database.mobileServiceUser));
-                            byte[] encryptedUser = ProtectedData.Protect(userBytes, entropy);
-
-                            // Store the encrypted user credentials in local settings.
-                            settings.Add(provider, encryptedUser);
-                            settings.Save();
-                        }
-                    }
-                    catch (MobileServiceInvalidOperationException ex)
-                    {
-                        message = "You must log in. Login Required";
-                    }
-
-
-                    //Todo.App.Database.mobileServiceUser =
-                    //await Todo.App.Database.client.
-                    //    LoginAsync(MobileServiceAuthenticationProvider.MicrosoftAccount);
-
 
                 }
-
-                await Todo.App.Database.InitLocalStoreAsync();
-                await Todo.App.Database.newUser(Todo.App.Database.mobileServiceUser.UserId);
-                await Todo.App.Database.OnRefreshItemsSelected(); // pull database tables
-
-                await Todo.App.Database.getContactsThatUseApp();
-
-
-
             }
-            catch (InvalidOperationException)
+            else
             {
-                message = "You must log in. Login Required";
+                try
+                {
+                    // Login with the identity provider.
+                    //Todo.App.Database.mobileServiceUser = await Todo.App.Database.client.LoginAsync(provider);
+
+                    Todo.App.Database.mobileServiceUser =
+                    await Todo.App.Database.client.
+                        LoginAsync(MobileServiceAuthenticationProvider.MicrosoftAccount);
+
+                    var test = await Todo.App.Database.client.GetTable<Item>().Take(1).ToListAsync();
+                    var test2 = await Todo.App.Database.client.InvokeApiAsync("userInfo", HttpMethod.Get, null);
+
+                    justAuthenticated = true;
+
+                    if (useToken)
+                    {
+                        // Serialize the user into an array of bytes and encrypt with DPAPI.
+                        var userBytes = System.Text.Encoding.Unicode
+                            .GetBytes(JsonConvert.SerializeObject(Todo.App.Database.mobileServiceUser));
+                        byte[] encryptedUser = ProtectedData.Protect(userBytes, entropy);
+
+                        // Store the encrypted user credentials in local settings.
+                        settings.Add(provider, encryptedUser);
+                        settings.Save();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    justAuthenticated = false;
+                    //if (ex is MobileServiceInvalidOperationException)
+                    //    Debug.WriteLine(ex.InnerException.ToString());
+
+                    // Remove the credential with the expired token.
+                    if (settings != null)
+                    {
+                        settings.Remove(provider);
+                        settings.Clear();
+                    }
+                    if (Todo.App.Database.mobileServiceUser != null)
+                        Todo.App.Database.mobileServiceUser = null;
+                    if (Todo.App.Database.client != null)
+                        Todo.App.Database.client.CurrentUser = null;
+
+                }
+
+
+                //Todo.App.Database.mobileServiceUser =
+                //await Todo.App.Database.client.
+                //    LoginAsync(MobileServiceAuthenticationProvider.MicrosoftAccount);
+
+
             }
 
-            message = string.Format("You are now logged in - {0}", Todo.App.Database.mobileServiceUser.UserId);
-            MessageBox.Show(message);
+            if (justAuthenticated)
+            {
+                try
+                {
+                    await Todo.App.Database.InitLocalStoreAsync();
+                    await Todo.App.Database.newUser(Todo.App.Database.mobileServiceUser.UserId);
+                    await Todo.App.Database.OnRefreshItemsSelected(); // pull database tables
 
-            justAuthenticated = true;
+                    await Todo.App.Database.getContactsThatUseApp();
+
+                    message = string.Format("You are now logged in - {0}", Todo.App.Database.mobileServiceUser.UserId);
+                    MessageBox.Show(message);
+                }
+                catch (Exception ex)
+                {
+                    justAuthenticated = false;
+                    //if (ex is MobileServiceInvalidOperationException)
+                    //    Debug.WriteLine(ex.InnerException.ToString());
+
+                    // Remove the credential with the expired token.
+                    if (settings != null)
+                    {
+                        settings.Remove(provider);
+                        settings.Clear();
+                    }
+                    if (Todo.App.Database.mobileServiceUser != null)
+                        Todo.App.Database.mobileServiceUser = null;
+                    if (Todo.App.Database.client != null)
+                        Todo.App.Database.client.CurrentUser = null;
+
+                }
+
+                
+            }
+
+
+
+            
         }
 
         async void MainPage_Loaded(object sender, RoutedEventArgs e)
@@ -145,7 +191,7 @@ namespace Todo.WinPhone
             if (justAuthenticated)
             {
                 //Content = Todo.App.GetMainPage().ConvertPageToUIElement(this); // Refresh items
-                await Todo.App.domainPage.Refresh();
+                await Todo.App.importantDPage.Refresh();
                 justAuthenticated = false;
             }
         }
