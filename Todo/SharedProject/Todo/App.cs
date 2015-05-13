@@ -8,12 +8,21 @@ namespace Todo
 {
     public class App : Application // superclass new in 1.3
     {
-        public static DomainPage importantDPage = new DomainPage();
-        public static DomainPage urgentDPage = new DomainPage();
-        public static DomainPage currentDPage = new DomainPage();
-        public static DomainPage completedDPage = new DomainPage();
-        
+        public static DomainPage selectedDomainPage;
 
+        public static DomainPage importantDPage = new DomainPage(DomainPages.Important);
+        public static DomainPage urgentDPage = new DomainPage(DomainPages.Urgent);
+        public static DomainPage currentDPage = new DomainPage(DomainPages.Current);
+        public static DomainPage completedDPage = new DomainPage(DomainPages.Completed);
+
+        public enum DomainPages
+        {
+            None,
+            Important,
+            Urgent,
+            Current,
+            Completed
+        };
 
         public App()
         {
@@ -35,6 +44,31 @@ namespace Todo
             domainTabsPage.Children.Add(urgentPage);
             domainTabsPage.Children.Add(currentPage);
             domainTabsPage.Children.Add(completedPage);
+
+            domainTabsPage.CurrentPageChanged += (async (o, e) =>
+            {
+                switch (domainTabsPage.CurrentPage.Title)
+                {
+                    case "Important":
+                        selectedDomainPage = importantDPage;
+                        await importantDPage.Refresh();
+                        break;
+                    case "Urgent":
+                        selectedDomainPage = urgentDPage;
+                        await urgentDPage.Refresh();
+                        break;
+                    case "Current":
+                        selectedDomainPage = currentDPage;
+                        await currentDPage.Refresh();
+                        break;
+                    case "Completed":
+                        selectedDomainPage = completedDPage;
+                        await completedDPage.Refresh();
+                        break;
+                    default:
+                        break;
+                }
+            });
 
             MainPage = domainTabsPage;
             //MainPage = new NavigationPage(domainTabsPage); // The root page of your application
@@ -91,62 +125,62 @@ namespace Todo
         //    //return itemNav;
         //}
 
-        public static ListView getMultiSelect()
-        {
-            var L_Kategorien = new List<Todo.MultiSelect>();
-            int index = 0;
+        //public static ListView getMultiSelect()
+        //{
+        //    var L_Kategorien = new List<Todo.MultiSelect>();
+        //    int index = 0;
 
-            //
-            var Kategorie = new Todo.MultiSelect() { cIconPath = "", Text = "Action & Abenteuer", Selected = false, iIndex = index};
-            L_Kategorien.Add(Kategorie);
-            index += 1;
-            //
-            Kategorie = new Todo.MultiSelect() { cIconPath = "", Text = "Sport", Selected = false, iIndex = index };
-            L_Kategorien.Add(Kategorie);
-            index += 1;
+        //    //
+        //    var Kategorie = new Todo.MultiSelect() { cIconPath = "", Text = "Action & Abenteuer", Selected = false, iIndex = index};
+        //    L_Kategorien.Add(Kategorie);
+        //    index += 1;
+        //    //
+        //    Kategorie = new Todo.MultiSelect() { cIconPath = "", Text = "Sport", Selected = false, iIndex = index };
+        //    L_Kategorien.Add(Kategorie);
+        //    index += 1;
 
-            var LVKategorien = new ListView() { HeightRequest = 200 };
-            LVKategorien.ItemTemplate = new DataTemplate(typeof(Todo.Views.KategorienViewCell)); // Update page
-            LVKategorien.ItemsSource = L_Kategorien;
+        //    var LVKategorien = new ListView() { HeightRequest = 200 };
+        //    LVKategorien.ItemTemplate = new DataTemplate(typeof(Todo.Views.KategorienViewCell)); // Update page
+        //    LVKategorien.ItemsSource = L_Kategorien;
 
-            LVKategorien.ItemTapped += async (sender, e) =>
-            {
-                var LVElement = (MultiSelect)e.Item;
-                if (LVElement.Selected) // Item is selected already
-                {
-                    L_Kategorien[LVElement.iIndex].Selected = false;
-                    L_Kategorien[LVElement.iIndex].cIconPath = "";
-                }
-                else
-                {
-                    //if (GV.SucheFreizeitGuide.bFreizeitAngebotIstSelektiert) // relevant only for my App
-                    //{
-                    //    var AntwortJa = await DisplayAlert("Hinweis", "Sie haben bereits ein Freizeitangebot als Suchbegriff erfasst. Wenn Sie nach Kategorie suchen, wird das Freizeitangebot (oben) zurückgesetzt", "OK", "Abbruch");
-                    //    if (!AntwortJa)
-                    //    {
-                    //        return; // Abbruch
-                    //    }
-                    //    // Freizeitangebot zurücksetzen
-                    //    GV.SucheFreizeitGuide.cKeyFreizeitAngebot = "";
-                    //    FZ_AngebotLabel.Text = "Noch kein Freizeitangebot gewählt...";
-                    //    GV.SucheFreizeitGuide.bFreizeitAngebotIstSelektiert = false;
-                    //}
-                    L_Kategorien[LVElement.iIndex].Selected = true;
-                    // For iOS -> black check-icon, for Android and WP -> white check-icon
-                    if (Device.OS == TargetPlatform.iOS) { L_Kategorien[LVElement.iIndex].cIconPath = "CheckSchwarz.png"; } else { L_Kategorien[LVElement.iIndex].cIconPath = "CheckWeiss.png"; }
-                }
-                LVKategorien.ItemTemplate = new DataTemplate(typeof(Todo.Views.KategorienViewCell)); // Update Page
-                // Steuervariable zurücksetzen und neu setzen
-                //GV.SucheFreizeitGuide.bKategorieIstSelektiert = false; // relevant only for my App
-                //foreach (GV.MehrfachSelektion oKategorie in L_Kategorien)
-                //{
-                //    if (oKategorie.bSelektiert)
-                //    { GV.SucheFreizeitGuide.bKategorieIstSelektiert = true; }
-                //}
-            };
+        //    LVKategorien.ItemTapped += async (sender, e) =>
+        //    {
+        //        var LVElement = (MultiSelect)e.Item;
+        //        if (LVElement.Selected) // Item is selected already
+        //        {
+        //            L_Kategorien[LVElement.iIndex].Selected = false;
+        //            L_Kategorien[LVElement.iIndex].cIconPath = "";
+        //        }
+        //        else
+        //        {
+        //            //if (GV.SucheFreizeitGuide.bFreizeitAngebotIstSelektiert) // relevant only for my App
+        //            //{
+        //            //    var AntwortJa = await DisplayAlert("Hinweis", "Sie haben bereits ein Freizeitangebot als Suchbegriff erfasst. Wenn Sie nach Kategorie suchen, wird das Freizeitangebot (oben) zurückgesetzt", "OK", "Abbruch");
+        //            //    if (!AntwortJa)
+        //            //    {
+        //            //        return; // Abbruch
+        //            //    }
+        //            //    // Freizeitangebot zurücksetzen
+        //            //    GV.SucheFreizeitGuide.cKeyFreizeitAngebot = "";
+        //            //    FZ_AngebotLabel.Text = "Noch kein Freizeitangebot gewählt...";
+        //            //    GV.SucheFreizeitGuide.bFreizeitAngebotIstSelektiert = false;
+        //            //}
+        //            L_Kategorien[LVElement.iIndex].Selected = true;
+        //            // For iOS -> black check-icon, for Android and WP -> white check-icon
+        //            if (Device.OS == TargetPlatform.iOS) { L_Kategorien[LVElement.iIndex].cIconPath = "CheckSchwarz.png"; } else { L_Kategorien[LVElement.iIndex].cIconPath = "CheckWeiss.png"; }
+        //        }
+        //        LVKategorien.ItemTemplate = new DataTemplate(typeof(Todo.Views.KategorienViewCell)); // Update Page
+        //        // Steuervariable zurücksetzen und neu setzen
+        //        //GV.SucheFreizeitGuide.bKategorieIstSelektiert = false; // relevant only for my App
+        //        //foreach (GV.MehrfachSelektion oKategorie in L_Kategorien)
+        //        //{
+        //        //    if (oKategorie.bSelektiert)
+        //        //    { GV.SucheFreizeitGuide.bKategorieIstSelektiert = true; }
+        //        //}
+        //    };
 
-            return LVKategorien;
-        }
+        //    return LVKategorien;
+        //}
 
         public static void createDatabase()
         {

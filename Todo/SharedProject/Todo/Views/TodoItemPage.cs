@@ -185,16 +185,26 @@ namespace Todo
                     if (domainName != null)
                     {
                         if (domainName == "Personal")
-                            Todo.App.importantDPage.personalItemsList.Reports.Add(Item);
+                        {
+                            Todo.App.selectedDomainPage.personalItemsList.Reports.Add(Item);
+                            Todo.App.selectedDomainPage.personalItemsList.FilterAndSort(Todo.App.selectedDomainPage.domainPageType);
+                        }
                         else if (domainName == "Friends & Family")
-                            Todo.App.importantDPage.friendsItemsList.Reports.Add(Item);
+                        {
+                            Todo.App.selectedDomainPage.friendsItemsList.Reports.Add(Item);
+                            Todo.App.selectedDomainPage.friendsItemsList.FilterAndSort(Todo.App.selectedDomainPage.domainPageType);
+                        }
                         else if (domainName == "Work")
-                            Todo.App.importantDPage.workItemsList.Reports.Add(Item);
+                        {
+                            Todo.App.selectedDomainPage.workItemsList.Reports.Add(Item);
+                            Todo.App.selectedDomainPage.workItemsList.FilterAndSort(Todo.App.selectedDomainPage.domainPageType);
+                        }
                         else if (domainName == "Community")
-                            Todo.App.importantDPage.communityItemsList.Reports.Add(Item);
+                        {
+                            Todo.App.selectedDomainPage.communityItemsList.Reports.Add(Item);
+                            Todo.App.selectedDomainPage.communityItemsList.FilterAndSort(Todo.App.selectedDomainPage.domainPageType);
+                        }
                     }
-                    
-
                     await this.Navigation.PopAsync();
                 }
 			};

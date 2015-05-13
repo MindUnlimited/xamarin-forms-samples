@@ -10,6 +10,8 @@ namespace Todo.Views
 {
     public class DomainPage : ContentPage
     {
+        public Todo.App.DomainPages domainPageType;
+
         enum Domains
         {
             None,
@@ -26,7 +28,11 @@ namespace Todo.Views
         private RelativeLayout objRelativeLayout;
 
         private ListView personalItems;
+        StackLayout personalHead;
+        StackLayout personalFooter;
+
         private ListView friendsItems;
+        StackLayout friendsFooter;
         private ListView workItems;
         private ListView communityItems;
 
@@ -50,8 +56,10 @@ namespace Todo.Views
         Dictionary<ListView, IEnumerable<string>> itemStorage = new Dictionary<ListView, IEnumerable<string>>();
         
 
-        public DomainPage()
+        public DomainPage(Todo.App.DomainPages type)
         {
+            domainPageType = type;
+
             //List<ListView> listViews = new List<ListView>();
             objRelativeLayout = new RelativeLayout
             {
@@ -1079,12 +1087,12 @@ namespace Todo.Views
 
             Appearing += (async (o, e) =>
                 {
+                    Todo.App.selectedDomainPage = this;
                     await Refresh();
                     //topLV.BeginRefresh();
                     //bottomLV.BeginRefresh();
 
                 });
-
         }
 
 
@@ -1133,6 +1141,8 @@ namespace Todo.Views
 
             await Task.WhenAll(personalBottomBorder.LayoutTo(personalBottomBorderBounds, 250, Easing.Linear), friendsBottomBorder.LayoutTo(friendsBottomBorderBounds, 250, Easing.Linear), workBottomBorder.LayoutTo(workBottomBorderBounds, 250, Easing.Linear), communityBottomBorder.LayoutTo(communityBottomBorderBounds, 250, Easing.Linear), bottom.LayoutTo(bottomBorderBounds, 250, Easing.Linear), bottomLV.LayoutTo(bottomLVBorderBounds, 250, Easing.Linear), top.LayoutTo(topBorderBounds, 250, Easing.Linear), topLV.LayoutTo(topLVBorderBounds, 250, Easing.Linear));
             expanded = false;
+
+            this.ForceLayout();
         }
 
         public async Task Refresh()
@@ -1154,42 +1164,64 @@ namespace Todo.Views
                     var community = domains[3];
 
                     personalItemsList = new ItemListViewModel("personal");
+                    personalItemsList.FilterAndSort(domainPageType);
                     personalItems.ItemsSource = (IEnumerable<Item>)personalItemsList.Reports;
 
+                    top.setLeftFooter(personalItemsList);
+
                     friendsItemsList = new ItemListViewModel("friends");
+                    friendsItemsList.FilterAndSort(domainPageType);
                     friendsItems.ItemsSource = (IEnumerable<Item>) friendsItemsList.Reports;
 
+                    top.setRightFooter(friendsItemsList);
+
                     workItemsList = new ItemListViewModel("work");
+                    workItemsList.FilterAndSort(domainPageType);
                     workItems.ItemsSource = (IEnumerable<Item>)workItemsList.Reports;
 
+                    bottom.setLeftFooter(workItemsList);
+
                     communityItemsList = new ItemListViewModel("community");
+                    communityItemsList.FilterAndSort(domainPageType);
                     communityItems.ItemsSource = (IEnumerable<Item>)communityItemsList.Reports;
 
-                    this.ForceLayout();
+                    bottom.setRightFooter(communityItemsList);
+
+                    //personalFooter = new StackLayout { Spacing = 0, Orientation = StackOrientation.Horizontal };
+                    //personalFooter.Children.Add(new Label { Text = "Personal footer" });
+
+                    //friendsFooter = new StackLayout { Spacing = 0, Orientation = StackOrientation.Horizontal };
+                    //friendsFooter.Children.Add(new Label { Text = "Friends & Family footer" });
+
+                    //top.changeLeftFooter(personalFooter);
+                    //top.changeRightFooter(friendsFooter);
 
                     listsInitialized = true;
-
-
                 }
 
-                StackLayout personalHead = new StackLayout { Padding = 2, Spacing = 1 };
+                personalHead = new StackLayout { Padding = 2, Spacing = 1 };
                 personalHead.Children.Add(new Label { Text = "Personal", TextColor = Color.Yellow, FontSize = 20, FontAttributes = FontAttributes.Bold });
-                personalHead.Children.Add(new Label { Text = ' ' + (personalItemsList.Reports).Count.ToString() + " items", TextColor = Color.White });
+                personalHead.Children.Add(new Label { Text = ' ' + personalItemsList.Reports.Count.ToString() + " items", TextColor = Color.White });
                 personalItems.Header = personalHead;
 
                 StackLayout friendsHead = new StackLayout { Padding = 2, Spacing = 1 };
                 friendsHead.Children.Add(new Label { Text = "Friends & Family", TextColor = Color.FromRgb(255, 105, 0), FontSize = 20, FontAttributes = FontAttributes.Bold });
-                friendsHead.Children.Add(new Label { Text = ' ' + (friendsItemsList.Reports).Count.ToString() + " items", TextColor = Color.White });
+                friendsHead.Children.Add(new Label { Text = ' ' + friendsItemsList.Reports.Count.ToString() + " items", TextColor = Color.White });
                 friendsItems.Header = friendsHead;
+
+                //StackLayout friendsFooter = new StackLayout { Padding = 2, Spacing = 1 };
+                //friendsFooter.Children.Add(new Label { Text = "Friends & Family Footer", TextColor = Color.FromRgb(255, 105, 0), FontSize = 20, FontAttributes = FontAttributes.Bold });
+                //friendsFooter.Children.Add(new Label { Text = ' ' + friendsItemsList.Reports.Count.ToString() + " items", TextColor = Color.White });
+                //friendsItems.Footer = friendsFooter;
 
                 StackLayout workHead = new StackLayout { Padding = 2, Spacing = 1 };
                 workHead.Children.Add(new Label { Text = "Work", TextColor = Color.FromRgb(32, 178, 170), FontSize = 20, FontAttributes = FontAttributes.Bold });
-                workHead.Children.Add(new Label { Text = ' ' + (workItemsList.Reports).Count.ToString() + " items", TextColor = Color.White });
+                workHead.Children.Add(new Label { Text = ' ' + workItemsList.Reports.Count.ToString() + " items", TextColor = Color.White });
                 workItems.Header = workHead;
 
                 StackLayout communityHead = new StackLayout { Padding = 2, Spacing = 1 };
                 communityHead.Children.Add(new Label { Text = "Community", TextColor = Color.FromRgb(153, 50, 204), FontSize = 20, FontAttributes = FontAttributes.Bold });
-                communityHead.Children.Add(new Label { Text = ' ' + (communityItemsList.Reports).Count.ToString() + " items", TextColor = Color.White });
+                communityHead.Children.Add(new Label { Text = ' ' + communityItemsList.Reports.Count.ToString() + " items", TextColor = Color.White });
                 communityItems.Header = communityHead;
 
 

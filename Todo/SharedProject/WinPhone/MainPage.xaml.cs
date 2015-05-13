@@ -64,7 +64,7 @@ namespace Todo.WinPhone
                 try
                 {
                     // Try to return an item now to determine if the cached credential has expired.
-                    var test = await Todo.App.Database.client.GetTable<Item>().Take(1).ToListAsync();
+                    //var test = await Todo.App.Database.client.GetTable<Item>().Take(1).ToListAsync();
                     var test2 = await Todo.App.Database.client.InvokeApiAsync("userInfo", HttpMethod.Get, null);
                     justAuthenticated = true;
                 }
@@ -98,7 +98,7 @@ namespace Todo.WinPhone
                     await Todo.App.Database.client.
                         LoginAsync(MobileServiceAuthenticationProvider.MicrosoftAccount);
 
-                    var test = await Todo.App.Database.client.GetTable<Item>().Take(1).ToListAsync();
+                    //var test = await Todo.App.Database.client.GetTable<Item>().Take(1).ToListAsync();
                     var test2 = await Todo.App.Database.client.InvokeApiAsync("userInfo", HttpMethod.Get, null);
 
                     justAuthenticated = true;
@@ -182,7 +182,7 @@ namespace Todo.WinPhone
             
         }
 
-        async void MainPage_Loaded(object sender, RoutedEventArgs e)
+        async Task MainPage_Loaded(object sender, RoutedEventArgs e)
         {
             while (Todo.App.Database.mobileServiceUser == null)
                 await Authenticate();
@@ -204,7 +204,10 @@ namespace Todo.WinPhone
 
             Todo.App.createDatabase();
 
-            this.Loaded += MainPage_Loaded; // when loaded authenticate
+            this.Loaded += (async (o, e) =>
+                {  
+                    await MainPage_Loaded(o,e);
+                }); // when loaded authenticate
 
             LoadApplication(new Todo.App()); // new in 1.3
             //Content = Todo.App.GetMainPage().ConvertPageToUIElement(this);
