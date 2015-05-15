@@ -556,7 +556,8 @@ namespace Todo
 
         public async Task<IEnumerable<Item>> GetDomains()
         {
-            IEnumerable<Item> domains = null;
+            IEnumerable<Item> _domains = null;
+            List<Item> sortedDomains = new List<Item>();
             if (userID != null)
             {
                 List<Group> groups = await getGroups(userID);
@@ -564,7 +565,40 @@ namespace Todo
 
                 try
                 {
-                    domains = await itemTable.Where(it => groups_ids.Contains(it.OwnedBy) && it.Type == 1).ToListAsync();
+                    _domains = await itemTable.Where(it => groups_ids.Contains(it.OwnedBy) && it.Type == 1).ToListAsync();
+                    //List<Item> domains = new List<Item>();
+
+                    Item[] domains = new Item[_domains.Count()];
+                    List<Item> remainder = new List<Item>();
+
+                    foreach (Item dom in _domains)
+                    {
+                        StackLayout head = new StackLayout { Padding = 2, Spacing = 1 };
+
+                        switch (dom.Name)
+                        {
+                            case "Personal":
+                                domains[0] = dom;
+                                break;
+                            case "Friends & Family":
+                                domains[1] = dom;
+                                break;
+                            case "Work":
+                                domains[2] = dom;
+                                break;
+                            case "Community":
+                                domains[3] = dom;
+                                break;
+                            default:
+                                remainder.Add(dom);
+                                break;
+                        }
+                    }
+
+                    // DOES THIS WORK WITH NULL??
+
+                    sortedDomains.AddRange(domains);
+                    sortedDomains.AddRange(remainder);
                 }
                 catch (Exception e)
                 {
@@ -572,7 +606,7 @@ namespace Todo
                 }
             }
 
-            return domains;
+            return sortedDomains;
         }
 
         public async Task<IEnumerable<Item>> GetChildItems(Item parent)

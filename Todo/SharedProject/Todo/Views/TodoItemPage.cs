@@ -156,6 +156,7 @@ namespace Todo
 			saveButton.Clicked += async (sender, e) => {
                 var selected = ownedPicker.SelectedItem;
 				Item Item = (Item)BindingContext;
+                Boolean itemIsNew = Item.Version == null;
                 if (Item.OwnedBy != null)
                 {
                     if (!groups.ContainsValue(Item.OwnedBy) && groups.ContainsKey(Item.OwnedBy))
@@ -166,43 +167,46 @@ namespace Todo
                     //ownedPicker.SelectedItem = 
                     //var ownedByGroup = await Todo.App.Database.getGroup(Item.OwnedBy);
                     //Item.OwnedBy = ownedByGroup.ID;
-                    await App.Database.SaveItem(Item);
+
+
+                    var prevItem = Item;
+                    await App.Database.SaveItem(Item); // add to DB
+                    Item = await App.Database.GetItem(Item.ID); // DB added (new) version so need to change the Item
                     //Item.OwnedBy = old_value;
 
-                    var domains = await Todo.App.Database.GetDomains();
+                    var domains = Todo.App.selectedDomainPage.domains;
 
                     string domainName = null;
+                    Item selectedDomain = null;
+
                     foreach (var dom in domains)
                     {
                         if (dom.ID == Item.Parent)
                         {
                             domainName = dom.Name;
+                            selectedDomain = dom;
                             break;
                         }
                     }
 
-
-                    if (domainName != null)
+                    if (selectedDomain != null)
                     {
-                        if (domainName == "Personal")
+                        if (itemIsNew) // new item
                         {
-                            Todo.App.selectedDomainPage.personalItemsList.Reports.Add(Item);
-                            Todo.App.selectedDomainPage.personalItemsList.FilterAndSort(Todo.App.selectedDomainPage.domainPageType);
+                            Todo.App.selectedDomainPage.viewModels[selectedDomain].Reports.Add(Item);
+                            Todo.App.selectedDomainPage.viewModels[selectedDomain].FilterAndSort(Todo.App.selectedDomainPage.domainPageType);
                         }
-                        else if (domainName == "Friends & Family")
+                        else // update item
                         {
-                            Todo.App.selectedDomainPage.friendsItemsList.Reports.Add(Item);
-                            Todo.App.selectedDomainPage.friendsItemsList.FilterAndSort(Todo.App.selectedDomainPage.domainPageType);
-                        }
-                        else if (domainName == "Work")
-                        {
-                            Todo.App.selectedDomainPage.workItemsList.Reports.Add(Item);
-                            Todo.App.selectedDomainPage.workItemsList.FilterAndSort(Todo.App.selectedDomainPage.domainPageType);
-                        }
-                        else if (domainName == "Community")
-                        {
-                            Todo.App.selectedDomainPage.communityItemsList.Reports.Add(Item);
-                            Todo.App.selectedDomainPage.communityItemsList.FilterAndSort(Todo.App.selectedDomainPage.domainPageType);
+                            var observableCollectionItem = Todo.App.selectedDomainPage.viewModels[selectedDomain].Reports.FirstOrDefault(i => i.ID == Item.ID);
+                            if (observableCollectionItem != null)
+                            {
+                                observableCollectionItem = Item;
+                            }
+
+                            //Todo.App.selectedDomainPage.viewModels[selectedDomain].Reports.Remove(prevItem);
+                            //Todo.App.selectedDomainPage.viewModels[selectedDomain].Reports.Add(Item);
+
                         }
                     }
                     await this.Navigation.PopAsync();
@@ -214,29 +218,23 @@ namespace Todo
 				Item Item = (Item)BindingContext;
 				await App.Database.DeleteItem(Item);
 
-                var domains = await Todo.App.Database.GetDomains();
+                var domains = Todo.App.selectedDomainPage.domains;
 
                 string domainName = null;
+                Item selectedDomain = null;
                 foreach (var dom in domains)
                 {
                     if (dom.ID == Item.Parent)
                     {
                         domainName = dom.Name;
+                        selectedDomain = dom;
                         break;
                     }
                 }
 
-
                 if (domainName != null)
                 {
-                    if (domainName == "Personal")
-                        Todo.App.importantDPage.personalItemsList.Reports.Remove(Item);
-                    else if (domainName == "Friends & Family")
-                        Todo.App.importantDPage.friendsItemsList.Reports.Remove(Item);
-                    else if (domainName == "Work")
-                        Todo.App.importantDPage.workItemsList.Reports.Remove(Item);
-                    else if (domainName == "Community")
-                        Todo.App.importantDPage.communityItemsList.Reports.Remove(Item);
+                    Todo.App.selectedDomainPage.viewModels[selectedDomain].Reports.Remove(Item);
                 }
 
                 await this.Navigation.PopAsync();

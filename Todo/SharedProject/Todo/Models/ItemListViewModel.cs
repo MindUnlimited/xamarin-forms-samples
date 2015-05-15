@@ -96,62 +96,73 @@ namespace Todo.Models
             }
         }
 
-        public ItemListViewModel(string domain)
+        public ItemListViewModel(Item domain)
         {
             Reports = new ObservableCollection<Item>();
 
-            var domains = (List<Item>) Todo.App.Database.GetDomains().Result;
-            var personal = domains[0];
-            var friends = domains[1];
-            var work = domains[2];
-            var community = domains[3];
-
-            if (domain.Equals("personal"))
+            var childElements = Todo.App.Database.GetChildItems(domain);
+            if (childElements != null)
             {
-                var childElements = Todo.App.Database.GetChildItems(personal);
-                if (Todo.App.Database.GetChildItems(personal) != null)
+                foreach (Item it in childElements.Result)
                 {
-                    foreach (Item it in childElements.Result)
-                    {
-                        Reports.Add(it);
-                    }
-                }
-            }
-            else if (domain.Equals("friends"))
-            {
-                var childElements = Todo.App.Database.GetChildItems(friends);
-                if (childElements != null)
-                {
-                    foreach (Item it in childElements.Result)
-                    {
-                        Reports.Add(it);
-                    }
-                }
-            }
-            else if (domain.Equals("work"))
-            {
-                var childElements = Todo.App.Database.GetChildItems(work);
-                if (Todo.App.Database.GetChildItems(personal) != null)
-                {
-                    foreach (Item it in childElements.Result)
-                    {
-                        Reports.Add(it);
-                    }
-                }
-            }
-            else if (domain.Equals("community"))
-            {
-                var childElements = Todo.App.Database.GetChildItems(community);
-                if (Todo.App.Database.GetChildItems(personal) != null)
-                {
-                    foreach (Item it in childElements.Result)
-                    {
-                        Reports.Add(it);
-                    }
+                    Reports.Add(it);
                 }
             }
             else
                 Reports = null;
+
+            //var domains = (List<Item>) Todo.App.Database.GetDomains().Result;
+            //var personal = domains[0];
+            //var friends = domains[1];
+            //var work = domains[2];
+            //var community = domains[3];
+
+            //if (domain.Equals("personal"))
+            //{
+            //    var childElements = Todo.App.Database.GetChildItems(personal);
+            //    if (Todo.App.Database.GetChildItems(personal) != null)
+            //    {
+            //        foreach (Item it in childElements.Result)
+            //        {
+            //            Reports.Add(it);
+            //        }
+            //    }
+            //}
+            //else if (domain.Equals("friends"))
+            //{
+            //    var childElements = Todo.App.Database.GetChildItems(friends);
+            //    if (childElements != null)
+            //    {
+            //        foreach (Item it in childElements.Result)
+            //        {
+            //            Reports.Add(it);
+            //        }
+            //    }
+            //}
+            //else if (domain.Equals("work"))
+            //{
+            //    var childElements = Todo.App.Database.GetChildItems(work);
+            //    if (Todo.App.Database.GetChildItems(personal) != null)
+            //    {
+            //        foreach (Item it in childElements.Result)
+            //        {
+            //            Reports.Add(it);
+            //        }
+            //    }
+            //}
+            //else if (domain.Equals("community"))
+            //{
+            //    var childElements = Todo.App.Database.GetChildItems(community);
+            //    if (Todo.App.Database.GetChildItems(personal) != null)
+            //    {
+            //        foreach (Item it in childElements.Result)
+            //        {
+            //            Reports.Add(it);
+            //        }
+            //    }
+            //}
+            //else
+            //    Reports = null;
         }
     }
 }

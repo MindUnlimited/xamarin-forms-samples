@@ -59,7 +59,7 @@ namespace Todo.Views
 
             this.Spacing = 0;
 
-            StackLayout row = new StackLayout { Spacing = 0 };
+            StackLayout row = new StackLayout { Spacing = 0, VerticalOptions = LayoutOptions.FillAndExpand };
 
             row.Orientation = StackOrientation.Horizontal;
             middleBorder = new BoxView { Color = Color.White };
