@@ -152,8 +152,8 @@ namespace Todo.WinPhone
 
                     await Todo.App.Database.getContactsThatUseApp();
 
-                    message = string.Format("You are now logged in - {0}", Todo.App.Database.mobileServiceUser.UserId);
-                    MessageBox.Show(message);
+                    //message = string.Format("You are now logged in - {0}", Todo.App.Database.mobileServiceUser.UserId);
+                    //MessageBox.Show(message);
                 }
                 catch (Exception ex)
                 {
@@ -184,8 +184,7 @@ namespace Todo.WinPhone
 
         async Task MainPage_Loaded(object sender, RoutedEventArgs e)
         {
-            while (Todo.App.Database.mobileServiceUser == null)
-                await Authenticate();
+            await Authenticate();
 
             //refresh the page if just Authenticated, to update the items/groups
             if (justAuthenticated)

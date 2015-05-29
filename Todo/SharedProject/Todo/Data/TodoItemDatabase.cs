@@ -611,7 +611,7 @@ namespace Todo
 
         public async Task<IEnumerable<Item>> GetChildItems(Item parent)
         {
-            IEnumerable<Item> items = null;
+            List<Item> items = new List<Item>();
             if (userID != null)
             {
                 List<Group> groups = await getGroups(userID);
@@ -619,7 +619,26 @@ namespace Todo
 
                 try
                 {
-                    items = await itemTable.Where(it => groups_ids.Contains(it.OwnedBy) && it.Parent == parent.ID).ToListAsync();
+                    var goals = await itemTable.Where(it => groups_ids.Contains(it.OwnedBy) && it.Parent == parent.ID).ToListAsync();
+                    IEnumerable<string> goal_ids = from goal in goals select goal.ID;
+
+                    if (goals.Count > 0)
+                    {
+                        items.AddRange(goals);
+
+                        var projects = await itemTable.Where(it => groups_ids.Contains(it.OwnedBy) && goal_ids.Contains(it.Parent)).ToListAsync();
+                        IEnumerable<string> project_ids = from proj in projects select proj.ID;
+
+                        if (projects.Count > 0)
+                        {
+                            items.AddRange(projects);
+
+                            var tasks = await itemTable.Where(it => groups_ids.Contains(it.OwnedBy) && project_ids.Contains(it.Parent)).ToListAsync();
+
+                            if (tasks.Count > 0)
+                                items.AddRange(tasks);
+                        }
+                    }                   
                 }
                 catch (Exception e)
                 {

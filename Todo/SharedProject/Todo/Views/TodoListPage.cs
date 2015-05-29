@@ -161,6 +161,8 @@ namespace Todo
 
 			ToolbarItems.Add (tbi);
 
+
+
 			if (Device.OS == TargetPlatform.iOS) {
 				var tbi2 = new ToolbarItem ("?", null, () => {
                     var todos = App.Database.GetItemsNotDone().Result;

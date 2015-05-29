@@ -47,7 +47,7 @@ namespace Todo.Views
         }
         public string RightFooter { get { return rightLV.ItemsSource != null ? ((ICollection<Item>)rightLV.ItemsSource).Count.ToString() + " items" : "0 items"; } }
 
-        public DomainRow(ListView leftLV, ListView rightLV, int borderSize, RelativeLayout parentLayout, int rows)
+        public DomainRow(ListView leftLV, ListView rightLV, uint borderSize, RelativeLayout parentLayout, uint rows)
         {
             this.leftLV = leftLV;
             this.rightLV = rightLV;

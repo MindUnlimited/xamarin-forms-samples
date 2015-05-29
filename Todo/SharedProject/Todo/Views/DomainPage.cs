@@ -29,19 +29,20 @@ namespace Todo.Views
         };
 
         private bool expanded = false;
-        private DefaultDomains selected = DefaultDomains.None;
+        public Item selectedDomain = new Item { Name = "" };
 
-        private RelativeLayout objRelativeLayout;
+        private RelativeLayout objRelativeLayout = new RelativeLayout();
 
         //private DomainRow top;
         private ListView topLV;
         //private DomainRow bottom;
         private ListView bottomLV;
 
-        private int rows = 2;
-        private int columns = 2;
+        private uint rows = 2;
+        private uint columns = 2;
+        private uint animationms = 150;
 
-        private int borderSize = 1; // pixels
+        private uint borderSize = 1; // pixels
 
         private bool listsInitialized = false;
 
@@ -84,6 +85,19 @@ namespace Todo.Views
                     Item.OwnedBy = groups[Item.OwnedBy];
                 }
 
+                Dictionary<string, string> parentsDict = new Dictionary<string, string>();
+
+                parentsDict[Todo.App.selectedDomainPage.selectedDomain.ID] = Todo.App.selectedDomainPage.selectedDomain.Name;
+                foreach (Item item in viewModels[selectedDomain].Reports)
+                {
+                    parentsDict[item.ID] = item.Name;
+                }
+
+                if (Item.Parent != null && parentsDict.ContainsKey(Item.Parent))
+                {
+                    Item.Parent = parentsDict[Item.Parent];
+                }
+
                 var todoPage = new TodoItemPage();
                 todoPage.BindingContext = Item;
                 await Navigation.PushAsync(todoPage);
@@ -113,6 +127,19 @@ namespace Todo.Views
                     Item.OwnedBy = groups[Item.OwnedBy];
                 }
 
+                Dictionary<string, string> parentsDict = new Dictionary<string, string>();
+
+                parentsDict[Todo.App.selectedDomainPage.selectedDomain.ID] = Todo.App.selectedDomainPage.selectedDomain.Name;
+                foreach (Item item in viewModels[selectedDomain].Reports)
+                {
+                    parentsDict[item.ID] = item.Name;
+                }
+
+                if (Item.Parent != null && parentsDict.ContainsKey(Item.Parent))
+                {
+                    Item.Parent = parentsDict[Item.Parent];
+                }
+
                 var todoPage = new TodoItemPage();
                 todoPage.BindingContext = Item;
                 await Navigation.PushAsync(todoPage);
@@ -128,7 +155,7 @@ namespace Todo.Views
             {
                 tbi = new ToolbarItem("+", null, () =>
                 {
-                    if (selected != DefaultDomains.None)
+                    if (selectedDomain != null && selectedDomain.Name != null && selectedDomain.Name != "")
                     {
                         var Item = new Item();
                         var todoPage = new TodoItemPage();
@@ -141,27 +168,27 @@ namespace Todo.Views
             { // BUG: Android doesn't support the icon being null
                 tbi = new ToolbarItem("+", "plus", async () =>
                 {
-                    if (selected != DefaultDomains.None)
+                    if (selectedDomain != null && selectedDomain.Name != null && selectedDomain.Name != "")
                     {
                         var Item = new Item { Type = 2 };
 
                         var domains = Todo.App.selectedDomainPage.domains;
-                        if (selected == DefaultDomains.Personal)
+                        if (selectedDomain.Name == "Personal")
                         {
                             var friends = domains[0];
                             Item.Parent = friends.ID;
                         }
-                        else if (selected == DefaultDomains.Friends)
+                        else if (selectedDomain.Name == "Friends & Family")
                         {
                             var friends = domains[1];
                             Item.Parent = friends.ID;
                         }
-                        else if (selected == DefaultDomains.Work)
+                        else if (selectedDomain.Name == "Work")
                         {
                             var friends = domains[2];
                             Item.Parent = friends.ID;
                         }
-                        else if (selected == DefaultDomains.Community)
+                        else if (selectedDomain.Name == "Community")
                         {
                             var friends = domains[3];
                             Item.Parent = friends.ID;
@@ -177,27 +204,27 @@ namespace Todo.Views
             {
                 tbi = new ToolbarItem("Add", "add.png", async () =>
                 {
-                    if (selected != DefaultDomains.None)
+                    if (selectedDomain != null && selectedDomain.Name != null && selectedDomain.Name != "")
                     {
                         var Item = new Item { Type = 2 };
 
                         var domains = Todo.App.selectedDomainPage.domains;
-                        if (selected == DefaultDomains.Personal)
+                        if (selectedDomain.Name == "Personal")
                         {
                             var friends = domains[0];
                             Item.Parent = friends.ID;
                         }
-                        else if (selected == DefaultDomains.Friends)
+                        else if (selectedDomain.Name == "Friends & Family")
                         {
                             var friends = domains[1];
                             Item.Parent = friends.ID;
                         }
-                        else if (selected == DefaultDomains.Work)
+                        else if (selectedDomain.Name == "Work")
                         {
                             var friends = domains[2];
                             Item.Parent = friends.ID;
                         }
-                        else if (selected == DefaultDomains.Community)
+                        else if (selectedDomain.Name == "Community")
                         {
                             var friends = domains[3];
                             Item.Parent = friends.ID;
@@ -211,6 +238,25 @@ namespace Todo.Views
             }
 
             ToolbarItems.Add(tbi);
+
+            ToolbarItem modalTest = null;
+
+            if (Device.OS == TargetPlatform.Android)
+            { // BUG: Android doesn't support the icon being null
+                modalTest = new ToolbarItem("modal", "plus", async () =>
+                {
+                    await Navigation.PushAsync(new Todo.Views.ModalPage());
+                }, 0, 0);
+            }
+            if (Device.OS == TargetPlatform.WinPhone)
+            {
+                modalTest = new ToolbarItem("Modal", "add.png", async () =>
+                {
+                    await Navigation.PushModalAsync(new Todo.Views.ModalPage());
+                }, 0, 0);
+            }
+
+            ToolbarItems.Add(modalTest);
 
             if (Device.OS == TargetPlatform.iOS)
             {
@@ -229,7 +275,7 @@ namespace Todo.Views
 
             Appearing += (async (o, e) =>
                 {
-                    Todo.App.selectedDomainPage = this;
+                    //Todo.App.selectedDomainPage = this;
                     await Refresh();
                     //topLV.BeginRefresh();
                     //bottomLV.BeginRefresh();
@@ -241,14 +287,14 @@ namespace Todo.Views
 
         public async Task expandAnimation()
         {
-            selected = DefaultDomains.None;
+            selectedDomain = new Item { Name = "" };
 
             foreach (var row in rowList)
             {
                 row.showItems();
             }
 
-            await Refresh();
+            //await Refresh();
 
             topLV.ItemsSource = null;
             bottomLV.ItemsSource = null;
@@ -285,10 +331,8 @@ namespace Todo.Views
             bottomBorderBounds.Height = objRelativeLayout.Height / 2;
             bottomBorderBounds.Y = objRelativeLayout.Height / 2;
 
-            await Task.WhenAll(bottomBorders[domains[0]].LayoutTo(personalBottomBorderBounds, 250, Easing.Linear), bottomBorders[domains[1]].LayoutTo(friendsBottomBorderBounds, 250, Easing.Linear), bottomBorders[domains[2]].LayoutTo(workBottomBorderBounds, 250, Easing.Linear), bottomBorders[domains[3]].LayoutTo(communityBottomBorderBounds, 250, Easing.Linear), rowList[1].LayoutTo(bottomBorderBounds, 250, Easing.Linear), bottomLV.LayoutTo(bottomLVBorderBounds, 250, Easing.Linear), rowList[0].LayoutTo(topBorderBounds, 250, Easing.Linear), topLV.LayoutTo(topLVBorderBounds, 250, Easing.Linear));
+            await Task.WhenAll(bottomBorders[domains[0]].LayoutTo(personalBottomBorderBounds, animationms, Easing.Linear), bottomBorders[domains[1]].LayoutTo(friendsBottomBorderBounds, animationms, Easing.Linear), bottomBorders[domains[2]].LayoutTo(workBottomBorderBounds, animationms, Easing.Linear), bottomBorders[domains[3]].LayoutTo(communityBottomBorderBounds, animationms, Easing.Linear), rowList[1].LayoutTo(bottomBorderBounds, animationms, Easing.Linear), bottomLV.LayoutTo(bottomLVBorderBounds, animationms, Easing.Linear), rowList[0].LayoutTo(topBorderBounds, animationms, Easing.Linear), topLV.LayoutTo(topLVBorderBounds, animationms, Easing.Linear));
             expanded = false;
-
-            this.ForceLayout();
         }
 
         public async Task Refresh()
@@ -321,7 +365,7 @@ namespace Todo.Views
                         {
                             RowHeight = 40,
                             ItemTemplate = new DataTemplate(typeof(TodoItemCell)),
-                            ItemsSource = (IEnumerable<Item>)viewModels[it].Reports
+                            ItemsSource = viewModels[it].Reports
                         };
                         bottomBorders[it] = new BoxView { Color = Color.White };
                     }
@@ -381,7 +425,7 @@ namespace Todo.Views
                         ,
                         heightConstraint: Constraint.RelativeToParent((parent) =>
                         {
-                            return (selected == DefaultDomains.Personal ? 0 : borderSize);
+                            return (selectedDomain.Name == "Personal" ? 0 : borderSize);
                         })
                         );
 
@@ -402,7 +446,7 @@ namespace Todo.Views
                         ,
                         heightConstraint: Constraint.RelativeToParent((parent) =>
                         {
-                            return (selected == DefaultDomains.Friends ? 0 : borderSize);
+                            return (selectedDomain.Name == "Friends & Family" ? 0 : borderSize);
                         })
                         );
 
@@ -420,7 +464,7 @@ namespace Todo.Views
                         ,
                         heightConstraint: Constraint.RelativeToParent((parent) =>
                         {
-                            return (expanded && selected == DefaultDomains.Personal || selected == DefaultDomains.Friends ? parent.Height * 0.8 : 0);
+                            return (expanded && selectedDomain.Name == "Personal" || selectedDomain.Name == "Friends & Family" ? parent.Height * 0.8 : 0);
                         })
                         );
 
@@ -469,7 +513,7 @@ namespace Todo.Views
                         ,
                         heightConstraint: Constraint.RelativeToParent((parent) =>
                         {
-                            return (selected == DefaultDomains.Work ? 0 : borderSize);
+                            return (selectedDomain.Name == "Work" ? 0 : borderSize);
                         })
                         );
 
@@ -490,7 +534,7 @@ namespace Todo.Views
                         ,
                         heightConstraint: Constraint.RelativeToParent((parent) =>
                         {
-                            return (selected == DefaultDomains.Community ? 0 : borderSize);
+                            return (selectedDomain.Name == "Community" ? 0 : borderSize);
                         })
                         );
 
@@ -508,7 +552,7 @@ namespace Todo.Views
                         ,
                         heightConstraint: Constraint.RelativeToParent((parent) =>
                         {
-                            return (expanded && selected == DefaultDomains.Work || selected == DefaultDomains.Community ? parent.Height * 0.8 : 0);
+                            return (expanded && selectedDomain.Name == "Work" || selectedDomain.Name == "Community" ? parent.Height * 0.8 : 0);
                         })
                         );
 
@@ -525,16 +569,16 @@ namespace Todo.Views
                             leftOverlay.Clicked += (async (obj, ev) =>
                             {
                                 // collapse
-                                if (expanded && selected == DefaultDomains.Personal)
+                                if (expanded && selectedDomain.Name == "Personal")
                                 {
                                     await expandAnimation();
                                 }
                                 // collapse personal expand selected
                                 else if (expanded)
                                 {
-                                    if (selected == DefaultDomains.Friends)
+                                    if (selectedDomain.Name == "Friends & Family")
                                     {
-                                        selected = DefaultDomains.Personal;
+                                        selectedDomain = domains.Find(x => x.Name == "Personal");// DefaultDomains.Personal;
                                         //topLV.ItemsSource = array;      
 
                                         if (listViews[domains[0]] != null)
@@ -544,7 +588,7 @@ namespace Todo.Views
                                     }
                                     else
                                     {
-                                        selected = DefaultDomains.Personal;
+                                        selectedDomain = domains.Find(x => x.Name == "Personal");
                                         rowList[0].hideItems();
                                         rowList[1].hideItems();
 
@@ -578,13 +622,13 @@ namespace Todo.Views
                                         bottomLVBounds.Height = 0;
                                         bottomLVBounds.Y = objRelativeLayout.Height;
 
-                                        await Task.WhenAll(bottomBorders[domains[0]].LayoutTo(personalBottomBorderBounds, 250, Easing.Linear), bottomBorders[domains[2]].LayoutTo(workBottomBorderBounds, 250, Easing.Linear), bottomBorders[domains[3]].LayoutTo(communityBottomBorderBounds, 250, Easing.Linear), rowList[1].LayoutTo(bottomBorderBounds, 250, Easing.Linear), rowList[0].LayoutTo(topBorderBounds, 250, Easing.Linear), bottomLV.LayoutTo(bottomLVBounds, 250, Easing.Linear));
+                                        await Task.WhenAll(bottomBorders[domains[0]].LayoutTo(personalBottomBorderBounds, animationms, Easing.Linear), bottomBorders[domains[2]].LayoutTo(workBottomBorderBounds, animationms, Easing.Linear), bottomBorders[domains[3]].LayoutTo(communityBottomBorderBounds, animationms, Easing.Linear), rowList[1].LayoutTo(bottomBorderBounds, animationms, Easing.Linear), rowList[0].LayoutTo(topBorderBounds, animationms, Easing.Linear), bottomLV.LayoutTo(bottomLVBounds, animationms, Easing.Linear));
 
                                     }
                                 }
                                 else
                                 {
-                                    selected = DefaultDomains.Personal;
+                                    selectedDomain = domains.Find(x => x.Name == "Personal");
                                     expanded = true;
 
                                     rowList[0].hideItems();
@@ -612,7 +656,7 @@ namespace Todo.Views
                                     bottomBorderBounds.Height = objRelativeLayout.Height / 10;
                                     bottomBorderBounds.Y = objRelativeLayout.Height / 10 * 9;
 
-                                    await Task.WhenAll(bottomBorders[domains[0]].LayoutTo(personalBottomBorderBounds, 250, Easing.Linear), bottomBorders[domains[1]].LayoutTo(friendsBottomBorderBounds, 250, Easing.Linear), rowList[1].LayoutTo(bottomBorderBounds, 250, Easing.Linear), rowList[0].LayoutTo(topBorderBounds, 250, Easing.Linear));
+                                    await Task.WhenAll(bottomBorders[domains[0]].LayoutTo(personalBottomBorderBounds, animationms, Easing.Linear), bottomBorders[domains[1]].LayoutTo(friendsBottomBorderBounds, animationms, Easing.Linear), rowList[1].LayoutTo(bottomBorderBounds, animationms, Easing.Linear), rowList[0].LayoutTo(topBorderBounds, animationms, Easing.Linear));
 
                                 }
                                 objRelativeLayout.ForceLayout();
@@ -621,16 +665,16 @@ namespace Todo.Views
                             rightOverlay.Clicked += (async (obj, ev) =>
                             {
                                 // collapse
-                                if (expanded && selected == DefaultDomains.Friends)
+                                if (expanded && selectedDomain.Name == "Friends & Family")
                                 {
                                     await expandAnimation();
                                 }
                                 // collapse personal expand selected
                                 else if (expanded)
                                 {
-                                    if (selected == DefaultDomains.Personal)
+                                    if (selectedDomain.Name == "Personal")
                                     {
-                                        selected = DefaultDomains.Friends;
+                                        selectedDomain = domains.Find(x => x.Name == "Friends & Family");
 
                                         if (listViews[domains[1]] != null)
                                         {
@@ -641,7 +685,7 @@ namespace Todo.Views
                                     }
                                     else
                                     {
-                                        selected = DefaultDomains.Friends;
+                                        selectedDomain = domains.Find(x => x.Name == "Friends & Family");
                                         rowList[1].hideItems();
                                         rowList[0].hideItems();
 
@@ -676,13 +720,13 @@ namespace Todo.Views
                                         bottomLVBounds.Height = 0;
                                         bottomLVBounds.Y = objRelativeLayout.Height;
 
-                                        await Task.WhenAll(bottomBorders[domains[1]].LayoutTo(friendsBottomBorderBounds, 250, Easing.Linear), bottomBorders[domains[2]].LayoutTo(workBottomBorderBounds, 250, Easing.Linear), bottomBorders[domains[3]].LayoutTo(communityBottomBorderBounds, 250, Easing.Linear), rowList[1].LayoutTo(bottomBorderBounds, 250, Easing.Linear), rowList[0].LayoutTo(topBorderBounds, 250, Easing.Linear), bottomLV.LayoutTo(bottomLVBounds, 250, Easing.Linear));
+                                        await Task.WhenAll(bottomBorders[domains[1]].LayoutTo(friendsBottomBorderBounds, animationms, Easing.Linear), bottomBorders[domains[2]].LayoutTo(workBottomBorderBounds, animationms, Easing.Linear), bottomBorders[domains[3]].LayoutTo(communityBottomBorderBounds, animationms, Easing.Linear), rowList[1].LayoutTo(bottomBorderBounds, animationms, Easing.Linear), rowList[0].LayoutTo(topBorderBounds, animationms, Easing.Linear), bottomLV.LayoutTo(bottomLVBounds, animationms, Easing.Linear));
 
                                     }
                                 }
                                 else
                                 {
-                                    selected = DefaultDomains.Friends;
+                                    selectedDomain = domains.Find(x => x.Name == "Friends & Family");
                                     expanded = true;
                                     rowList[0].hideItems();
                                     rowList[1].hideItems();
@@ -702,7 +746,7 @@ namespace Todo.Views
                                     bottomBorderBounds.Height = objRelativeLayout.Height / 10;
                                     bottomBorderBounds.Y = objRelativeLayout.Height / 10 * 9;
 
-                                    await Task.WhenAll(bottomBorders[domains[0]].LayoutTo(personalBottomBorderBounds, 250, Easing.Linear), bottomBorders[domains[1]].LayoutTo(friendsBottomBorderBounds, 250, Easing.Linear), rowList[1].LayoutTo(bottomBorderBounds, 250, Easing.Linear), rowList[0].LayoutTo(topBorderBounds, 250, Easing.Linear));
+                                    await Task.WhenAll(bottomBorders[domains[0]].LayoutTo(personalBottomBorderBounds, animationms, Easing.Linear), bottomBorders[domains[1]].LayoutTo(friendsBottomBorderBounds, animationms, Easing.Linear), rowList[1].LayoutTo(bottomBorderBounds, animationms, Easing.Linear), rowList[0].LayoutTo(topBorderBounds, animationms, Easing.Linear));
 
                                     if (listViews[domains[1]] != null)
                                     {
@@ -765,16 +809,16 @@ namespace Todo.Views
                             leftOverlay.Clicked += (async (obj, ev) =>
                             {
                                 // collapse
-                                if (expanded && selected == DefaultDomains.Work)
+                                if (expanded && selectedDomain.Name == "Work")
                                 {
                                     await expandAnimation();
                                 }
                                 // collapse personal expand selected
                                 else if (expanded)
                                 {
-                                    if (selected == DefaultDomains.Community)
+                                    if (selectedDomain.Name == "Community")
                                     {
-                                        selected = DefaultDomains.Work;
+                                        selectedDomain = domains.Find(x => x.Name == "Work");
 
                                         if (listViews[domains[2]] != null)
                                         {
@@ -785,7 +829,7 @@ namespace Todo.Views
                                     }
                                     else
                                     {
-                                        selected = DefaultDomains.Work;
+                                        selectedDomain = domains.Find(x => x.Name == "Work");
                                         rowList[0].hideItems();
                                         rowList[1].hideItems();
 
@@ -819,13 +863,13 @@ namespace Todo.Views
                                         topLVBounds.Height = 0;
 
                                         // Actually moves the elements over
-                                        await Task.WhenAll(bottomBorders[domains[0]].LayoutTo(personalBottomBorderBounds, 250, Easing.Linear), bottomBorders[domains[1]].LayoutTo(friendsBottomBorderBounds, 250, Easing.Linear), bottomBorders[domains[3]].LayoutTo(communityBottomBorderBounds, 250, Easing.Linear), rowList[1].LayoutTo(bottomBorderBounds, 250, Easing.Linear), rowList[0].LayoutTo(topBorderBounds, 250, Easing.Linear), topLV.LayoutTo(topLVBounds, 250, Easing.Linear));
+                                        await Task.WhenAll(bottomBorders[domains[0]].LayoutTo(personalBottomBorderBounds, animationms, Easing.Linear), bottomBorders[domains[1]].LayoutTo(friendsBottomBorderBounds, animationms, Easing.Linear), bottomBorders[domains[3]].LayoutTo(communityBottomBorderBounds, animationms, Easing.Linear), rowList[1].LayoutTo(bottomBorderBounds, animationms, Easing.Linear), rowList[0].LayoutTo(topBorderBounds, animationms, Easing.Linear), topLV.LayoutTo(topLVBounds, animationms, Easing.Linear));
 
                                     }
                                 }
                                 else
                                 {
-                                    selected = DefaultDomains.Work;
+                                    selectedDomain = domains.Find(x => x.Name == "Work");
                                     expanded = true;
                                     rowList[1].hideItems();
                                     rowList[0].hideItems();
@@ -856,7 +900,7 @@ namespace Todo.Views
                                     bottomBorderBounds.Y = objRelativeLayout.Height / 10;
 
                                     // Actually moves the elements over
-                                    await Task.WhenAll(bottomBorders[domains[0]].LayoutTo(personalBottomBorderBounds, 250, Easing.Linear), bottomBorders[domains[1]].LayoutTo(friendsBottomBorderBounds, 250, Easing.Linear), bottomBorders[domains[3]].LayoutTo(communityBottomBorderBounds, 250, Easing.Linear), rowList[1].LayoutTo(bottomBorderBounds, 250, Easing.Linear), rowList[0].LayoutTo(topBorderBounds, 250, Easing.Linear));
+                                    await Task.WhenAll(bottomBorders[domains[0]].LayoutTo(personalBottomBorderBounds, animationms, Easing.Linear), bottomBorders[domains[1]].LayoutTo(friendsBottomBorderBounds, animationms, Easing.Linear), bottomBorders[domains[3]].LayoutTo(communityBottomBorderBounds, animationms, Easing.Linear), rowList[1].LayoutTo(bottomBorderBounds, animationms, Easing.Linear), rowList[0].LayoutTo(topBorderBounds, animationms, Easing.Linear));
 
                                 }
                                 objRelativeLayout.ForceLayout();
@@ -866,16 +910,16 @@ namespace Todo.Views
                             rightOverlay.Clicked += (async (obj, ev) =>
                             {
                                 // collapse
-                                if (expanded && selected == DefaultDomains.Community)
+                                if (expanded && selectedDomain.Name == "Community")
                                 {
                                     await expandAnimation();
                                 }
                                 // collapse personal expand selected
                                 else if (expanded)
                                 {
-                                    if (selected == DefaultDomains.Work)
+                                    if (selectedDomain.Name == "Work")
                                     {
-                                        selected = DefaultDomains.Community;
+                                        selectedDomain = domains.Find(x => x.Name == "Community");
 
                                         if (listViews[domains[3]] != null)
                                         {
@@ -886,7 +930,7 @@ namespace Todo.Views
                                     }
                                     else
                                     {
-                                        selected = DefaultDomains.Community;
+                                        selectedDomain = domains.Find(x => x.Name == "Community");
                                         rowList[0].hideItems();
                                         rowList[1].hideItems();
                                         if (listViews[domains[3]] != null)
@@ -919,13 +963,13 @@ namespace Todo.Views
                                         topLVBounds.Height = 0;
 
                                         // Actually moves the elements over
-                                        await Task.WhenAll(bottomBorders[domains[0]].LayoutTo(personalBottomBorderBounds, 250, Easing.Linear), bottomBorders[domains[1]].LayoutTo(friendsBottomBorderBounds, 250, Easing.Linear), bottomBorders[domains[2]].LayoutTo(workBottomBorderBounds, 250, Easing.Linear), rowList[1].LayoutTo(bottomBorderBounds, 250, Easing.Linear), rowList[0].LayoutTo(topBorderBounds, 250, Easing.Linear), topLV.LayoutTo(topLVBounds, 250, Easing.Linear));
+                                        await Task.WhenAll(bottomBorders[domains[0]].LayoutTo(personalBottomBorderBounds, animationms, Easing.Linear), bottomBorders[domains[1]].LayoutTo(friendsBottomBorderBounds, animationms, Easing.Linear), bottomBorders[domains[2]].LayoutTo(workBottomBorderBounds, animationms, Easing.Linear), rowList[1].LayoutTo(bottomBorderBounds, animationms, Easing.Linear), rowList[0].LayoutTo(topBorderBounds, animationms, Easing.Linear), topLV.LayoutTo(topLVBounds, animationms, Easing.Linear));
 
                                     }
                                 }
                                 else
                                 {
-                                    selected = DefaultDomains.Community;
+                                    selectedDomain = domains.Find(x => x.Name == "Community");
                                     expanded = true;
                                     rowList[1].hideItems();
                                     rowList[0].hideItems();
@@ -949,7 +993,7 @@ namespace Todo.Views
                                     bottomBorderBounds.Y = objRelativeLayout.Height / 10;
 
                                     // Actually moves the elements over
-                                    await Task.WhenAll(bottomBorders[domains[0]].LayoutTo(personalBottomBorderBounds, 250, Easing.Linear), bottomBorders[domains[1]].LayoutTo(friendsBottomBorderBounds, 250, Easing.Linear), bottomBorders[domains[2]].LayoutTo(workBottomBorderBounds, 250, Easing.Linear), rowList[1].LayoutTo(bottomBorderBounds, 250, Easing.Linear), rowList[0].LayoutTo(topBorderBounds, 250, Easing.Linear));
+                                    await Task.WhenAll(bottomBorders[domains[0]].LayoutTo(personalBottomBorderBounds, animationms, Easing.Linear), bottomBorders[domains[1]].LayoutTo(friendsBottomBorderBounds, animationms, Easing.Linear), bottomBorders[domains[2]].LayoutTo(workBottomBorderBounds, animationms, Easing.Linear), rowList[1].LayoutTo(bottomBorderBounds, animationms, Easing.Linear), rowList[0].LayoutTo(topBorderBounds, animationms, Easing.Linear));
 
                                     if (listViews[domains[3]] != null)
                                     {

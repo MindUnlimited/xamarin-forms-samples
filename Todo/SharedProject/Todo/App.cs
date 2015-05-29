@@ -14,6 +14,7 @@ namespace Todo
         public static DomainPage urgentDPage = new DomainPage(DomainPages.Urgent);
         public static DomainPage currentDPage = new DomainPage(DomainPages.Current);
         public static DomainPage completedDPage = new DomainPage(DomainPages.Completed);
+        public static InboxPage inboxDPage = new InboxPage();
 
         public enum DomainPages
         {
@@ -21,7 +22,8 @@ namespace Todo
             Important,
             Urgent,
             Current,
-            Completed
+            Completed,
+            Inbox
         };
 
         public App()
@@ -38,12 +40,16 @@ namespace Todo
             var completedPage = new NavigationPage(completedDPage);
             completedPage.Title = "Completed";
 
+            var inboxPage = new NavigationPage(inboxDPage);
+            inboxPage.Title = "Inbox";
+
             TabbedPage domainTabsPage = new TabbedPage();
 
             domainTabsPage.Children.Add(importantPage);
             domainTabsPage.Children.Add(urgentPage);
             domainTabsPage.Children.Add(currentPage);
             domainTabsPage.Children.Add(completedPage);
+            domainTabsPage.Children.Add(inboxPage);
 
             domainTabsPage.CurrentPageChanged += (async (o, e) =>
             {
@@ -65,12 +71,38 @@ namespace Todo
                         selectedDomainPage = completedDPage;
                         await completedDPage.Refresh();
                         break;
+                    case "Inbox":
+                        selectedDomainPage = null;
+                        inboxDPage.Refresh();
+                        break;
                     default:
                         break;
                 }
             });
 
+            switch (domainTabsPage.CurrentPage.Title)
+            {
+                case "Important":
+                    selectedDomainPage = importantDPage;
+                    break;
+                case "Urgent":
+                    selectedDomainPage = urgentDPage;
+                    break;
+                case "Current":
+                    selectedDomainPage = currentDPage;
+                    break;
+                case "Completed":
+                    selectedDomainPage = completedDPage;
+                    break;
+                case "Inbox":
+                    selectedDomainPage = null;
+                    break;
+                default:
+                    break;
+            }
+
             MainPage = domainTabsPage;
+
             //MainPage = new NavigationPage(domainTabsPage); // The root page of your application
 
             //MainPage = new NavigationPage(new FormsGallery.GridDemoPage());//GetMainPage(); // property new in 1.3

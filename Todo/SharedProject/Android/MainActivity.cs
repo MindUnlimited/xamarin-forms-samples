@@ -24,7 +24,7 @@ using Gcm.Client; // google cloud messaging (push)
 [assembly: Dependency(typeof(Todo.Android.MainActivity))]
 namespace Todo.Android
 {
-	[Activity (Label = "MindSet", Icon = "@drawable/icon", MainLauncher = true, ConfigurationChanges = 
+	[Activity (Label = "MindSet", Icon = "@drawable/LogoMindSet128x128", MainLauncher = true, ConfigurationChanges = 
         ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsApplicationActivity, Logout // superclass new in 1.3
 	{

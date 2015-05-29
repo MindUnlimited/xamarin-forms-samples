@@ -31,7 +31,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Views\DomainPage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\DomainRow.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\GridDemoPage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Views\InboxPage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\KategorienViewCell.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Views\ModalPage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\MultiSelect.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\TodoGroupCell.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\TodoGroupListPage.cs" />

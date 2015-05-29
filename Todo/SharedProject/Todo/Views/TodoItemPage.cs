@@ -8,6 +8,7 @@ using System.Diagnostics;
 using Todo.Views;
 using Todo.Views.Controls;
 using SolTech.Forms;
+using System.Collections.ObjectModel;
 //using SolTech.Forms;
 
 namespace Todo
@@ -16,7 +17,10 @@ namespace Todo
 	{
 		public TodoItemPage ()
 		{
+            Item Item = null;
+            ObservableCollection<Item> availableItems = new ObservableCollection<Item>();
             List<Group> availableGroups = new List<Group>();
+
             Group defGroup;
             //Task.Run(async () => { defGroup = await Todo.App.Database.getDefaultGroup(Todo.App.Database.userID); });
             //Task.Run(async () => { availableGroups = await Todo.App.Database.getGroups(Todo.App.Database.userID); }); //task.run part is necessary, behaves as await
@@ -28,6 +32,11 @@ namespace Todo
 
                 var _defGroup = Todo.App.Database.getDefaultGroup(Todo.App.Database.userID);
                 defGroup = _defGroup.Result;
+
+                var test1 = Todo.App.selectedDomainPage.selectedDomain;
+                var keys = Todo.App.selectedDomainPage.viewModels.Keys;
+                var test = Todo.App.selectedDomainPage.viewModels[Todo.App.selectedDomainPage.selectedDomain].Reports;
+                availableItems = Todo.App.selectedDomainPage.viewModels[Todo.App.selectedDomainPage.selectedDomain].Reports;
             }
 
 
@@ -57,7 +66,8 @@ namespace Todo
 
 
 
-            var ownedLabel = new Label { Text = "Owned By" };
+            
+
 
 
 
@@ -115,10 +125,11 @@ namespace Todo
         //    </DataTrigger>
         //</Style.Triggers>
 
+            var ownedLabel = new Label { Text = "Shared With" };
 
             BindablePicker ownedPicker = new BindablePicker
             {
-                Title = "Owned By",
+                Title = "Shared With",
                 VerticalOptions = LayoutOptions.CenterAndExpand
             };
 
@@ -138,10 +149,48 @@ namespace Todo
 
 
 
-            var typeLabel = new Label { Text = "Type" };
-            var typeEntry = new Entry();
+            var parentLabel = new Label { Text = "Parent" };
 
-            typeEntry.SetBinding(Entry.TextProperty, "Type");
+            BindablePicker parentPicker = new BindablePicker
+            {
+                Title = "Parent",
+                VerticalOptions = LayoutOptions.CenterAndExpand
+            };
+
+            
+
+            Dictionary<string, string> items = new Dictionary<string, string>();
+
+            items[Todo.App.selectedDomainPage.selectedDomain.Name] = Todo.App.selectedDomainPage.selectedDomain.ID;
+            parentPicker.Items.Add(Todo.App.selectedDomainPage.selectedDomain.Name);
+
+            //this.BindingContextChanged += ((o, e) => {
+            //    Item = (Item)BindingContext;
+
+            //    parentPicker.Items.Clear();
+            //    items.Clear();
+
+            //    foreach (Item item in availableItems)
+            //    {
+            //        if (Item != null && item.ID != Item.ID)
+            //        {
+            //            parentPicker.Items.Add(item.Name);
+            //            items[item.Name] = item.ID;
+            //        }
+            //    }
+            //});
+
+            foreach (Item item in availableItems)
+            {
+                parentPicker.Items.Add(item.Name);
+                items[item.Name] = item.ID;
+            }
+
+
+            //ownedPicker.ItemsSource = groupNameIDIENumerable;
+            //ownedPicker2.ItemsSource = groupNameIDList;
+
+            parentPicker.SetBinding(BindablePicker.SelectedItemProperty, "Parent", BindingMode.TwoWay);
 
             //var createdLabel = new Label { Text = "Created By" };
             //var createdEntry = new Entry();
@@ -155,12 +204,22 @@ namespace Todo
 			var saveButton = new Button { Text = "Save" };
 			saveButton.Clicked += async (sender, e) => {
                 var selected = ownedPicker.SelectedItem;
-				Item Item = (Item)BindingContext;
+				Item = (Item)BindingContext;
                 Boolean itemIsNew = Item.Version == null;
                 if (Item.OwnedBy != null)
                 {
                     if (!groups.ContainsValue(Item.OwnedBy) && groups.ContainsKey(Item.OwnedBy))
                         Item.OwnedBy = groups[Item.OwnedBy];
+
+                    if (Item.Parent != null)
+                    {
+                        if (!items.ContainsValue(Item.Parent) && items.ContainsKey(Item.Parent))
+                            Item.Parent = items[Item.Parent];
+                    }
+
+                    var parentItem = await Todo.App.Database.GetItem(Item.Parent);
+                    Item.Type = parentItem.Type + 1;
+
                     //ownedPicker.OnSelectedItemChanged(BoundPicker.SelectedItemProperty, Item.OwnedBy, Item.OwnedBy);
                     //var old_value = Item.OwnedBy;
                         
@@ -173,6 +232,8 @@ namespace Todo
                     await App.Database.SaveItem(Item); // add to DB
                     Item = await App.Database.GetItem(Item.ID); // DB added (new) version so need to change the Item
                     //Item.OwnedBy = old_value;
+
+                    
 
                     var domains = Todo.App.selectedDomainPage.domains;
 
@@ -215,41 +276,55 @@ namespace Todo
 
 			var deleteButton = new Button { Text = "Delete" };
 			deleteButton.Clicked += async (sender, e) => {
-				Item Item = (Item)BindingContext;
-				await App.Database.DeleteItem(Item);
+				Item = (Item)BindingContext;
+                Item selectedDomain = Todo.App.selectedDomainPage.selectedDomain;
+                int numberOfDirectChildren = Todo.App.selectedDomainPage.viewModels[selectedDomain].Reports.Where(x => x.Parent == Item.ID).Count();
 
-                var domains = Todo.App.selectedDomainPage.domains;
-
-                string domainName = null;
-                Item selectedDomain = null;
-                foreach (var dom in domains)
+                if (numberOfDirectChildren > 0) // still items under this item!
                 {
-                    if (dom.ID == Item.Parent)
+                    Debug.WriteLine("this item still has children!");
+                    var answer = await DisplayAlert ("This item has links to other items", "Are you sure you want to delete this item AND the items linking to it?", "Yes", "No");
+                    Debug.WriteLine("Answer: " + answer); // writes true or false to the console
+                }
+                else
+                {
+                    await App.Database.DeleteItem(Item);
+
+                    var domains = Todo.App.selectedDomainPage.domains;
+
+                    string domainName = null;
+
+                    foreach (var dom in domains)
                     {
-                        domainName = dom.Name;
-                        selectedDomain = dom;
-                        break;
+                        if (dom.ID == Item.Parent)
+                        {
+                            domainName = dom.Name;
+                            selectedDomain = dom;
+                            break;
+                        }
                     }
+
+                    if (domainName != null)
+                    {
+                        Todo.App.selectedDomainPage.viewModels[selectedDomain].Reports.Remove(Item);
+                    }
+
+                    await this.Navigation.PopAsync();
                 }
 
-                if (domainName != null)
-                {
-                    Todo.App.selectedDomainPage.viewModels[selectedDomain].Reports.Remove(Item);
-                }
 
-                await this.Navigation.PopAsync();
 			};
 							
 			var cancelButton = new Button { Text = "Cancel" };
 			cancelButton.Clicked += async (sender, e) => {
-				Item Item = (Item)BindingContext;
+				Item = (Item)BindingContext;
                 await this.Navigation.PopAsync();
 			};
 
 
 			var speakButton = new Button { Text = "Speak" };
 			speakButton.Clicked += (sender, e) => {
-				Item Item = (Item)BindingContext;
+				Item = (Item)BindingContext;
                 string spokenText;
                 if (Item.Status == 7)
                     spokenText = Item.Name + ", this item is completed";
@@ -287,7 +362,7 @@ namespace Todo
 					            statusLabel, statusEntry,
                                 //ownedLabel, ownedEntry,
                                 ownedLabel, ownedPicker,
-                                typeLabel, typeEntry
+                                parentLabel, parentPicker
 				            }
                         }
 
