@@ -16,8 +16,15 @@ namespace Forms2Native.WinPhone
         {
             base.OnElementChanged(e);
 
+            var listbox = new ReorderListBox.ReorderListBox();
+
+            string[] items = { "een", "twee" };
+            listbox.ItemsSource = items;
+            listbox.IsReorderEnabled = true;
+
+
             var p = new MyThirdNativePage();
-            this.Children.Add(p);
+            this.Children.Add(listbox);
         }      
     }
 }

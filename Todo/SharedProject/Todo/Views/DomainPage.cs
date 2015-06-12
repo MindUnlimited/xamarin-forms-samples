@@ -34,9 +34,9 @@ namespace Todo.Views
         private RelativeLayout objRelativeLayout = new RelativeLayout();
 
         //private DomainRow top;
-        private ListView topLV;
+        private ReorderListPage topLV;
         //private DomainRow bottom;
-        private ListView bottomLV;
+        private ReorderListPage bottomLV;
 
         private uint rows = 2;
         private uint columns = 2;
@@ -61,89 +61,89 @@ namespace Todo.Views
                 Orientation = StackOrientation.Vertical,
             };
 
-            topLV = new ListView { ItemTemplate = new DataTemplate(typeof(TodoItemCellBig))};
+            topLV = new ReorderListPage();//new ListView { ItemTemplate = new DataTemplate(typeof(TodoItemCellBig))};
 
-            topLV.ItemSelected += async (sender, e) =>
-            {
-                var Item = (Item)e.SelectedItem;
+            //topLV.ItemSelected += async (sender, e) =>
+            //{
+            //    var Item = (Item)e.SelectedItem;
 
-                List<Group> availableGroups = new List<Group>();
-                if (Todo.App.Database.userID != null)
-                {
-                    var _groups = await Todo.App.Database.getGroups(Todo.App.Database.userID);
-                    availableGroups.AddRange(_groups);
-                }
+            //    List<Group> availableGroups = new List<Group>();
+            //    if (Todo.App.Database.userID != null)
+            //    {
+            //        var _groups = await Todo.App.Database.getGroups(Todo.App.Database.userID);
+            //        availableGroups.AddRange(_groups);
+            //    }
 
-                Dictionary<string, string> groups = new Dictionary<string, string>();
-                foreach (Group group in availableGroups)
-                {
-                    groups[group.ID] = group.Name;
-                }
+            //    Dictionary<string, string> groups = new Dictionary<string, string>();
+            //    foreach (Group group in availableGroups)
+            //    {
+            //        groups[group.ID] = group.Name;
+            //    }
 
-                if (Item.OwnedBy != null && groups.ContainsKey(Item.OwnedBy))
-                {
-                    Item.OwnedBy = groups[Item.OwnedBy];
-                }
+            //    if (Item.OwnedBy != null && groups.ContainsKey(Item.OwnedBy))
+            //    {
+            //        Item.OwnedBy = groups[Item.OwnedBy];
+            //    }
 
-                Dictionary<string, string> parentsDict = new Dictionary<string, string>();
+            //    Dictionary<string, string> parentsDict = new Dictionary<string, string>();
 
-                parentsDict[Todo.App.selectedDomainPage.selectedDomain.ID] = Todo.App.selectedDomainPage.selectedDomain.Name;
-                foreach (Item item in viewModels[selectedDomain].Reports)
-                {
-                    parentsDict[item.ID] = item.Name;
-                }
+            //    parentsDict[Todo.App.selectedDomainPage.selectedDomain.ID] = Todo.App.selectedDomainPage.selectedDomain.Name;
+            //    foreach (Item item in viewModels[selectedDomain].Reports)
+            //    {
+            //        parentsDict[item.ID] = item.Name;
+            //    }
 
-                if (Item.Parent != null && parentsDict.ContainsKey(Item.Parent))
-                {
-                    Item.Parent = parentsDict[Item.Parent];
-                }
+            //    if (Item.Parent != null && parentsDict.ContainsKey(Item.Parent))
+            //    {
+            //        Item.Parent = parentsDict[Item.Parent];
+            //    }
 
-                var todoPage = new TodoItemPage();
-                todoPage.BindingContext = Item;
-                await Navigation.PushAsync(todoPage);
-            };
+            //    var todoPage = new TodoItemPage();
+            //    todoPage.BindingContext = Item;
+            //    await Navigation.PushAsync(todoPage);
+            //};
 
-            bottomLV = new ListView { ItemTemplate = new DataTemplate(typeof(TodoItemCellBig)) };
+            bottomLV = new ReorderListPage();//new ListView { ItemTemplate = new DataTemplate(typeof(TodoItemCellBig)) };
 
-            bottomLV.ItemSelected += async (sender, e) =>
-            {
-                var Item = (Item)e.SelectedItem;
+            //bottomLV.ItemSelected += async (sender, e) =>
+            //{
+            //    var Item = (Item)e.SelectedItem;
 
-                List<Group> availableGroups = new List<Group>();
-                if (Todo.App.Database.userID != null)
-                {
-                    var _groups = await Todo.App.Database.getGroups(Todo.App.Database.userID);
-                    availableGroups.AddRange(_groups);
-                }
+            //    List<Group> availableGroups = new List<Group>();
+            //    if (Todo.App.Database.userID != null)
+            //    {
+            //        var _groups = await Todo.App.Database.getGroups(Todo.App.Database.userID);
+            //        availableGroups.AddRange(_groups);
+            //    }
 
-                Dictionary<string, string> groups = new Dictionary<string, string>();
-                foreach (Group group in availableGroups)
-                {
-                    groups[group.ID] = group.Name;
-                }
+            //    Dictionary<string, string> groups = new Dictionary<string, string>();
+            //    foreach (Group group in availableGroups)
+            //    {
+            //        groups[group.ID] = group.Name;
+            //    }
 
-                if (Item.OwnedBy != null && groups.ContainsKey(Item.OwnedBy))
-                {
-                    Item.OwnedBy = groups[Item.OwnedBy];
-                }
+            //    if (Item.OwnedBy != null && groups.ContainsKey(Item.OwnedBy))
+            //    {
+            //        Item.OwnedBy = groups[Item.OwnedBy];
+            //    }
 
-                Dictionary<string, string> parentsDict = new Dictionary<string, string>();
+            //    Dictionary<string, string> parentsDict = new Dictionary<string, string>();
 
-                parentsDict[Todo.App.selectedDomainPage.selectedDomain.ID] = Todo.App.selectedDomainPage.selectedDomain.Name;
-                foreach (Item item in viewModels[selectedDomain].Reports)
-                {
-                    parentsDict[item.ID] = item.Name;
-                }
+            //    parentsDict[Todo.App.selectedDomainPage.selectedDomain.ID] = Todo.App.selectedDomainPage.selectedDomain.Name;
+            //    foreach (Item item in viewModels[selectedDomain].Reports)
+            //    {
+            //        parentsDict[item.ID] = item.Name;
+            //    }
 
-                if (Item.Parent != null && parentsDict.ContainsKey(Item.Parent))
-                {
-                    Item.Parent = parentsDict[Item.Parent];
-                }
+            //    if (Item.Parent != null && parentsDict.ContainsKey(Item.Parent))
+            //    {
+            //        Item.Parent = parentsDict[Item.Parent];
+            //    }
 
-                var todoPage = new TodoItemPage();
-                todoPage.BindingContext = Item;
-                await Navigation.PushAsync(todoPage);
-            };
+            //    var todoPage = new TodoItemPage();
+            //    todoPage.BindingContext = Item;
+            //    await Navigation.PushAsync(todoPage);
+            //};
 
             objStackLayout.Children.Add(objRelativeLayout);          
 
@@ -296,8 +296,8 @@ namespace Todo.Views
 
             //await Refresh();
 
-            topLV.ItemsSource = null;
-            bottomLV.ItemsSource = null;
+            //topLV.ItemsSource = null;
+            //bottomLV.ItemsSource = null;
 
             // Sets the bottom borders of friends and personal to their new values
             Rectangle personalBottomBorderBounds = bottomBorders[domains[0]].Bounds;
@@ -583,7 +583,7 @@ namespace Todo.Views
 
                                         if (listViews[domains[0]] != null)
                                         {
-                                            topLV.ItemsSource = listViews[domains[0]].ItemsSource;
+                                            //topLV.ItemsSource = listViews[domains[0]].ItemsSource;
                                         }
                                     }
                                     else
@@ -596,7 +596,7 @@ namespace Todo.Views
 
                                         if (listViews[domains[0]] != null)
                                         {
-                                            topLV.ItemsSource = listViews[domains[0]].ItemsSource;
+                                            //topLV.ItemsSource = listViews[domains[0]].ItemsSource;
                                         }
 
                                         // for all the bottom borders except the neighbour to the right (friends and family)
@@ -638,7 +638,7 @@ namespace Todo.Views
 
                                     if (listViews[domains[0]] != null)
                                     {
-                                        topLV.ItemsSource = listViews[domains[0]].ItemsSource;
+                                        //topLV.ItemsSource = listViews[domains[0]].ItemsSource;
                                     }
 
                                     // Sets the bottom borders of friends and personal to their new values
@@ -678,7 +678,7 @@ namespace Todo.Views
 
                                         if (listViews[domains[1]] != null)
                                         {
-                                            topLV.ItemsSource = listViews[domains[1]].ItemsSource;
+                                            //topLV.ItemsSource = listViews[domains[1]].ItemsSource;
                                         }
 
                                         //topLV.ItemsSource = array2;
@@ -692,7 +692,7 @@ namespace Todo.Views
 
                                         if (listViews[domains[1]] != null)
                                         {
-                                            topLV.ItemsSource = listViews[domains[1]].ItemsSource;
+                                            //topLV.ItemsSource = listViews[domains[1]].ItemsSource;
                                         }
 
                                         //topLV.ItemsSource = array2;
@@ -750,7 +750,7 @@ namespace Todo.Views
 
                                     if (listViews[domains[1]] != null)
                                     {
-                                        topLV.ItemsSource = listViews[domains[1]].ItemsSource;
+                                        //topLV.ItemsSource = listViews[domains[1]].ItemsSource;
                                     }
 
                                     //topLV.ItemsSource = array2;
@@ -822,7 +822,7 @@ namespace Todo.Views
 
                                         if (listViews[domains[2]] != null)
                                         {
-                                            bottomLV.ItemsSource = listViews[domains[2]].ItemsSource;
+                                            //bottomLV.ItemsSource = listViews[domains[2]].ItemsSource;
                                         }
 
                                         //bottomLV.ItemsSource = array3;
@@ -835,7 +835,7 @@ namespace Todo.Views
 
                                         if (listViews[domains[2]] != null)
                                         {
-                                            bottomLV.ItemsSource = listViews[domains[2]].ItemsSource;
+                                            //bottomLV.ItemsSource = listViews[domains[2]].ItemsSource;
                                         }
 
                                         //bottomLV.ItemsSource = array3;
@@ -876,7 +876,7 @@ namespace Todo.Views
 
                                     if (listViews[domains[2]] != null)
                                     {
-                                        bottomLV.ItemsSource = listViews[domains[2]].ItemsSource;
+                                        //bottomLV.ItemsSource = listViews[domains[2]].ItemsSource;
                                     }
 
                                     //bottomLV.ItemsSource = array3;
@@ -923,7 +923,7 @@ namespace Todo.Views
 
                                         if (listViews[domains[3]] != null)
                                         {
-                                            bottomLV.ItemsSource = listViews[domains[3]].ItemsSource;
+                                            //bottomLV.ItemsSource = listViews[domains[3]].ItemsSource;
                                         }
 
                                         //bottomLV.ItemsSource = array4;
@@ -935,7 +935,7 @@ namespace Todo.Views
                                         rowList[1].hideItems();
                                         if (listViews[domains[3]] != null)
                                         {
-                                            bottomLV.ItemsSource = listViews[domains[3]].ItemsSource;
+                                            //bottomLV.ItemsSource = listViews[domains[3]].ItemsSource;
                                         }
 
                                         //bottomLV.ItemsSource = array4;
@@ -997,7 +997,7 @@ namespace Todo.Views
 
                                     if (listViews[domains[3]] != null)
                                     {
-                                        bottomLV.ItemsSource = listViews[domains[3]].ItemsSource;
+                                        //bottomLV.ItemsSource = listViews[domains[3]].ItemsSource;
                                     }
 
                                     //bottomLV.ItemsSource = array4;

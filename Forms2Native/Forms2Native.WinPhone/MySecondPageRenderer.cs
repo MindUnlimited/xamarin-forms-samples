@@ -19,6 +19,8 @@ namespace Forms2Native.WinPhone
 
             var page = e.NewElement as MySecondPage;
 
+
+
             var stkpanel = new System.Windows.Controls.StackPanel();
             stkpanel.Orientation = System.Windows.Controls.Orientation.Horizontal;
 
