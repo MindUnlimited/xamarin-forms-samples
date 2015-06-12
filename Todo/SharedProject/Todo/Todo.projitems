@@ -35,7 +35,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Views\KategorienViewCell.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\ModalPage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\MultiSelect.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Views\ReorderListPage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Views\ReorderListView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\TodoGroupCell.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\TodoGroupListPage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\Controls\BindablePicker.cs" />

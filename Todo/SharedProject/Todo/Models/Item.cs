@@ -57,9 +57,15 @@ namespace Todo
         [Version]
         public string Version { get; set; }
 
+        //public override string ToString()
+        //{
+        //    return "    Text: " + Name + "\n    Status: " + Status + "\n    Owned by: " + OwnedBy;
+        //}
+
         public override string ToString()
         {
-            return "    Text: " + Name + "\n    Status: " + Status + "\n    Owned by: " + OwnedBy;
+            return Name;
+
         }
     }
 }

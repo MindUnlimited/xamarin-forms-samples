@@ -34,9 +34,9 @@ namespace Todo.Views
         private RelativeLayout objRelativeLayout = new RelativeLayout();
 
         //private DomainRow top;
-        private ReorderListPage topLV;
+        private ReorderListView topLV;
         //private DomainRow bottom;
-        private ReorderListPage bottomLV;
+        private ReorderListView bottomLV;
 
         private uint rows = 2;
         private uint columns = 2;
@@ -61,7 +61,7 @@ namespace Todo.Views
                 Orientation = StackOrientation.Vertical,
             };
 
-            topLV = new ReorderListPage();//new ListView { ItemTemplate = new DataTemplate(typeof(TodoItemCellBig))};
+            topLV = new ReorderListView();//new ListView { ItemTemplate = new DataTemplate(typeof(TodoItemCellBig))};
 
             //topLV.ItemSelected += async (sender, e) =>
             //{
@@ -103,7 +103,7 @@ namespace Todo.Views
             //    await Navigation.PushAsync(todoPage);
             //};
 
-            bottomLV = new ReorderListPage();//new ListView { ItemTemplate = new DataTemplate(typeof(TodoItemCellBig)) };
+            bottomLV = new ReorderListView();//new ListView { ItemTemplate = new DataTemplate(typeof(TodoItemCellBig)) };
 
             //bottomLV.ItemSelected += async (sender, e) =>
             //{
@@ -256,7 +256,7 @@ namespace Todo.Views
                 }, 0, 0);
             }
 
-            ToolbarItems.Add(modalTest);
+            //ToolbarItems.Add(modalTest);
 
             if (Device.OS == TargetPlatform.iOS)
             {
@@ -584,6 +584,15 @@ namespace Todo.Views
                                         if (listViews[domains[0]] != null)
                                         {
                                             //topLV.ItemsSource = listViews[domains[0]].ItemsSource;
+                                            List<Item> items = new List<Item>();
+
+                                            foreach(var item in listViews[domains[0]].ItemsSource)
+                                            {
+                                                items.Add((Item) item);
+                                            }
+
+                                            topLV.Items = null;
+                                            topLV.addItems(items);
                                         }
                                     }
                                     else
@@ -597,6 +606,15 @@ namespace Todo.Views
                                         if (listViews[domains[0]] != null)
                                         {
                                             //topLV.ItemsSource = listViews[domains[0]].ItemsSource;
+                                            List<Item> items = new List<Item>();
+
+                                            foreach (var item in listViews[domains[0]].ItemsSource)
+                                            {
+                                                items.Add((Item)item);
+                                            }
+
+                                            topLV.Items = null;
+                                            topLV.addItems(items);
                                         }
 
                                         // for all the bottom borders except the neighbour to the right (friends and family)
@@ -639,6 +657,15 @@ namespace Todo.Views
                                     if (listViews[domains[0]] != null)
                                     {
                                         //topLV.ItemsSource = listViews[domains[0]].ItemsSource;
+                                        List<Item> items = new List<Item>();
+
+                                        foreach (var item in listViews[domains[0]].ItemsSource)
+                                        {
+                                            items.Add((Item)item);
+                                        }
+
+                                        topLV.Items = null;
+                                        topLV.addItems(items);
                                     }
 
                                     // Sets the bottom borders of friends and personal to their new values

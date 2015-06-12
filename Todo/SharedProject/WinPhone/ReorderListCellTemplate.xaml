@@ -1,0 +1,5 @@
+﻿ <DataTemplate xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+    <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+    <TextBlock Text="{Binding Path=Name}" Margin="12,4,12,4" TextTrimming="WordEllipsis" TextWrapping="NoWrap" HorizontalAlignment="Stretch" TextAlignment="Left"></TextBlock>
+</StackPanel>
+</DataTemplate>

@@ -7,7 +7,7 @@ using Xamarin.Forms;
 
 namespace Todo.Views
 {
-    public class ReorderListPage : View
+    public class ReorderListView : View
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -26,13 +26,26 @@ namespace Todo.Views
             PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public ReorderListPage()
+        public void addItems(IEnumerable<Item> itemList)
         {
+            if (_items == null)
+                _items = new ObservableCollection<Item>();
 
+            foreach (Item it in itemList)
+            {
+                Items.Add(it);
+            }
         }
 
-        public ReorderListPage(List<Item> itemList)
+        public ReorderListView()
+        {
+            ObservableCollection<Item> _items = new ObservableCollection<Item>();
+        }
+
+        public ReorderListView(IEnumerable<Item> itemList)
 		{
+            ObservableCollection<Item> _items = new ObservableCollection<Item>();
+
             foreach(Item it in itemList)
             {
                 Items.Add(it);
