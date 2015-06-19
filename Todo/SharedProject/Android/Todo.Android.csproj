@@ -111,6 +111,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MainActivity.cs" />
+    <Compile Include="NativeListViewAdapter.cs" />
     <Compile Include="ReorderListViewRenderer.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -119,6 +120,9 @@
     <Compile Include="ToDoBroadcastReceiver.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="ListView.axml">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Resources\AboutResources.txt" />
     <None Include="Assets\AboutAssets.txt" />
     <None Include="Properties\AndroidManifest.xml" />
@@ -147,8 +151,8 @@
       <Version>1.2.3.1</Version>
     </XamarinComponentReference>
     <XamarinComponentReference Include="xamarin.mobile">
-      <Version>0.7.5</Version>
       <Visible>False</Visible>
+      <Version>0.7.6</Version>
     </XamarinComponentReference>
   </ItemGroup>
   <ItemGroup>
@@ -156,6 +160,9 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\LogoMindSet48x48.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\Move.png" />
   </ItemGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

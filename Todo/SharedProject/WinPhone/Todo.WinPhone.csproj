@@ -166,6 +166,7 @@
     <BundleResource Include="Toolkit.Content\ApplicationBar.Cancel.png" />
     <BundleResource Include="Toolkit.Content\ApplicationBar.Add.png" />
     <Content Include="LogoMindSet128x128.png" />
+    <Content Include="Move.png" />
     <Content Include="README_FIRST.txt" />
   </ItemGroup>
   <ItemGroup>

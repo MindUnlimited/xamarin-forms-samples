@@ -18,6 +18,13 @@ namespace Todo.Views
             set { _items = value; OnPropertyChanged("Items"); } 
         }
 
+        private bool _reorderEnabled;
+        public bool ReorderEnabled
+        {
+            get { return _reorderEnabled; }
+            set { _reorderEnabled = value; OnPropertyChanged("ReorderEnabled"); }
+        }
+
         protected virtual void OnPropertyChanged(string propertyName)
         {
             if (PropertyChanged == null)

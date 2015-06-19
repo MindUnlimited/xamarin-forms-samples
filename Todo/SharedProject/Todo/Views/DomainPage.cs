@@ -239,6 +239,40 @@ namespace Todo.Views
 
             ToolbarItems.Add(tbi);
 
+            ToolbarItem reorder = null;
+
+            if (Device.OS == TargetPlatform.Android)
+            { // BUG: Android doesn't support the icon being null
+                reorder = new ToolbarItem("move", "Move", () =>
+                {
+                    if (topLV.ReorderEnabled == null)
+                        topLV.ReorderEnabled = true;
+                    else if (topLV.ReorderEnabled == true)
+                        topLV.ReorderEnabled = false;
+                    else
+                        topLV.ReorderEnabled = true;
+
+                    //topLV.ReorderEnabled = !topLV.ReorderEnabled;
+                }, 0, 0);
+            }
+            if (Device.OS == TargetPlatform.WinPhone)
+            {
+                reorder = new ToolbarItem("Move", "Move.png", () =>
+                {
+                    if (topLV.ReorderEnabled == null)
+                        topLV.ReorderEnabled = true;
+                    else if (topLV.ReorderEnabled == true)
+                        topLV.ReorderEnabled = false;
+                    else
+                        topLV.ReorderEnabled = true;
+
+                    //topLV.ReorderEnabled = !topLV.ReorderEnabled;
+                }, 0, 0);
+            }
+
+            ToolbarItems.Add(reorder);
+
+
             ToolbarItem modalTest = null;
 
             if (Device.OS == TargetPlatform.Android)

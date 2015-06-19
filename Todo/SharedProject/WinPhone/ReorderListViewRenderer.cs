@@ -34,9 +34,12 @@ namespace Todo.WinPhone
             //Debug.WriteLine("listbox width: " + listbox.Width.ToString());
             //listbox.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
 
+
             //rlv.PropertyChanged += ((o, ev) =>
             //{
-            //    listbox.ItemsSource = rlv.Items;
+            //    if (ev.PropertyName == "ReorderEnabled")
+            //        listbox.IsReorderEnabled = rlv.ReorderEnabled;
+            //    //listbox.ItemsSource = rlv.Items;
             //});
 
             System.Windows.DataTemplate template = System.Windows.Markup.XamlReader.Load(
@@ -46,8 +49,13 @@ namespace Todo.WinPhone
                     </StackPanel>
                 </DataTemplate>") as System.Windows.DataTemplate;
 
+            System.Windows.Data.Binding reorderBinding = new System.Windows.Data.Binding("ReorderEnabled");
+            reorderBinding.ElementName = "rlv";
+            reorderBinding.Mode = System.Windows.Data.BindingMode.TwoWay;
+
             listbox.ItemsSource = rlv.Items;
-            listbox.IsReorderEnabled = true;
+            listbox.SetBinding(ReorderListBox.ReorderListBox.IsReorderEnabledProperty, reorderBinding);
+            listbox.IsReorderEnabled = rlv.ReorderEnabled;
             listbox.ItemTemplate = template;
 
             this.Children.Clear();
