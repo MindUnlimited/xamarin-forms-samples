@@ -25,7 +25,7 @@ namespace WorkingWithListviewNative.Droid
 			this.context = context;
 
             List<string> ItemStrings = new List<string>();
-            foreach (var it in view.Items)
+            foreach (var it in view.ItemCollection)
             {
                 ItemStrings.Add(it.Name);
             }

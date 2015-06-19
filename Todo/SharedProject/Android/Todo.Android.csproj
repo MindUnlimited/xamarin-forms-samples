@@ -111,6 +111,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MainActivity.cs" />
+    <Compile Include="MyListView.cs" />
     <Compile Include="NativeListViewAdapter.cs" />
     <Compile Include="ReorderListViewRenderer.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
@@ -128,6 +129,9 @@
     <None Include="Properties\AndroidManifest.xml" />
     <None Include="packages.config" />
     <AndroidResource Include="Resources\layout\ListView.axml">
+      <SubType>AndroidResource</SubType>
+    </AndroidResource>
+    <AndroidResource Include="Resources\layout\listitem.axml">
       <SubType>AndroidResource</SubType>
     </AndroidResource>
   </ItemGroup>
@@ -163,6 +167,9 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\Move.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\Reorder.png" />
   </ItemGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

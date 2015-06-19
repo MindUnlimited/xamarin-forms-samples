@@ -99,6 +99,7 @@
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="MyBoundPickerRenderer.cs" />
+    <Compile Include="MyReorderListBox.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReorderListViewRenderer.cs" />
     <Compile Include="Resources\AppResources.Designer.cs">
@@ -168,6 +169,7 @@
     <Content Include="LogoMindSet128x128.png" />
     <Content Include="Move.png" />
     <Content Include="README_FIRST.txt" />
+    <Content Include="Reorder.png" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\AppResources.resx">

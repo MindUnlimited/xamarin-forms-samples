@@ -1,10 +1,13 @@
-﻿using System;
+﻿using ReorderListBox;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using Todo.Views;
 using Todo.WinPhone;
 using Xamarin.Forms;
@@ -14,59 +17,54 @@ using Xamarin.Forms.Platform.WinPhone;
 
 namespace Todo.WinPhone
 {
-    public class ReorderListViewRenderer : ViewRenderer<View, ReorderListBox.ReorderListBox>
+    public class ReorderListViewRenderer : ViewRenderer<ReorderListView, MyReorderListBox>
     {
         protected override void OnElementPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             base.OnElementPropertyChanged(sender, e);
-            var rlv = (ReorderListView)sender;
-            //Debug.WriteLine("rlv width: " + rlv.Width.ToString());
+            if (this.Element == null || this.Control == null)
+                return;
+            if (e.PropertyName == ReorderListView.ReorderProperty.PropertyName)
+            {
+                Control.IsReorderEnabled = Element.ReorderEnabled;
+            }
+            else if (e.PropertyName == ReorderListView.ItemsProperty.PropertyName)
+            {
+                Control.ItemsSource = Element.ItemCollection;
+            }           
+        }
 
-            //this.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+        protected override void OnElementChanged(ElementChangedEventArgs<ReorderListView> e)
+        {
+            base.OnElementChanged(e);
+            if (e.OldElement != null || this.Element == null)
+                return;
 
-            var listbox = new ReorderListBox.ReorderListBox();
+            var rlv = e.NewElement as ReorderListView;
+            var listbox = new MyReorderListBox();
 
-            if (rlv.Width > 0)
-                listbox.Width = rlv.Width;
-            if (rlv.Height > 0)
-                listbox.Height = rlv.Height;
-
-            //Debug.WriteLine("listbox width: " + listbox.Width.ToString());
-            //listbox.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-
-
-            //rlv.PropertyChanged += ((o, ev) =>
-            //{
-            //    if (ev.PropertyName == "ReorderEnabled")
-            //        listbox.IsReorderEnabled = rlv.ReorderEnabled;
-            //    //listbox.ItemsSource = rlv.Items;
-            //});
-
-            System.Windows.DataTemplate template = System.Windows.Markup.XamlReader.Load(
+            System.Windows.DataTemplate itemTemplate = System.Windows.Markup.XamlReader.Load(
                 @"<DataTemplate xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation"">
                     <StackPanel Orientation=""Horizontal"">
                         <TextBlock Text=""{Binding Path=Name}"" Margin=""12,4,12,4"" FontSize=""26"" TextTrimming=""WordEllipsis""></TextBlock>
                     </StackPanel>
                 </DataTemplate>") as System.Windows.DataTemplate;
 
-            System.Windows.Data.Binding reorderBinding = new System.Windows.Data.Binding("ReorderEnabled");
-            reorderBinding.ElementName = "rlv";
-            reorderBinding.Mode = System.Windows.Data.BindingMode.TwoWay;
+            System.Windows.DataTemplate moveTemplate = System.Windows.Markup.XamlReader.Load(
+                @"<DataTemplate xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation"">
+                    <StackPanel Orientation=""Horizontal"">
+                        <Image Width=""52"" Height=""52"" Source=""/Move.png"" />
+                    </StackPanel>
+                </DataTemplate>") as System.Windows.DataTemplate;
+            System.Windows.Style ListBoxItemStyle = new System.Windows.Style(typeof(ReorderListBoxItem));
+            ListBoxItemStyle.Setters.Add(new System.Windows.Setter(ReorderListBoxItem.DragHandleTemplateProperty, moveTemplate));
 
-            listbox.ItemsSource = rlv.Items;
-            listbox.SetBinding(ReorderListBox.ReorderListBox.IsReorderEnabledProperty, reorderBinding);
+            listbox.ItemContainerStyle = ListBoxItemStyle;
             listbox.IsReorderEnabled = rlv.ReorderEnabled;
-            listbox.ItemTemplate = template;
+            listbox.ItemTemplate = itemTemplate;
+            listbox.ItemsSource = rlv.ItemCollection;
 
-            this.Children.Clear();
-            this.Children.Add(listbox);
+            SetNativeControl(listbox);
         }
-
-
-
-        //protected override void OnElementChanged(ElementChangedEventArgs<Page> e)
-        //{
-        //    base.OnElementChanged(e);
-        //}
     }
 }

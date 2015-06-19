@@ -68,6 +68,9 @@ namespace Todo.Android
 			// aapt resource value: 0x7f020006
 			public const int plus = 2130837510;
 			
+			// aapt resource value: 0x7f020007
+			public const int Reorder = 2130837511;
+			
 			static Drawable()
 			{
 				global::Android.Runtime.ResourceIdManager.UpdateIdValues();
@@ -81,11 +84,14 @@ namespace Todo.Android
 		public partial class Id
 		{
 			
-			// aapt resource value: 0x7f050000
-			public const int months_list = 2131034112;
-			
 			// aapt resource value: 0x7f050001
-			public const int myButton = 2131034113;
+			public const int months_list = 2131034113;
+			
+			// aapt resource value: 0x7f050002
+			public const int myButton = 2131034114;
+			
+			// aapt resource value: 0x7f050000
+			public const int textview = 2131034112;
 			
 			static Id()
 			{
@@ -101,10 +107,13 @@ namespace Todo.Android
 		{
 			
 			// aapt resource value: 0x7f030000
-			public const int ListView = 2130903040;
+			public const int listitem = 2130903040;
 			
 			// aapt resource value: 0x7f030001
-			public const int Main = 2130903041;
+			public const int ListView = 2130903041;
+			
+			// aapt resource value: 0x7f030002
+			public const int Main = 2130903042;
 			
 			static Layout()
 			{
@@ -119,20 +128,20 @@ namespace Todo.Android
 		public partial class String
 		{
 			
-			// aapt resource value: 0x7f040001
-			public const int ApplicationName = 2130968577;
-			
-			// aapt resource value: 0x7f040000
-			public const int Hello = 2130968576;
-			
-			// aapt resource value: 0x7f040004
-			public const int app_name = 2130968580;
-			
 			// aapt resource value: 0x7f040003
-			public const int hello = 2130968579;
+			public const int ApplicationName = 2130968579;
 			
 			// aapt resource value: 0x7f040002
-			public const int library_name = 2130968578;
+			public const int Hello = 2130968578;
+			
+			// aapt resource value: 0x7f040001
+			public const int app_name = 2130968577;
+			
+			// aapt resource value: 0x7f040000
+			public const int hello = 2130968576;
+			
+			// aapt resource value: 0x7f040004
+			public const int library_name = 2130968580;
 			
 			static String()
 			{

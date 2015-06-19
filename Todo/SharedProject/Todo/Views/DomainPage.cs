@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
@@ -62,6 +63,13 @@ namespace Todo.Views
             };
 
             topLV = new ReorderListView();//new ListView { ItemTemplate = new DataTemplate(typeof(TodoItemCellBig))};
+
+            //topLV.PropertyChanged += ((o, ev) =>
+            //{
+            //    if (ev.PropertyName == "ReorderEnabled")
+                    
+            //});
+
 
             //topLV.ItemSelected += async (sender, e) =>
             //{
@@ -243,31 +251,11 @@ namespace Todo.Views
 
             if (Device.OS == TargetPlatform.Android)
             { // BUG: Android doesn't support the icon being null
-                reorder = new ToolbarItem("move", "Move", () =>
-                {
-                    if (topLV.ReorderEnabled == null)
-                        topLV.ReorderEnabled = true;
-                    else if (topLV.ReorderEnabled == true)
-                        topLV.ReorderEnabled = false;
-                    else
-                        topLV.ReorderEnabled = true;
-
-                    //topLV.ReorderEnabled = !topLV.ReorderEnabled;
-                }, 0, 0);
+                reorder = new ToolbarItem("reorder", "Reorder", () => topLV.ReorderEnabled = !topLV.ReorderEnabled, 0, 0);
             }
             if (Device.OS == TargetPlatform.WinPhone)
             {
-                reorder = new ToolbarItem("Move", "Move.png", () =>
-                {
-                    if (topLV.ReorderEnabled == null)
-                        topLV.ReorderEnabled = true;
-                    else if (topLV.ReorderEnabled == true)
-                        topLV.ReorderEnabled = false;
-                    else
-                        topLV.ReorderEnabled = true;
-
-                    //topLV.ReorderEnabled = !topLV.ReorderEnabled;
-                }, 0, 0);
+                reorder = new ToolbarItem("Reorder", "Reorder.png", () => topLV.ReorderEnabled = !topLV.ReorderEnabled, 0, 0);
             }
 
             ToolbarItems.Add(reorder);
@@ -617,16 +605,20 @@ namespace Todo.Views
 
                                         if (listViews[domains[0]] != null)
                                         {
-                                            //topLV.ItemsSource = listViews[domains[0]].ItemsSource;
-                                            List<Item> items = new List<Item>();
+                                            ////topLV.ItemsSource = listViews[domains[0]].ItemsSource;
+                                            //List<Item> items = new List<Item>();
 
-                                            foreach(var item in listViews[domains[0]].ItemsSource)
-                                            {
-                                                items.Add((Item) item);
-                                            }
+                                            //foreach (var item in listViews[domains[0]].ItemsSource)
+                                            //{
+                                            //    items.Add((Item)item);
+                                            //}
 
-                                            topLV.Items = null;
-                                            topLV.addItems(items);
+                                            //var collection = (ObservableCollection<Item>)listViews[domains[0]].ItemsSource;
+                                            //topLV.ItemCollection = (ObservableCollection<Item>)listViews[domains[0]].ItemsSource;
+                                            //Debug.WriteLine(collection.Count.ToString());
+                                            ////topLV.addItems(items);
+
+                                            topLV.ItemCollection = (ObservableCollection<Item>)listViews[domains[0]].ItemsSource;
                                         }
                                     }
                                     else
@@ -639,16 +631,20 @@ namespace Todo.Views
 
                                         if (listViews[domains[0]] != null)
                                         {
-                                            //topLV.ItemsSource = listViews[domains[0]].ItemsSource;
-                                            List<Item> items = new List<Item>();
+                                            ////topLV.ItemsSource = listViews[domains[0]].ItemsSource;
+                                            //List<Item> items = new List<Item>();
 
-                                            foreach (var item in listViews[domains[0]].ItemsSource)
-                                            {
-                                                items.Add((Item)item);
-                                            }
+                                            //foreach (var item in listViews[domains[0]].ItemsSource)
+                                            //{
+                                            //    items.Add((Item)item);
+                                            //}
 
-                                            topLV.Items = null;
-                                            topLV.addItems(items);
+                                            //var collection = (ObservableCollection<Item>)listViews[domains[0]].ItemsSource;
+                                            //topLV.ItemCollection = (ObservableCollection<Item>)listViews[domains[0]].ItemsSource;
+                                            //Debug.WriteLine(collection.Count.ToString());
+                                            ////topLV.addItems(items);
+
+                                            topLV.ItemCollection = (ObservableCollection<Item>)listViews[domains[0]].ItemsSource;
                                         }
 
                                         // for all the bottom borders except the neighbour to the right (friends and family)
@@ -690,16 +686,20 @@ namespace Todo.Views
 
                                     if (listViews[domains[0]] != null)
                                     {
-                                        //topLV.ItemsSource = listViews[domains[0]].ItemsSource;
-                                        List<Item> items = new List<Item>();
+                                        ////topLV.ItemsSource = listViews[domains[0]].ItemsSource;
+                                        //List<Item> items = new List<Item>();
 
-                                        foreach (var item in listViews[domains[0]].ItemsSource)
-                                        {
-                                            items.Add((Item)item);
-                                        }
+                                        //foreach (var item in listViews[domains[0]].ItemsSource)
+                                        //{
+                                        //    items.Add((Item)item);
+                                        //}
 
-                                        topLV.Items = null;
-                                        topLV.addItems(items);
+                                        //var collection = (ObservableCollection<Item>)listViews[domains[0]].ItemsSource;
+                                        //topLV.ItemCollection = (ObservableCollection<Item>)listViews[domains[0]].ItemsSource;
+                                        //Debug.WriteLine(collection.Count.ToString());
+                                        ////topLV.addItems(items);
+
+                                        topLV.ItemCollection = (ObservableCollection<Item>)listViews[domains[0]].ItemsSource;
                                     }
 
                                     // Sets the bottom borders of friends and personal to their new values

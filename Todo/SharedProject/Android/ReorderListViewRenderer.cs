@@ -14,19 +14,14 @@ namespace Todo.Android
 {
 
     //NativeListViewRenderer : ViewRenderer<NativeListView, global::Android.Widget.ListView>
-    public class ReorderListViewRenderer : ViewRenderer<ReorderListView, global::Android.Widget.ListView>
+    public class ReorderListViewRenderer : ViewRenderer<ReorderListView, MyListView>
     {
-
-        public ReorderListViewRenderer()
-		{
-		}
-
         protected override void OnElementChanged(ElementChangedEventArgs<ReorderListView> e)
 		{
 			base.OnElementChanged (e);
 
 			if (Control == null) {
-				SetNativeControl (new global::Android.Widget.ListView (Forms.Context));
+				SetNativeControl (new MyListView(Forms.Context));
 			}
 
 			if (e.OldElement != null) {
@@ -36,7 +31,7 @@ namespace Todo.Android
 
 			if (e.NewElement != null) {
 				// subscribe
-                Control.Adapter = new ArrayAdapter<Item>(Forms.Context as Activity, Resource.Layout.Main, e.NewElement.Items);// Resource.Id.months_list);//new NativeListViewAdapter (Forms.Context as Activity, e.NewElement);
+                Control.Adapter = new ArrayAdapter<Item>(Forms.Context as Activity, Resource.Layout.listitem, e.NewElement.ItemCollection);// Resource.Id.months_list);//new NativeListViewAdapter (Forms.Context as Activity, e.NewElement);
                 Control.ItemClick += clicked;
 			}
 		}
@@ -49,10 +44,23 @@ namespace Todo.Android
 
 		protected override void OnElementPropertyChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e)
 		{
-			base.OnElementPropertyChanged (sender, e);
-				// update the Items list in the UITableViewSource
+            var listv = (ReorderListView) sender;
 
-            Control.Adapter = new ArrayAdapter<Item>(Forms.Context as Activity, Resource.Layout.Main);//new NativeListViewAdapter (Forms.Context as Activity, Element);
+            if (this.Element == null || this.Control == null)
+                return;
+            //if (e.PropertyName == ReorderListView.ReorderProperty.PropertyName)
+            //{
+            //    Control.IsReorderEnabled = Element.ReorderEnabled;
+            //}
+            if (e.PropertyName == ReorderListView.ItemsProperty.PropertyName)
+            {
+                Control.Adapter = new ArrayAdapter<Item>(Forms.Context, Resource.Layout.listitem, listv.ItemCollection);//Forms.Context as Activity, Resource.Layout.Main) { };
+            }           
+
+            //base.OnElementPropertyChanged (sender, e);
+            //    // update the Items list in the UITableViewSource
+
+            //Control.Adapter = new ArrayAdapter<Item>(Forms.Context as Activity, Resource.Layout.Main);//new NativeListViewAdapter (Forms.Context as Activity, Element);
 		}
     
     }
