@@ -17,7 +17,7 @@ using Todo.Android;
 
 namespace Todo.Android
 {
-    public class MyListView : global::Android.Widget.ListView 
+    public class MyListView : ReorderListView
     {
         public MyListView(Context context) : base(context) {}
     }

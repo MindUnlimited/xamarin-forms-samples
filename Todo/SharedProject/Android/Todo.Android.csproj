@@ -110,6 +110,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DynamicListView.cs" />
+    <Compile Include="ListViewDraggingAnimation.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="MyListView.cs" />
     <Compile Include="NativeListViewAdapter.cs" />
