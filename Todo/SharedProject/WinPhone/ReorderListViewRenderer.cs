@@ -40,7 +40,7 @@ namespace Todo.WinPhone
             if (e.OldElement != null || this.Element == null)
                 return;
 
-            var rlv = e.NewElement as ReorderListView;
+            //var rlv = e.NewElement as ReorderListView;
             var listbox = new MyReorderListBox();
 
             System.Windows.DataTemplate itemTemplate = System.Windows.Markup.XamlReader.Load(
@@ -60,9 +60,9 @@ namespace Todo.WinPhone
             ListBoxItemStyle.Setters.Add(new System.Windows.Setter(ReorderListBoxItem.DragHandleTemplateProperty, moveTemplate));
 
             listbox.ItemContainerStyle = ListBoxItemStyle;
-            listbox.IsReorderEnabled = rlv.ReorderEnabled;
+            listbox.IsReorderEnabled = Element.ReorderEnabled;
             listbox.ItemTemplate = itemTemplate;
-            listbox.ItemsSource = rlv.ItemCollection;
+            listbox.ItemsSource = Element.ItemCollection;
 
             SetNativeControl(listbox);
         }

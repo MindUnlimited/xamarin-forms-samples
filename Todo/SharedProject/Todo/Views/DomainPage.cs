@@ -41,7 +41,7 @@ namespace Todo.Views
 
         private uint rows = 2;
         private uint columns = 2;
-        private uint animationms = 150;
+        private uint animationms = 200;
 
         private uint borderSize = 1; // pixels
 
