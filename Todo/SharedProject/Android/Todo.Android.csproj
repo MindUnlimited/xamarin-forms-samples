@@ -110,6 +110,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DraggableListAdapter.cs" />
+    <Compile Include="DraggableListView.cs" />
+    <Compile Include="IDraggableListAdapter.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="MyListView.cs" />
     <Compile Include="NativeListViewAdapter.cs" />
