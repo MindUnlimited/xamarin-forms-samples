@@ -110,15 +110,19 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DynamicListView.cs" />
+    <Compile Include="DragableListView.cs" />
+    <Compile Include="DynamicListViewTmp.cs" />
+    <Compile Include="IDraggableListAdapter.cs" />
     <Compile Include="ListViewDraggingAnimation.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="MyListView.cs" />
     <Compile Include="NativeListViewAdapter.cs" />
+    <Compile Include="DragableListViewRenderer.cs" />
     <Compile Include="ReorderListViewRenderer.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Logout_Android.cs" />
+    <Compile Include="StableArrayAdapterTmp.cs" />
     <Compile Include="TextToSpeech_Android.cs" />
     <Compile Include="ToDoBroadcastReceiver.cs" />
   </ItemGroup>

@@ -13,11 +13,11 @@ using Xamarin.Forms;
 using Todo.Views;
 using Todo.Android;
 
-[assembly: ExportRenderer(typeof(ReorderListView), typeof(ReorderListViewRenderer))]
+[assembly: ExportRenderer(typeof(DragableListView.DragableListView), typeof(ReorderListViewRenderer))]
 
 namespace Todo.Android
 {
-    public class MyListView : ReorderListView
+    public class MyListView : DragableListView.DragableListView
     {
         public MyListView(Context context) : base(context) {}
     }
