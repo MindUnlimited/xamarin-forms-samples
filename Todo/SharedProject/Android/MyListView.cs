@@ -17,8 +17,18 @@ using Todo.Android;
 
 namespace Todo.Android
 {
-    public class MyListView : global::Android.Widget.ListView 
+    public class MyListView : DraggableListView.DraggableListView 
     {
         public MyListView(Context context) : base(context) {}
     }
 }
+
+//[assembly: ExportRenderer(typeof(ReorderListView), typeof(ReorderListViewRenderer))]
+
+//namespace Todo.Android
+//{
+//    public class MyListView : global::Android.Widget.ListView 
+//    {
+//        public MyListView(Context context) : base(context) {}
+//    }
+//}

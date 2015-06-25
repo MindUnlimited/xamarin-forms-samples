@@ -167,23 +167,26 @@ namespace DraggableListView
         /// </summary>
         public void OnLongPress(MotionEvent e)
         {
-            mTotalOffset = 0;
+            if (ReorderingEnabled)
+            {
+                mTotalOffset = 0;
 
-            int position = PointToPosition(mDownX, mDownY);
+                int position = PointToPosition(mDownX, mDownY);
 
-            if (position < 0 || !LongClickable)
-                return;
+                if (position < 0 || !LongClickable)
+                    return;
 
-            int itemNum = position - FirstVisiblePosition;
+                int itemNum = position - FirstVisiblePosition;
 
-            View selectedView = GetChildAt(itemNum);
-            mMobileItemId = Adapter.GetItemId(position); // use this varable to keep track of which view is currently moving
-            mHoverCell = GetAndAddHoverView(selectedView);
-            selectedView.Visibility = ViewStates.Invisible; // set the visibility of the selected view to invisible
+                View selectedView = GetChildAt(itemNum);
+                mMobileItemId = Adapter.GetItemId(position); // use this varable to keep track of which view is currently moving
+                mHoverCell = GetAndAddHoverView(selectedView);
+                selectedView.Visibility = ViewStates.Invisible; // set the visibility of the selected view to invisible
 
-            mCellIsMobile = true;
+                mCellIsMobile = true;
 
-            UpdateNeighborViewsForID(mMobileItemId);
+                UpdateNeighborViewsForID(mMobileItemId);
+            }
         }
 
         public bool OnScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY)

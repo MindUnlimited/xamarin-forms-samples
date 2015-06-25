@@ -4,19 +4,26 @@ using Android.Views;
 using Android.Widget;
 using DraggableListView;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using Todo;
 
 namespace DraggableListView
 {
+    public class JavaObjectWrapper<T> : Java.Lang.Object
+    {
+        public T Obj { get; set; }
+    }
+
     public class DraggableListAdapter : BaseAdapter, IDraggableListAdapter
     {
-        public List<string> Items { get; set; }
+        public ObservableCollection<Item> Items { get; set; }
 
 
         public int mMobileCellPosition { get; set; }
 
         Activity context;
 
-        public DraggableListAdapter(Activity context, List<string> items)
+        public DraggableListAdapter(Activity context, ObservableCollection<Item> items)
             : base()
         {
             Items = items;
@@ -26,7 +33,8 @@ namespace DraggableListView
 
         public override Java.Lang.Object GetItem(int position)
         {
-            return Items[position];
+            Item it = Items[position];
+            return new JavaObjectWrapper<Item> { Obj = it };
         }
 
         public override long GetItemId(int position)
@@ -40,14 +48,14 @@ namespace DraggableListView
             if (cell == null)
             {
                 cell = context.LayoutInflater.Inflate(Android.Resource.Layout.SimpleListItem1, parent, false);
-                cell.SetMinimumHeight(150);
-                cell.SetBackgroundColor(Color.DarkViolet);
+                //cell.SetMinimumHeight(150);
+                //cell.SetBackgroundColor(Color.DarkViolet);
             }
 
             var text = cell.FindViewById<TextView>(Android.Resource.Id.Text1);
             if (text != null)
             {
-                text.Text = position.ToString();
+                text.Text = Items[position].Name;// position.ToString();
             }
 
             cell.Visibility = mMobileCellPosition == position ? ViewStates.Invisible : ViewStates.Visible;
