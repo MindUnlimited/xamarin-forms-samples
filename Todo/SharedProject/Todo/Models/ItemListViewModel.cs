@@ -10,12 +10,24 @@ namespace Todo.Models
 {
     public class ItemListViewModel : INotifyPropertyChanged
     {
+        StackLayout footer;
+
         public event PropertyChangedEventHandler PropertyChanged;
         private ObservableCollection<Item> _reports;
         public ObservableCollection<Item> Reports
         {
             get { return _reports; }
-            set { _reports = value; OnPropertyChanged("Reports"); } 
+            set 
+            { 
+                _reports = value;
+                _reports.CollectionChanged += (o, e) =>
+                {
+                    Footer = FooterInfo;
+                };
+
+                OnPropertyChanged("Reports");
+                Footer = FooterInfo;
+            } 
         }
 
         protected virtual void OnPropertyChanged(string propertyName)
@@ -26,12 +38,103 @@ namespace Todo.Models
             PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public StackLayout Footer 
+        public StackLayout Footer
+        {
+            set
+            {
+                if (footer != value)
+                {
+                    footer = value;
+                    OnPropertyChanged("Footer");
+                    //SetNewColor();
+                }
+            }
+            get
+            {
+                return footer;
+            }
+        }
+
+        public StackLayout FooterInfo
         {
             get
             {
-                var footer = new StackLayout { Spacing = 2 };
-                footer.Children.Add(new Label { Text = Reports != null ? Reports.Count.ToString() + " items" : "0 items" });
+                var footer = new StackLayout {Orientation = StackOrientation.Horizontal, Spacing = 5, Padding = 2, HorizontalOptions = LayoutOptions.FillAndExpand, VerticalOptions = LayoutOptions.EndAndExpand};
+
+                int cancelled = 0;
+                int conceived = 0;
+                int started = 0;
+                int blocked = 0;
+                int planned = 0;
+                int completed = 0;
+
+                //-1: Cancelled
+                //0: Conceived
+                //1: Planned
+                //2: Initiated
+                //3: <25% completed
+                //4: <50%
+                //5: <75%
+                //6: On hold / Blocked
+                //7: Completed
+
+
+                foreach (Item it in Reports)
+                {
+                    switch (it.Status)
+                    {
+                        case -1:
+                            cancelled += 1;
+                            break;
+                        case 0:
+                            conceived += 1;
+                            break;
+                        case 1:
+                            planned += 1;
+                            break;
+                        case 2:
+                        case 3:
+                        case 4:
+                        case 5:
+                            started += 1;
+                            break;
+                        case 6:
+                            blocked += 1;
+                            break;
+                        case 7:
+                            completed += 1;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+
+                int imgSize = 25;
+                int fontSize = 20;
+                int spacing = 4;
+
+                StackLayout stackStarted = new StackLayout { Orientation = StackOrientation.Horizontal, Padding = 0, Spacing = spacing, HorizontalOptions = LayoutOptions.CenterAndExpand };
+                stackStarted.Children.Add(new Image { HeightRequest = imgSize, WidthRequest = imgSize, Source = "TaskStarted64.png"});
+                stackStarted.Children.Add(new Label { Text = started.ToString(), YAlign = TextAlignment.Center, FontSize = fontSize});
+
+                StackLayout stackNotStarted = new StackLayout { Orientation = StackOrientation.Horizontal, Padding = 0, Spacing = spacing, HorizontalOptions = LayoutOptions.CenterAndExpand };
+                stackNotStarted.Children.Add(new Image { HeightRequest = imgSize, WidthRequest = imgSize, Source = "TaskNotStarted64.png" });
+                stackNotStarted.Children.Add(new Label { Text = conceived.ToString() , YAlign = TextAlignment.Center, FontSize = fontSize});
+
+                StackLayout stackOnHold = new StackLayout { Orientation = StackOrientation.Horizontal, Padding = 0, Spacing = spacing, HorizontalOptions = LayoutOptions.CenterAndExpand };
+                stackOnHold.Children.Add(new Image { HeightRequest = imgSize, WidthRequest = imgSize, Source = "TaskOnHold64.png" });
+                stackOnHold.Children.Add(new Label { Text = blocked.ToString(), YAlign = TextAlignment.Center, FontSize = fontSize });
+
+                StackLayout stackCompleted = new StackLayout { Orientation = StackOrientation.Horizontal, Padding = 0, Spacing = spacing, HorizontalOptions = LayoutOptions.CenterAndExpand };
+                stackCompleted.Children.Add(new Image { HeightRequest = imgSize, WidthRequest = imgSize, Source = "TaskCompleted64.png" });
+                stackCompleted.Children.Add(new Label { Text = completed.ToString(), YAlign = TextAlignment.Center, FontSize = fontSize });
+
+                footer.Children.Add(stackStarted);
+                footer.Children.Add(stackNotStarted);
+                footer.Children.Add(stackOnHold);
+                footer.Children.Add(stackCompleted);
+
+                //footer.Children.Add(new Label { Text ="conceived: " + conceived.ToString() + " started: " + started.ToString() + " blocked: " + blocked.ToString() + " planned: " + planned.ToString() + " completed: " + completed.ToString() });
                 return footer;
             } 
         }

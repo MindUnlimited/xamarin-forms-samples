@@ -21,45 +21,42 @@ namespace Todo.Views
 
         public BoxView middleBorder;
 
-        Style invisibleListView = new Style(typeof(ListView))
+        //Bindable property for the progress color
+        public static readonly BindableProperty LeftFooterProperty =
+          BindableProperty.Create<DomainRow, StackLayout>(p => p.LeftFooter, new StackLayout());
+        //Gets or sets the color of the progress bar
+        public StackLayout LeftFooter
         {
-            Setters =   {
-                            new Setter {Property = ListView.OpacityProperty, Value = 0}
-                        }
-        };
-
-        Style visibleListView = new Style(typeof(ListView))
-        {
-            Setters =   {
-                            new Setter {Property = ListView.OpacityProperty, Value = 1}
-                        }
-        };
-
-        // MAYBE ALS A LABEL INSTEAD OF HEADER?
-
-        public StackLayout LeftFooter 
-        { get 
-            {
-                var footer = new StackLayout { Spacing = 0 };
-                footer.Children.Add(new Label { Text = leftLV.ItemsSource != null ? ((ICollection<Item>)leftLV.ItemsSource).Count.ToString() + " items" : "0 items" });
-                return footer; 
-            } 
+            get { return (StackLayout)GetValue(LeftFooterProperty); }
+            set { SetValue(LeftFooterProperty, value); }
         }
-        public string RightFooter { get { return rightLV.ItemsSource != null ? ((ICollection<Item>)rightLV.ItemsSource).Count.ToString() + " items" : "0 items"; } }
 
-        public DomainRow(ListView leftLV, ListView rightLV, uint borderSize, RelativeLayout parentLayout, uint rows)
+        //Bindable property for the progress color
+        public static readonly BindableProperty RightFooterProperty =
+          BindableProperty.Create<DomainRow, StackLayout>(p => p.RightFooter, new StackLayout());
+        //Gets or sets the color of the progress bar
+        public StackLayout RightFooter
+        {
+            get { return (StackLayout)GetValue(RightFooterProperty); }
+            set { SetValue(RightFooterProperty, value); }
+        }
+
+
+
+        public DomainRow(ListView leftLV, ItemListViewModel leftViewModel, ListView rightLV, ItemListViewModel rightViewModel, uint borderSize, RelativeLayout parentLayout, uint rows)
         {
             this.leftLV = leftLV;
             this.rightLV = rightLV;
+
             //this.expandedLV = new ListView { IsVisible = false };
 
-            leftItems = (IEnumerable<Item>) leftLV.ItemsSource;
-            rightItems = (IEnumerable<Item>) rightLV.ItemsSource;
+            leftItems = (IEnumerable<Item>)leftLV.ItemsSource;
+            rightItems = (IEnumerable<Item>)rightLV.ItemsSource;
 
 
             this.Spacing = 0;
 
-            StackLayout row = new StackLayout { Spacing = 0, VerticalOptions = LayoutOptions.FillAndExpand };
+            StackLayout row = new StackLayout { Spacing = 10, VerticalOptions = LayoutOptions.FillAndExpand};
 
             row.Orientation = StackOrientation.Horizontal;
             middleBorder = new BoxView { Color = Color.White };
@@ -101,15 +98,18 @@ namespace Todo.Views
             //StackLayout leftFooter = new StackLayout { Spacing = 0 };
             //LeftFooter.SetBinding(StackLayout.)
 
+            //setLeftFooter(leftViewModel);
+            //setRightFooter(rightViewModel);
+
             leftLVWithFooter = new StackLayout { Spacing = 0 };
             leftLVWithFooter.Children.Add(leftLV);
-            //leftLVWithFooter.Children.Add(leftFooter);
+            leftLVWithFooter.Children.Add(LeftFooter);
 
             //rightFooter = new StackLayout { Orientation = StackOrientation.Horizontal };
 
             rightLVWithFooter = new StackLayout { Spacing = 0 };
             rightLVWithFooter.Children.Add(rightLV);
-            //rightLVWithFooter.Children.Add(rightFooter);
+            rightLVWithFooter.Children.Add(RightFooter);
 
             row.Children.Add(leftLV);
             row.Children.Add(middleBorder);
@@ -126,9 +126,54 @@ namespace Todo.Views
             Children.Add(row);
 
             HeightRequest = parentLayout.Height / rows;
+
+            //leftLV.PropertyChanged += (o, e) => {
+            //    leftItems = (IEnumerable<Item>)leftLV.ItemsSource;
+            //};
+
+            //rightLV.PropertyChanged += (o, e) =>
+            //{
+            //    rightItems = (IEnumerable<Item>)rightLV.ItemsSource;
+            //};
+
+
         }
 
 
+        Style invisibleListView = new Style(typeof(ListView))
+        {
+            Setters =   {
+                            new Setter {Property = ListView.OpacityProperty, Value = 0}
+                        }
+        };
+
+        Style visibleListView = new Style(typeof(ListView))
+        {
+            Setters =   {
+                            new Setter {Property = ListView.OpacityProperty, Value = 1}
+                        }
+        };
+
+        // MAYBE ALS A LABEL INSTEAD OF HEADER?
+
+        //public StackLayout LeftFooter
+        //{
+        //    get
+        //    {
+        //        var footer = new StackLayout { Spacing = 0 };
+        //        footer.Children.Add(new Label { Text = leftLV.ItemsSource != null ? ((ICollection<Item>)leftLV.ItemsSource).Count.ToString() + " items" : "0 items" });
+        //        return footer;
+        //    }
+        //}
+
+        //public string RightFooter { get { return rightLV.ItemsSource != null ? ((ICollection<Item>)rightLV.ItemsSource).Count.ToString() + " items" : "0 items"; } }
+
+
+
+        public void changeRightHeader(StackLayout header)
+        {
+            rightLV.Header = header;
+        }
 
         public void changeLeftHeader(StackLayout header)
         {
@@ -139,7 +184,19 @@ namespace Todo.Views
         {
             leftLV.BindingContext = leftViewModel;
             leftLV.SetBinding(ListView.FooterProperty, "Footer");
-            var test = leftLV.Footer;
+
+            //LeftFooter.BindingContext = leftViewModel;
+
+            //leftViewModel.PropertyChanged += (o,e) => 
+            //{
+            //    LeftFooter.Children.Clear();
+            //    foreach (var child in leftViewModel.Footer.Children)
+            //    {
+            //        LeftFooter.Children.Add(child);
+            //    }
+            //    LeftFooter.Children.Add(new Label { Text = "testtest" });
+            //    //LeftFooter = leftViewModel.Footer;
+            //};
         }
 
         public void setRightFooter(ItemListViewModel rightViewModel)
@@ -165,10 +222,7 @@ namespace Todo.Views
         //    leftFooter = footer;
         //}
 
-        public void changeRightHeader(StackLayout header)
-        {
-            rightLV.Header = header;
-        }
+
 
         //public void changeRightFooter(StackLayout footer)
         //{

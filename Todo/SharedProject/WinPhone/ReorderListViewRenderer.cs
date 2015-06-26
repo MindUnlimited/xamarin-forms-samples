@@ -46,6 +46,7 @@ namespace Todo.WinPhone
             System.Windows.DataTemplate itemTemplate = System.Windows.Markup.XamlReader.Load(
                 @"<DataTemplate xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation"">
                     <StackPanel Orientation=""Horizontal"">
+                        <Image Width=""25"" Height=""25"" Source=""/Assets/ItemIcons/TaskInitiated64.png"" />
                         <TextBlock Text=""{Binding Path=Name}"" Margin=""12,4,12,4"" FontSize=""26"" TextTrimming=""WordEllipsis""></TextBlock>
                     </StackPanel>
                 </DataTemplate>") as System.Windows.DataTemplate;

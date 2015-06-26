@@ -387,7 +387,7 @@ namespace Todo.Views
                         {
                             RowHeight = 40,
                             ItemTemplate = new DataTemplate(typeof(TodoItemCell)),
-                            ItemsSource = viewModels[it].Reports
+                            ItemsSource = viewModels[it].Reports,
                         };
                         bottomBorders[it] = new BoxView { Color = Color.White };
                     }
@@ -408,8 +408,8 @@ namespace Todo.Views
                     //    }
                     //}
 
-                    rowList.Add(new DomainRow(listViews[domains[0]], listViews[domains[1]], borderSize, objRelativeLayout, rows));
-                    rowList.Add(new DomainRow(listViews[domains[2]], listViews[domains[3]], borderSize, objRelativeLayout, rows));
+                    rowList.Add(new DomainRow(listViews[domains[0]], viewModels[domains[0]], listViews[domains[1]], viewModels[domains[1]], borderSize, objRelativeLayout, rows));
+                    rowList.Add(new DomainRow(listViews[domains[2]], viewModels[domains[2]], listViews[domains[3]], viewModels[domains[3]], borderSize, objRelativeLayout, rows));//rowList.Add(new DomainRow(listViews[domains[2]], listViews[domains[3]], borderSize, objRelativeLayout, rows));
 
                     //top = new DomainRow(personalItems, friendsItems, borderSize, objRelativeLayout, rows);
                     //bottom = new DomainRow(workItems, communityItems, borderSize, objRelativeLayout, rows);
@@ -739,7 +739,7 @@ namespace Todo.Views
 
                                         if (listViews[domains[1]] != null)
                                         {
-                                            //topLV.ItemsSource = listViews[domains[1]].ItemsSource;
+                                            topLV.ItemCollection = (ObservableCollection<Item>)listViews[domains[1]].ItemsSource;
                                         }
 
                                         //topLV.ItemsSource = array2;
@@ -753,7 +753,7 @@ namespace Todo.Views
 
                                         if (listViews[domains[1]] != null)
                                         {
-                                            //topLV.ItemsSource = listViews[domains[1]].ItemsSource;
+                                            topLV.ItemCollection = (ObservableCollection<Item>)listViews[domains[1]].ItemsSource;
                                         }
 
                                         //topLV.ItemsSource = array2;
@@ -811,7 +811,7 @@ namespace Todo.Views
 
                                     if (listViews[domains[1]] != null)
                                     {
-                                        //topLV.ItemsSource = listViews[domains[1]].ItemsSource;
+                                        topLV.ItemCollection = (ObservableCollection<Item>)listViews[domains[1]].ItemsSource;
                                     }
 
                                     //topLV.ItemsSource = array2;
@@ -883,7 +883,7 @@ namespace Todo.Views
 
                                         if (listViews[domains[2]] != null)
                                         {
-                                            //bottomLV.ItemsSource = listViews[domains[2]].ItemsSource;
+                                            bottomLV.ItemCollection = (ObservableCollection<Item>)listViews[domains[2]].ItemsSource;
                                         }
 
                                         //bottomLV.ItemsSource = array3;
@@ -896,7 +896,7 @@ namespace Todo.Views
 
                                         if (listViews[domains[2]] != null)
                                         {
-                                            //bottomLV.ItemsSource = listViews[domains[2]].ItemsSource;
+                                            bottomLV.ItemCollection = (ObservableCollection<Item>)listViews[domains[2]].ItemsSource;
                                         }
 
                                         //bottomLV.ItemsSource = array3;
@@ -937,7 +937,7 @@ namespace Todo.Views
 
                                     if (listViews[domains[2]] != null)
                                     {
-                                        //bottomLV.ItemsSource = listViews[domains[2]].ItemsSource;
+                                        bottomLV.ItemCollection = (ObservableCollection<Item>)listViews[domains[2]].ItemsSource;
                                     }
 
                                     //bottomLV.ItemsSource = array3;
@@ -984,7 +984,7 @@ namespace Todo.Views
 
                                         if (listViews[domains[3]] != null)
                                         {
-                                            //bottomLV.ItemsSource = listViews[domains[3]].ItemsSource;
+                                            bottomLV.ItemCollection = (ObservableCollection<Item>)listViews[domains[3]].ItemsSource;
                                         }
 
                                         //bottomLV.ItemsSource = array4;
@@ -996,7 +996,7 @@ namespace Todo.Views
                                         rowList[1].hideItems();
                                         if (listViews[domains[3]] != null)
                                         {
-                                            //bottomLV.ItemsSource = listViews[domains[3]].ItemsSource;
+                                            bottomLV.ItemCollection = (ObservableCollection<Item>)listViews[domains[3]].ItemsSource;
                                         }
 
                                         //bottomLV.ItemsSource = array4;
@@ -1058,7 +1058,7 @@ namespace Todo.Views
 
                                     if (listViews[domains[3]] != null)
                                     {
-                                        //bottomLV.ItemsSource = listViews[domains[3]].ItemsSource;
+                                        bottomLV.ItemCollection = (ObservableCollection<Item>)listViews[domains[3]].ItemsSource;
                                     }
 
                                     //bottomLV.ItemsSource = array4;
@@ -1181,9 +1181,9 @@ namespace Todo.Views
 
                 foreach (Item dom in domains)
                 {
-                    StackLayout head = new StackLayout { Padding = 2, Spacing = 1 };
-                    
-                    switch(dom.Name)
+                    StackLayout head = new StackLayout { Padding = 2, Spacing = 1};
+
+                    switch (dom.Name)
                     {
                         case "Personal":
                             head.Children.Add(new Label { Text = dom.Name, TextColor = Color.Yellow, FontSize = 20, FontAttributes = FontAttributes.Bold });
@@ -1200,9 +1200,9 @@ namespace Todo.Views
                         default:
                             break;
                     }
+                    head.Children.Add(viewModels[dom].Footer);
 
-                    
-                    head.Children.Add(new Label { Text = ' ' + viewModels[dom].Reports.Count.ToString() + " items", TextColor = Color.White });
+                    //head.Children.Add(new Label { Text = ' ' + viewModels[dom].Reports.Count.ToString() + " items", TextColor = Color.White });
                     listViews[dom].Header = head;
                 }
 

@@ -51,5 +51,15 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="$(MSBuildThisFileDirectory)Views\CheckWeiss.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Views\Task25pComplete64.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Views\Task50pComplete64.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Views\Task75pComplete64.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Views\TaskCancelled64.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Views\TaskCompleted64.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Views\TaskCompleted64.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Views\TaskInitiated64.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Views\TaskNotStarted64.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Views\TaskOnHold64.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Views\TaskStarted64.png" />
   </ItemGroup>
 </Project>
