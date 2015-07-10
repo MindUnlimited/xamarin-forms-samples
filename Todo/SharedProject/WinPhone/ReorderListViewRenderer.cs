@@ -51,17 +51,22 @@ namespace Todo.WinPhone
                     xmlns:x=""http://schemas.microsoft.com/winfx/2006/xaml""
                     xmlns:d=""http://schemas.microsoft.com/expression/blend/2008""
                     xmlns:mc=""http://schemas.openxmlformats.org/markup-compatibility/2006""
-                    xmlns:wp=""clr-namespace:Todo.WinPhone""
+                    xmlns:wp=""clr-namespace:Todo.WinPhone;assembly=Todo.WinPhone""
                     xmlns:rlb=""clr-namespace:ReorderListBox;assembly=ReorderListBox""
                     mc:Ignorable=""d""
                     FontFamily=""{StaticResource PhoneFontFamilyNormal}""
                     FontSize=""{StaticResource PhoneFontSizeNormal}""
                     Foreground=""{StaticResource PhoneForegroundBrush}"">
-    
+
+                    <rlb:ReorderListBox.Resources>
+                    <wp:StatusToImageSourceConverterWP x:Key=""converter"" />
+                    </rlb:ReorderListBox.Resources>
+
                     <rlb:ReorderListBox.ItemTemplate>
                         <DataTemplate>
+
                             <StackPanel Orientation=""Horizontal"">
-                                <Image Width=""25"" Height=""25"" Source=""{Binding Status, Mode=OneWay, Converter={StaticResource Todo.Views.Controls:StatusToImageSourceConverter}, ConverterParameter=\{0:d\}}""></Image>
+                                <Image Width=""25"" Height=""25"" Source=""{Binding Status, Mode=OneWay, Converter={StaticResource converter}, ConverterParameter=\{0:d\}}""></Image>
                                 <TextBlock Text=""{Binding Path=Name}"" Margin=""12,4,12,4"" FontSize=""26"" TextTrimming=""WordEllipsis""></TextBlock>
                             </StackPanel>
                         </DataTemplate>

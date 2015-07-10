@@ -110,9 +110,6 @@
     <Compile Include="StatusToImageSourceConverterWP.cs" />
     <Compile Include="TextToSpeech_WinPhone.cs" />
     <Compile Include="ReorderListCellTemplate.cs" />
-    <Compile Include="WindowsPhoneControl2.xaml.cs">
-      <DependentUpon>WindowsPhoneControl2.xaml</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -124,10 +121,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ReorderListCellTemplate.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="WindowsPhoneControl2.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
