@@ -24,10 +24,12 @@
     <Compile Include="$(MSBuildThisFileDirectory)Models\TodoItem_bak.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\Controls\BoundPicker.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\Controls\DescriptionAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Views\Controls\ExtendedSlider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\Controls\ILocalizer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\Controls\MyBoundPicker.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\Controls\PickerItem.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\Controls\StringToImageConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Views\Controls\StatusToImageSourceConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\DomainPage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\DomainRow.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\GridDemoPage.cs" />
@@ -51,15 +53,5 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="$(MSBuildThisFileDirectory)Views\CheckWeiss.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Views\Task25pComplete64.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Views\Task50pComplete64.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Views\Task75pComplete64.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Views\TaskCancelled64.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Views\TaskCompleted64.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Views\TaskCompleted64.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Views\TaskInitiated64.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Views\TaskNotStarted64.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Views\TaskOnHold64.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Views\TaskStarted64.png" />
   </ItemGroup>
 </Project>

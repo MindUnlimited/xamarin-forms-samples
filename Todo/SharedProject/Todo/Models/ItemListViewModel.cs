@@ -59,7 +59,7 @@ namespace Todo.Models
         {
             get
             {
-                var footer = new StackLayout {Orientation = StackOrientation.Horizontal, Spacing = 5, Padding = 2, HorizontalOptions = LayoutOptions.FillAndExpand, VerticalOptions = LayoutOptions.EndAndExpand};
+                var footer = new StackLayout {Orientation = StackOrientation.Horizontal, Spacing = 5, HorizontalOptions = LayoutOptions.End};
 
                 int cancelled = 0;
                 int conceived = 0;
@@ -109,24 +109,38 @@ namespace Todo.Models
                     }
                 }
 
-                int imgSize = 25;
-                int fontSize = 20;
-                int spacing = 4;
+                int imgSize = Device.OnPlatform(iOS: 25, Android: 15, WinPhone: 25);
+                int fontSize = Device.OnPlatform(iOS: 20, Android: 15, WinPhone: 20);
+                int spacing = 5;
 
                 StackLayout stackStarted = new StackLayout { Orientation = StackOrientation.Horizontal, Padding = 0, Spacing = spacing, HorizontalOptions = LayoutOptions.CenterAndExpand };
-                stackStarted.Children.Add(new Image { HeightRequest = imgSize, WidthRequest = imgSize, Source = "TaskStarted64.png"});
+                stackStarted.Children.Add(new Image { HeightRequest = imgSize, WidthRequest = imgSize, Source = Device.OnPlatform(
+                        iOS: ImageSource.FromFile("Images/TaskStarted64.png"),
+                        Android: ImageSource.FromFile("TaskStarted64.png"),
+                        WinPhone: ImageSource.FromFile("Assets/ItemIcons/TaskStarted64.png"))});
+
                 stackStarted.Children.Add(new Label { Text = started.ToString(), YAlign = TextAlignment.Center, FontSize = fontSize});
 
                 StackLayout stackNotStarted = new StackLayout { Orientation = StackOrientation.Horizontal, Padding = 0, Spacing = spacing, HorizontalOptions = LayoutOptions.CenterAndExpand };
-                stackNotStarted.Children.Add(new Image { HeightRequest = imgSize, WidthRequest = imgSize, Source = "TaskNotStarted64.png" });
+                stackNotStarted.Children.Add(new Image { HeightRequest = imgSize, WidthRequest = imgSize, Source = Device.OnPlatform(
+                        iOS: ImageSource.FromFile("Images/TaskNotStarted64.png"),
+                        Android: ImageSource.FromFile("TaskNotStarted64.png"),
+                        WinPhone: ImageSource.FromFile("Assets/ItemIcons/TaskNotStarted64.png"))});
                 stackNotStarted.Children.Add(new Label { Text = conceived.ToString() , YAlign = TextAlignment.Center, FontSize = fontSize});
 
                 StackLayout stackOnHold = new StackLayout { Orientation = StackOrientation.Horizontal, Padding = 0, Spacing = spacing, HorizontalOptions = LayoutOptions.CenterAndExpand };
-                stackOnHold.Children.Add(new Image { HeightRequest = imgSize, WidthRequest = imgSize, Source = "TaskOnHold64.png" });
+                stackOnHold.Children.Add(new Image { HeightRequest = imgSize, WidthRequest = imgSize, Source = Device.OnPlatform(
+                        iOS: ImageSource.FromFile("Images/TaskOnHold64.png"),
+                        Android: ImageSource.FromFile("TaskOnHold64.png"),
+                        WinPhone: ImageSource.FromFile("Assets/ItemIcons/TaskOnHold64.png"))});
                 stackOnHold.Children.Add(new Label { Text = blocked.ToString(), YAlign = TextAlignment.Center, FontSize = fontSize });
 
                 StackLayout stackCompleted = new StackLayout { Orientation = StackOrientation.Horizontal, Padding = 0, Spacing = spacing, HorizontalOptions = LayoutOptions.CenterAndExpand };
-                stackCompleted.Children.Add(new Image { HeightRequest = imgSize, WidthRequest = imgSize, Source = "TaskCompleted64.png" });
+                stackCompleted.Children.Add(new Image { HeightRequest = imgSize, WidthRequest = imgSize, 
+                    Source = Device.OnPlatform(
+                        iOS: ImageSource.FromFile("Images/TaskCompleted64.png"),
+                        Android: ImageSource.FromFile("TaskCompleted64.png"),
+                        WinPhone: ImageSource.FromFile("Assets/ItemIcons/TaskCompleted64.png")) });
                 stackCompleted.Children.Add(new Label { Text = completed.ToString(), YAlign = TextAlignment.Center, FontSize = fontSize });
 
                 footer.Children.Add(stackStarted);

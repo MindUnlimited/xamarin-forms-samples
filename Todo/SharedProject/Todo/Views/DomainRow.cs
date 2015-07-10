@@ -56,7 +56,7 @@ namespace Todo.Views
 
             this.Spacing = 0;
 
-            StackLayout row = new StackLayout { Spacing = 10, VerticalOptions = LayoutOptions.FillAndExpand};
+            StackLayout row = new StackLayout { Spacing = 10, Padding = new Thickness(10, 0, 10, 0), VerticalOptions = LayoutOptions.FillAndExpand};
 
             row.Orientation = StackOrientation.Horizontal;
             middleBorder = new BoxView { Color = Color.White };
@@ -101,7 +101,7 @@ namespace Todo.Views
             //setLeftFooter(leftViewModel);
             //setRightFooter(rightViewModel);
 
-            leftLVWithFooter = new StackLayout { Spacing = 0 };
+            leftLVWithFooter = new StackLayout { Spacing = 0};
             leftLVWithFooter.Children.Add(leftLV);
             leftLVWithFooter.Children.Add(LeftFooter);
 

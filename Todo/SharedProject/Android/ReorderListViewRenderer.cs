@@ -17,6 +17,8 @@ namespace Todo.Android
     //NativeListViewRenderer : ViewRenderer<NativeListView, global::Android.Widget.ListView>
     public class ReorderListViewRenderer : ViewRenderer<ReorderListView, MyListView>
     {
+        private DraggableListAdapter adapter;
+
         protected override void OnElementChanged(ElementChangedEventArgs<ReorderListView> e)
 		{
 			base.OnElementChanged (e);
@@ -38,29 +40,34 @@ namespace Todo.Android
                 //var list = FindViewById<DraggableListView.DraggableListView>(Resource.Id.months_list);
 
 
-                List<string> items = new List<string> {
-				"Vegetables",
-				"Fruits",
-				"Flower Buds",
-				"Legumes",
-				"Vegetables",
-				"Fruits",
-				"Flower Buds",
-				"Legumes",
-			    };
+                //List<string> items = new List<string> {
+                //"Vegetables",
+                //"Fruits",
+                //"Flower Buds",
+                //"Legumes",
+                //"Vegetables",
+                //"Fruits",
+                //"Flower Buds",
+                //"Legumes",
+                //};
                 
                 //draggableListAdapter = new DraggableListAdapter(Forms.Context as Activity, items);
                 //new ArrayAdapter(Forms.Context as Activity, Resource.Layout.listitem, Element.ItemCollection);
                 //Control.Adapter = new ArrayAdapter<Item>(Forms.Context, Resource.Layout.listitem, Element.ItemCollection);
-                Control.Adapter = new DraggableListAdapter(Forms.Context as Activity, Element.ItemCollection);// new ArrayAdapter<Item>(Forms.Context, Resource.Layout.listitem, Element.ItemCollection); //draggableListAdapter;// new DraggableListAdapter(this, items);
-
-                Control.ItemClick += clicked;
+                adapter = new DraggableListAdapter(Forms.Context as Activity, Element.ItemCollection);
+                Control.Adapter = adapter;// new ArrayAdapter<Item>(Forms.Context, Resource.Layout.listitem, Element.ItemCollection); //draggableListAdapter;// new DraggableListAdapter(this, items);
+                Control.ItemClick  += clicked;
 			}
 		}
 
-        private void clicked(object sender, AdapterView.ItemClickEventArgs e)
+        private async void clicked(object sender, AdapterView.ItemClickEventArgs e)
         {
-            throw new System.NotImplementedException();
+            Item item = adapter.Items[e.Position];
+
+            var todoPage = new TodoItemPage();
+            todoPage.BindingContext = item;
+            await Todo.App.selectedDomainPage.Navigation.PushAsync(todoPage);
+            //Todo.App.Navigation.PushAsync(todoPage);
         }
 
 
@@ -77,7 +84,8 @@ namespace Todo.Android
             else if (e.PropertyName == ReorderListView.ItemsProperty.PropertyName)
             {
                 //Control.Adapter = new ArrayAdapter<Item>(Forms.Context, Resource.Layout.listitem, Element.ItemCollection);
-                Control.Adapter = new DraggableListAdapter(Forms.Context as Activity, Element.ItemCollection);
+                adapter = new DraggableListAdapter(Forms.Context as Activity, Element.ItemCollection);
+                Control.Adapter = adapter;
             }           
 
 

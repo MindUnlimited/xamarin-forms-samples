@@ -13,5 +13,20 @@ namespace Todo.WinPhone
 {
     public class MyReorderListBox : ReorderListBox.ReorderListBox
     {
+        //public MyReorderListBox() : base()
+        //{
+        //    this.SelectionChanged += async (obj, ev) =>
+        //    {
+        //        var Item = (Item)ev.AddedItems[0];
+
+        //        var todoPage = new TodoItemPage();
+        //        todoPage.BindingContext = Item;
+        //        await Todo.App.Navigation.PushAsync(todoPage);
+        //        //await Navigation.PushAsync(todoPage);
+        //    };
+        //}
+
     }
+
+
 }

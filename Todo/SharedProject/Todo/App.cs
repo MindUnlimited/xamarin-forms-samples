@@ -104,6 +104,7 @@ namespace Todo
             MainPage = domainTabsPage;
 
             //MainPage = new NavigationPage(domainTabsPage); // The root page of your application
+            Navigation = MainPage.Navigation;
 
             //MainPage = new NavigationPage(new FormsGallery.GridDemoPage());//GetMainPage(); // property new in 1.3
             //MainPage = new FormsGallery.GridDemoPage();//GetMainPage(); // property new in 1.3

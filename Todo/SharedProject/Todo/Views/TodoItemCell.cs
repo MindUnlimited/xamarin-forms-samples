@@ -52,35 +52,67 @@ namespace Todo
             
 
             Image itemImage = new Image();
-            int imgSize = 25;
+            int imgSize = Device.OnPlatform(iOS: 25, Android: 15, WinPhone: 25);
 
             switch (item.Status)
             {
                 case -1:
                     itemImage = new Image { HeightRequest = imgSize, WidthRequest = imgSize, Source = "TaskCancelled64.png" };
+                    itemImage.Source = Device.OnPlatform(
+                        iOS: ImageSource.FromFile("Images/TaskCancelled64.png"),
+                        Android: ImageSource.FromFile("TaskCancelled64.png"),
+                        WinPhone: ImageSource.FromFile("Assets/ItemIcons/TaskCancelled64.png"));
                     break;
                 case 0:
                     // no icon for conceived
                 case 1:
-                    itemImage = new Image { HeightRequest = imgSize, WidthRequest = imgSize, Source = "TaskNotStarted64.png" };
+                    itemImage = new Image { HeightRequest = imgSize, WidthRequest = imgSize, 
+                    Source = Device.OnPlatform(
+                        iOS: ImageSource.FromFile("Images/TaskNotStarted64.png"),
+                        Android: ImageSource.FromFile("TaskNotStarted64.png"),
+                        WinPhone: ImageSource.FromFile("Assets/ItemIcons/TaskNotStarted64.png")) };
                     break;
                 case 2:
-                    itemImage = new Image { HeightRequest = imgSize, WidthRequest = imgSize, Source = "TaskInitiated64.png" };
+                    itemImage = new Image { HeightRequest = imgSize, WidthRequest = imgSize, 
+                    Source = Device.OnPlatform(
+                        iOS: ImageSource.FromFile("Images/TaskInitiated64.png"),
+                        Android: ImageSource.FromFile("TaskInitiated64.png"),
+                        WinPhone: ImageSource.FromFile("Assets/ItemIcons/TaskInitiated64.png"))};
                     break;
                 case 3:
-                    itemImage = new Image { HeightRequest = imgSize, WidthRequest = imgSize, Source = "Task25pComplete64.png" };
+                    itemImage = new Image { HeightRequest = imgSize, WidthRequest = imgSize, 
+                    Source = Device.OnPlatform(
+                        iOS: ImageSource.FromFile("Images/Task25pComplete64.png"),
+                        Android: ImageSource.FromFile("Resources/drawable/Task25pComplete64.png"),
+                        WinPhone: ImageSource.FromFile("Assets/ItemIcons/Task25pComplete64.png"))};
                     break;
                 case 4:
-                    itemImage = new Image { HeightRequest = imgSize, WidthRequest = imgSize, Source = "Task50pComplete64.png" };
+                    itemImage = new Image { HeightRequest = imgSize, WidthRequest = imgSize, 
+                    Source = Device.OnPlatform(
+                        iOS: ImageSource.FromFile("Images/Task50pComplete64.png"),
+                        Android: ImageSource.FromFile("Task50pComplete64.png"),
+                        WinPhone: ImageSource.FromFile("Assets/ItemIcons/Task50pComplete64.png"))};
                     break;
                 case 5:
-                    itemImage = new Image { HeightRequest = imgSize, WidthRequest = imgSize, Source = "Task75pComplete64.png" };
+                    itemImage = new Image { HeightRequest = imgSize, WidthRequest = imgSize, 
+                    Source = Device.OnPlatform(
+                        iOS: ImageSource.FromFile("Images/Task75pComplete64.png"),
+                        Android: ImageSource.FromFile("Task75pComplete64.png"),
+                        WinPhone: ImageSource.FromFile("Assets/ItemIcons/Task75pComplete64.png"))};
                     break;
                 case 6:
-                    itemImage = new Image { HeightRequest = imgSize, WidthRequest = imgSize, Source = "TaskOnHold64.png" };
+                    itemImage = new Image { HeightRequest = imgSize, WidthRequest = imgSize, 
+                    Source = Device.OnPlatform(
+                        iOS: ImageSource.FromFile("Images/TaskOnHold64.png"),
+                        Android: ImageSource.FromFile("TaskOnHold64.png"),
+                        WinPhone: ImageSource.FromFile("Assets/ItemIcons/TaskOnHold64.png"))};
                     break;
                 case 7:
-                    itemImage = new Image { HeightRequest = imgSize, WidthRequest = imgSize, Source = "TaskCompleted64.png" };
+                    itemImage = new Image { HeightRequest = imgSize, WidthRequest = imgSize, 
+                    Source = Device.OnPlatform(
+                        iOS: ImageSource.FromFile("Images/TaskCompleted64.png"),
+                        Android: ImageSource.FromFile("TaskCompleted64.png"),
+                        WinPhone: ImageSource.FromFile("Assets/ItemIcons/TaskCompleted64.png"))};
                     break;
                 default:
                     break;
@@ -166,7 +198,7 @@ namespace Todo
                 Padding = new Thickness(0, 0, 0, 0),
                 Orientation = StackOrientation.Horizontal,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                Children = { itemImage, hierarchy, itemType, label, tick }
+                Children = { itemImage, hierarchy, itemType, label }
             };
             View = layout;
 

@@ -48,14 +48,49 @@ namespace Todo
 			
 			nameEntry.SetBinding (Entry.TextProperty, "Name");
 
-            //var notesLabel = new Label { Text = "Notes" };
-            //var notesEntry = new Entry ();
-            //notesEntry.SetBinding (Entry.TextProperty, "Notes");
+            //0: Conceived
+            //1: Planned
+            //2: Initiated
+            //3: <25% completed
+            //4: <50%
+            //5: <75%
+            //6: On hold / Blocked
+            //7: Completed
+            //-1: Cancelled
 
             var statusLabel = new Label { Text = "Status" };
-            var statusEntry = new Entry();
 
-            statusEntry.SetBinding(Entry.TextProperty, "Status");
+            var slider = new ExtendedSlider
+            {
+                Minimum = -1,
+                Maximum = 7,
+                StepValue = 1,
+                VerticalOptions = LayoutOptions.CenterAndExpand
+            };
+
+            slider.SetBinding(Slider.ValueProperty, "Status");
+
+            //var labelSlideValue = new Label
+            //{
+            //    HorizontalOptions = LayoutOptions.CenterAndExpand,
+            //    BindingContext = slider,
+            //};
+
+            //labelSlideValue.SetBinding(Label.TextProperty,
+            //                                new Binding("Value", BindingMode.OneWay,
+            //                                    null, null, "Current Value: {0}"));
+
+            int imgSize = Device.OnPlatform(iOS: 25, Android: 15, WinPhone: 25);
+            Image sliderImage = new Image { BindingContext = slider, HeightRequest = imgSize, WidthRequest = imgSize };
+
+            sliderImage.SetBinding(Image.SourceProperty,
+                                        new Binding("Value", BindingMode.OneWay, new StatusToImageSourceConverter()));
+
+
+            
+            //var statusEntry = new Entry();
+
+            //statusEntry.SetBinding(Entry.TextProperty, "Status");
 
             //var ownedLabel = new Label { Text = "Owned By" };
             //var ownedEntry = new Entry();
@@ -359,7 +394,10 @@ namespace Todo
                             {
 					            nameLabel, nameEntry, 
 					            //notesLabel, notesEntry,
-					            statusLabel, statusEntry,
+                                
+					            statusLabel, slider, sliderImage,
+                                //,
+
                                 //ownedLabel, ownedEntry,
                                 ownedLabel, ownedPicker,
                                 parentLabel, parentPicker

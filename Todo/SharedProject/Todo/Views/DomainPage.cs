@@ -43,7 +43,7 @@ namespace Todo.Views
         private uint columns = 2;
         private uint animationms = 200;
 
-        private uint borderSize = 1; // pixels
+        private uint borderSize = 2; // pixels
 
         private bool listsInitialized = false;
 
@@ -1181,7 +1181,7 @@ namespace Todo.Views
 
                 foreach (Item dom in domains)
                 {
-                    StackLayout head = new StackLayout { Padding = 2, Spacing = 1};
+                    StackLayout head = new StackLayout { Spacing = 1};
 
                     switch (dom.Name)
                     {

@@ -1,5 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/textview"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent" />
+<ListItemRow>
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp">
+    <!-- Item Status Icon -->
+        <ImageView
+            android:id="@+id/icon1"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_toLeftOf="@+id/textview"
+            android:layout_marginRight="8dp" />
+    <!-- Item string -->
+        <TextView
+            android:id="@+id/textview1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </RelativeLayout>
+</ListItemRow>

@@ -71,6 +71,33 @@ namespace Todo.Android
 			// aapt resource value: 0x7f020007
 			public const int Reorder = 2130837511;
 			
+			// aapt resource value: 0x7f020008
+			public const int Task25pComplete64 = 2130837512;
+			
+			// aapt resource value: 0x7f020009
+			public const int Task50pComplete64 = 2130837513;
+			
+			// aapt resource value: 0x7f02000a
+			public const int Task75pComplete64 = 2130837514;
+			
+			// aapt resource value: 0x7f02000b
+			public const int TaskCancelled64 = 2130837515;
+			
+			// aapt resource value: 0x7f02000c
+			public const int TaskCompleted64 = 2130837516;
+			
+			// aapt resource value: 0x7f02000d
+			public const int TaskInitiated64 = 2130837517;
+			
+			// aapt resource value: 0x7f02000e
+			public const int TaskNotStarted64 = 2130837518;
+			
+			// aapt resource value: 0x7f02000f
+			public const int TaskOnHold64 = 2130837519;
+			
+			// aapt resource value: 0x7f020010
+			public const int TaskStarted64 = 2130837520;
+			
 			static Drawable()
 			{
 				global::Android.Runtime.ResourceIdManager.UpdateIdValues();
@@ -84,14 +111,20 @@ namespace Todo.Android
 		public partial class Id
 		{
 			
+			// aapt resource value: 0x7f050000
+			public const int icon1 = 2131034112;
+			
+			// aapt resource value: 0x7f050003
+			public const int months_list = 2131034115;
+			
+			// aapt resource value: 0x7f050004
+			public const int myButton = 2131034116;
+			
 			// aapt resource value: 0x7f050001
-			public const int months_list = 2131034113;
+			public const int textview = 2131034113;
 			
 			// aapt resource value: 0x7f050002
-			public const int myButton = 2131034114;
-			
-			// aapt resource value: 0x7f050000
-			public const int textview = 2131034112;
+			public const int textview1 = 2131034114;
 			
 			static Id()
 			{
