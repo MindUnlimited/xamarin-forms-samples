@@ -31,7 +31,11 @@ namespace Todo.WinPhone
             }
             else if (e.PropertyName == ReorderListView.ItemsProperty.PropertyName)
             {
-                Control.ItemsSource = Element.ItemCollection;
+                //Control.ItemsSource = Element.ItemCollection;
+                var itembind = new System.Windows.Data.Binding("ItemCollection");
+                itembind.Mode = System.Windows.Data.BindingMode.TwoWay;
+
+                Control.SetBinding(ReorderListBox.ReorderListBox.ItemsSourceProperty, itembind);
             }           
         }
 
@@ -82,18 +86,29 @@ namespace Todo.WinPhone
             System.Windows.Style ListBoxItemStyle = new System.Windows.Style(typeof(ReorderListBoxItem));
             ListBoxItemStyle.Setters.Add(new System.Windows.Setter(ReorderListBoxItem.DragHandleTemplateProperty, moveTemplate));
 
+            rlb.DataContext = Element;
             rlb.ItemContainerStyle = ListBoxItemStyle;
             rlb.IsReorderEnabled = Element.ReorderEnabled;
-            rlb.ItemsSource = Element.ItemCollection;
+
+            var itembind = new System.Windows.Data.Binding("ItemCollection");
+            itembind.Mode = System.Windows.Data.BindingMode.TwoWay;
+
+            rlb.SetBinding(ReorderListBox.ReorderListBox.ItemsSourceProperty, itembind);
+            
+            //rlb.ItemsSource = Element.ItemCollection;
 
             rlb.SelectionChanged += async (obj, ev) =>
             {
-                var Item = (Item)ev.AddedItems[0];
+                if (ev.AddedItems.Count > 0)
+                {
+                    var Item = (Item)ev.AddedItems[0];
 
-                var todoPage = new TodoItemPage();
-                todoPage.BindingContext = Item;
-                await Todo.App.Navigation.PushAsync(todoPage);
-                //await Navigation.PushAsync(todoPage);
+                    var todoPage = new TodoItemPage();
+                    todoPage.BindingContext = Item;
+                    await Todo.App.Navigation.PushAsync(todoPage);
+                    //await Navigation.PushAsync(todoPage);
+                }
+
             };
 
 

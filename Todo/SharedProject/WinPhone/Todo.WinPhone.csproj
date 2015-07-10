@@ -148,7 +148,7 @@
     <Content Include="Assets\ItemIcons\TaskStarted64.png" />
     <Content Include="Assets\LogoMindSet128x128.png" />
     <Content Include="Assets\LogoMindSet48x48.png" />
-    <Content Include="Assets\ItemIcons\TaskInitiated64.png" />
+    <Content Include="Assets\ItemIcons\TaskConceived64.png" />
     <Content Include="Assets\Tiles\FlipCycleTileLarge.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

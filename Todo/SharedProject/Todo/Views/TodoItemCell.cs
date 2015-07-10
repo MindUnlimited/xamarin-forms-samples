@@ -57,17 +57,26 @@ namespace Todo
             switch (item.Status)
             {
                 case -1:
-                    itemImage = new Image { HeightRequest = imgSize, WidthRequest = imgSize, Source = "TaskCancelled64.png" };
-                    itemImage.Source = Device.OnPlatform(
-                        iOS: ImageSource.FromFile("Images/TaskCancelled64.png"),
-                        Android: ImageSource.FromFile("TaskCancelled64.png"),
-                        WinPhone: ImageSource.FromFile("Assets/ItemIcons/TaskCancelled64.png"));
-                    break;
-                case 0:
-                    // no icon for conceived
-                case 1:
                     itemImage = new Image { HeightRequest = imgSize, WidthRequest = imgSize, 
                     Source = Device.OnPlatform(
+                        iOS: ImageSource.FromFile("Images/TaskCancelled64.png"),
+                        Android: ImageSource.FromFile("TaskCancelled64.png"),
+                        WinPhone: ImageSource.FromFile("Assets/ItemIcons/TaskCancelled64.png"))};
+                    break;
+                case 0:
+                    itemImage = new Image
+                    {
+                        HeightRequest = imgSize,
+                        WidthRequest = imgSize,
+                        Source = Device.OnPlatform(
+                            iOS: ImageSource.FromFile("Images/TaskConceived64.png"),
+                            Android: ImageSource.FromFile("TaskConceived64.png"),
+                            WinPhone: ImageSource.FromFile("Assets/ItemIcons/TaskConceived64.png"))
+                    };
+                    break;
+                case 1:
+                    itemImage = new Image { HeightRequest = imgSize, WidthRequest = imgSize, 
+                        Source = Device.OnPlatform(
                         iOS: ImageSource.FromFile("Images/TaskNotStarted64.png"),
                         Android: ImageSource.FromFile("TaskNotStarted64.png"),
                         WinPhone: ImageSource.FromFile("Assets/ItemIcons/TaskNotStarted64.png")) };
@@ -77,7 +86,7 @@ namespace Todo
                     Source = Device.OnPlatform(
                         iOS: ImageSource.FromFile("Images/TaskInitiated64.png"),
                         Android: ImageSource.FromFile("TaskInitiated64.png"),
-                        WinPhone: ImageSource.FromFile("Assets/ItemIcons/TaskInitiated64.png"))};
+                        WinPhone: ImageSource.FromFile("Assets/ItemIcons/TaskStarted64.png"))};
                     break;
                 case 3:
                     itemImage = new Image { HeightRequest = imgSize, WidthRequest = imgSize, 

@@ -387,8 +387,12 @@ namespace Todo.Views
                         {
                             RowHeight = 40,
                             ItemTemplate = new DataTemplate(typeof(TodoItemCell)),
-                            ItemsSource = viewModels[it].Reports,
+                            BindingContext = viewModels[it],
+                            
+                            //ItemsSource = viewModels[it].Reports,
                         };
+                        Binding listBinding = new Binding("Reports",BindingMode.TwoWay);
+                        listViews[it].SetBinding(ListView.ItemsSourceProperty, listBinding);
                         bottomBorders[it] = new BoxView { Color = Color.White };
                     }
 
@@ -598,6 +602,7 @@ namespace Todo.Views
                                 // collapse personal expand selected
                                 else if (expanded)
                                 {
+                                    
                                     if (selectedDomain.Name == "Friends & Family")
                                     {
                                         selectedDomain = domains.Find(x => x.Name == "Personal");// DefaultDomains.Personal;
@@ -617,8 +622,9 @@ namespace Todo.Views
                                             //topLV.ItemCollection = (ObservableCollection<Item>)listViews[domains[0]].ItemsSource;
                                             //Debug.WriteLine(collection.Count.ToString());
                                             ////topLV.addItems(items);
-
-                                            topLV.ItemCollection = (ObservableCollection<Item>)listViews[domains[0]].ItemsSource;
+                                            topLV.BindingContext = viewModels[domains[0]];
+                                            topLV.SetBinding(ReorderListView.ItemsProperty, "Reports", BindingMode.TwoWay);
+                                            //topLV.ItemCollection = (ObservableCollection<Item>)listViews[domains[0]].ItemsSource;
                                         }
                                     }
                                     else
@@ -643,8 +649,9 @@ namespace Todo.Views
                                             //topLV.ItemCollection = (ObservableCollection<Item>)listViews[domains[0]].ItemsSource;
                                             //Debug.WriteLine(collection.Count.ToString());
                                             ////topLV.addItems(items);
-
-                                            topLV.ItemCollection = (ObservableCollection<Item>)listViews[domains[0]].ItemsSource;
+                                            topLV.BindingContext = viewModels[domains[0]];
+                                            topLV.SetBinding(ReorderListView.ItemsProperty, "Reports", BindingMode.TwoWay);
+                                            //topLV.ItemCollection = (ObservableCollection<Item>)listViews[domains[0]].ItemsSource;
                                         }
 
                                         // for all the bottom borders except the neighbour to the right (friends and family)
@@ -698,8 +705,9 @@ namespace Todo.Views
                                         //topLV.ItemCollection = (ObservableCollection<Item>)listViews[domains[0]].ItemsSource;
                                         //Debug.WriteLine(collection.Count.ToString());
                                         ////topLV.addItems(items);
-
-                                        topLV.ItemCollection = (ObservableCollection<Item>)listViews[domains[0]].ItemsSource;
+                                        topLV.BindingContext = viewModels[domains[0]];
+                                        topLV.SetBinding(ReorderListView.ItemsProperty, "Reports", BindingMode.TwoWay);
+                                        //topLV.ItemCollection = (ObservableCollection<Item>)listViews[domains[0]].ItemsSource;
                                     }
 
                                     // Sets the bottom borders of friends and personal to their new values
@@ -739,7 +747,9 @@ namespace Todo.Views
 
                                         if (listViews[domains[1]] != null)
                                         {
-                                            topLV.ItemCollection = (ObservableCollection<Item>)listViews[domains[1]].ItemsSource;
+                                            topLV.BindingContext = viewModels[domains[1]];
+                                            topLV.SetBinding(ReorderListView.ItemsProperty, "Reports", BindingMode.TwoWay);
+                                            //topLV.ItemCollection = (ObservableCollection<Item>)listViews[domains[0]].ItemsSource;
                                         }
 
                                         //topLV.ItemsSource = array2;
@@ -753,7 +763,9 @@ namespace Todo.Views
 
                                         if (listViews[domains[1]] != null)
                                         {
-                                            topLV.ItemCollection = (ObservableCollection<Item>)listViews[domains[1]].ItemsSource;
+                                            topLV.BindingContext = viewModels[domains[1]];
+                                            topLV.SetBinding(ReorderListView.ItemsProperty, "Reports", BindingMode.TwoWay);
+                                            //topLV.ItemCollection = (ObservableCollection<Item>)listViews[domains[0]].ItemsSource;
                                         }
 
                                         //topLV.ItemsSource = array2;
@@ -811,7 +823,9 @@ namespace Todo.Views
 
                                     if (listViews[domains[1]] != null)
                                     {
-                                        topLV.ItemCollection = (ObservableCollection<Item>)listViews[domains[1]].ItemsSource;
+                                        topLV.BindingContext = viewModels[domains[1]];
+                                        topLV.SetBinding(ReorderListView.ItemsProperty, "Reports", BindingMode.TwoWay);
+                                        //topLV.ItemCollection = (ObservableCollection<Item>)listViews[domains[0]].ItemsSource;
                                     }
 
                                     //topLV.ItemsSource = array2;
@@ -883,7 +897,9 @@ namespace Todo.Views
 
                                         if (listViews[domains[2]] != null)
                                         {
-                                            bottomLV.ItemCollection = (ObservableCollection<Item>)listViews[domains[2]].ItemsSource;
+                                            bottomLV.BindingContext = listViews[domains[2]];
+                                            bottomLV.SetBinding(ReorderListView.ItemsProperty, "ItemsSource", BindingMode.TwoWay);
+                                            //bottomLV.ItemCollection = (ObservableCollection<Item>)listViews[domains[0]].ItemsSource;
                                         }
 
                                         //bottomLV.ItemsSource = array3;
@@ -896,7 +912,9 @@ namespace Todo.Views
 
                                         if (listViews[domains[2]] != null)
                                         {
-                                            bottomLV.ItemCollection = (ObservableCollection<Item>)listViews[domains[2]].ItemsSource;
+                                            bottomLV.BindingContext = listViews[domains[2]];
+                                            bottomLV.SetBinding(ReorderListView.ItemsProperty, "ItemsSource", BindingMode.TwoWay);
+                                            //bottomLV.ItemCollection = (ObservableCollection<Item>)listViews[domains[0]].ItemsSource;
                                         }
 
                                         //bottomLV.ItemsSource = array3;
@@ -937,7 +955,9 @@ namespace Todo.Views
 
                                     if (listViews[domains[2]] != null)
                                     {
-                                        bottomLV.ItemCollection = (ObservableCollection<Item>)listViews[domains[2]].ItemsSource;
+                                        bottomLV.BindingContext = listViews[domains[2]];
+                                        bottomLV.SetBinding(ReorderListView.ItemsProperty, "ItemsSource", BindingMode.TwoWay);
+                                        //bottomLV.ItemCollection = (ObservableCollection<Item>)listViews[domains[0]].ItemsSource;
                                     }
 
                                     //bottomLV.ItemsSource = array3;
@@ -984,7 +1004,9 @@ namespace Todo.Views
 
                                         if (listViews[domains[3]] != null)
                                         {
-                                            bottomLV.ItemCollection = (ObservableCollection<Item>)listViews[domains[3]].ItemsSource;
+                                            bottomLV.BindingContext = listViews[domains[3]];
+                                            bottomLV.SetBinding(ReorderListView.ItemsProperty, "ItemsSource", BindingMode.TwoWay);
+                                            //bottomLV.ItemCollection = (ObservableCollection<Item>)listViews[domains[0]].ItemsSource;
                                         }
 
                                         //bottomLV.ItemsSource = array4;
@@ -996,7 +1018,9 @@ namespace Todo.Views
                                         rowList[1].hideItems();
                                         if (listViews[domains[3]] != null)
                                         {
-                                            bottomLV.ItemCollection = (ObservableCollection<Item>)listViews[domains[3]].ItemsSource;
+                                            bottomLV.BindingContext = listViews[domains[3]];
+                                            bottomLV.SetBinding(ReorderListView.ItemsProperty, "ItemsSource", BindingMode.TwoWay);
+                                            //bottomLV.ItemCollection = (ObservableCollection<Item>)listViews[domains[0]].ItemsSource;
                                         }
 
                                         //bottomLV.ItemsSource = array4;
@@ -1058,7 +1082,9 @@ namespace Todo.Views
 
                                     if (listViews[domains[3]] != null)
                                     {
-                                        bottomLV.ItemCollection = (ObservableCollection<Item>)listViews[domains[3]].ItemsSource;
+                                        bottomLV.BindingContext = listViews[domains[3]];
+                                        bottomLV.SetBinding(ReorderListView.ItemsProperty, "ItemsSource", BindingMode.TwoWay);
+                                        //bottomLV.ItemCollection = (ObservableCollection<Item>)listViews[domains[0]].ItemsSource;
                                     }
 
                                     //bottomLV.ItemsSource = array4;

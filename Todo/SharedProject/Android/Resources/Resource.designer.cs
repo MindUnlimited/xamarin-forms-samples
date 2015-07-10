@@ -87,7 +87,7 @@ namespace Todo.Android
 			public const int TaskCompleted64 = 2130837516;
 			
 			// aapt resource value: 0x7f02000d
-			public const int TaskInitiated64 = 2130837517;
+			public const int TaskConceived64 = 2130837517;
 			
 			// aapt resource value: 0x7f02000e
 			public const int TaskNotStarted64 = 2130837518;

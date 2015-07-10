@@ -18,18 +18,30 @@ namespace Todo.WinPhone
             int status;
             int.TryParse(value.ToString(), out status);
 
+
+            //-1: Cancelled
+            //0: Conceived
+            //1: Planned
+            //2: Initiated (started)
+            //3: <25% completed
+            //4: <50%
+            //5: <75%
+            //6: On hold / Blocked
+            //7: Completed
+
             switch ((int) status)
             {
                 case -1:
                     source = "Assets/ItemIcons/TaskCancelled64.png";
                     break;
                 case 0:
-                // no icon for conceived
+                    source = "Assets/ItemIcons/TaskConceived64.png";
+                    break;
                 case 1:
                     source = "Assets/ItemIcons/TaskNotStarted64.png";
                     break;
                 case 2:
-                    source = "Assets/ItemIcons/TaskInitiated64.png";
+                    source = "Assets/ItemIcons/TaskStarted64.png";
                     break;
                 case 3:
                     source = "Assets/ItemIcons/Task25pComplete64.png";

@@ -3,26 +3,27 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Text;
+using Todo.Models;
 using Xamarin.Forms;
 
 namespace Todo.Views
 {
     public class ReorderListView : View
     {
-        //Bindable property for the progress color
+        //Bindable property for the Reorder option
         public static readonly BindableProperty ReorderProperty =
           BindableProperty.Create<ReorderListView, Boolean>(p => p.ReorderEnabled, false);
-        //Gets or sets the color of the progress bar
+        //Gets or sets the color of the reorder option
         public Boolean ReorderEnabled
         {
             get { return (Boolean)GetValue(ReorderProperty); }
             set { SetValue(ReorderProperty, value); }
         }
 
-        //Bindable property for the progress color
+        //Bindable property for the itemcollection
         public static readonly BindableProperty ItemsProperty =
           BindableProperty.Create<ReorderListView, ObservableCollection<Item>>(p => p.ItemCollection, new ObservableCollection<Item>());
-        //Gets or sets the color of the progress bar
+        //Gets or sets the itemcollection
         public ObservableCollection<Item> ItemCollection
         {
             get { return (ObservableCollection<Item>)GetValue(ItemsProperty); }

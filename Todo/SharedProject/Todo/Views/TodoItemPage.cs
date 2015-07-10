@@ -48,6 +48,7 @@ namespace Todo
 			
 			nameEntry.SetBinding (Entry.TextProperty, "Name");
 
+            //-1: Cancelled
             //0: Conceived
             //1: Planned
             //2: Initiated
@@ -56,7 +57,7 @@ namespace Todo
             //5: <75%
             //6: On hold / Blocked
             //7: Completed
-            //-1: Cancelled
+            
 
             var statusLabel = new Label { Text = "Status" };
 

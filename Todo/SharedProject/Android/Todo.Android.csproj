@@ -182,7 +182,7 @@
     <AndroidResource Include="Resources\drawable\Task75pComplete64.png" />
     <AndroidResource Include="Resources\drawable\TaskCancelled64.png" />
     <AndroidResource Include="Resources\drawable\TaskCompleted64.png" />
-    <AndroidResource Include="Resources\drawable\TaskInitiated64.png" />
+    <AndroidResource Include="Resources\drawable\TaskConceived64.png" />
     <AndroidResource Include="Resources\drawable\TaskNotStarted64.png" />
     <AndroidResource Include="Resources\drawable\TaskOnHold64.png" />
     <AndroidResource Include="Resources\drawable\TaskStarted64.png" />

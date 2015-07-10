@@ -10,15 +10,31 @@ namespace Todo.Models
 {
     public class ItemListViewModel : INotifyPropertyChanged
     {
+        public class FixedObservableCollection<T> : ObservableCollection<T>
+        {
+            protected override void MoveItem(int oldIndex, int newIndex)
+            {
+                //base.MoveItem(oldIndex, newIndex);
+                T oItem = base[oldIndex];
+                base.InsertItem(oldIndex, base[newIndex]);
+                base.RemoveAt(oldIndex + 1);
+
+                base.InsertItem(newIndex, oItem);
+                base.RemoveAt(newIndex + 1);
+
+            }
+        }
+
         StackLayout footer;
 
         public event PropertyChangedEventHandler PropertyChanged;
-        private ObservableCollection<Item> _reports;
-        public ObservableCollection<Item> Reports
+        private FixedObservableCollection<Item> _reports;
+        public FixedObservableCollection<Item> Reports
         {
             get { return _reports; }
             set 
-            { 
+            {
+                if (value == _reports) return;
                 _reports = value;
                 _reports.CollectionChanged += (o, e) =>
                 {
@@ -153,14 +169,14 @@ namespace Todo.Models
             } 
         }
 
-        public static void Sort<T>(ObservableCollection<T> collection, Func<T, int> keySelector)
+        public static void Sort<T>(FixedObservableCollection<T> collection, Func<T, int> keySelector)
         {
             List<T> sorted = collection.OrderBy(keySelector).ToList();
             for (int i = 0; i < sorted.Count(); i++)
                 collection.Move(collection.IndexOf(sorted[i]), i);
         }
 
-        public static void Sort<T>(ObservableCollection<T> collection, List<T> sorted)
+        public static void Sort<T>(FixedObservableCollection<T> collection, List<T> sorted)
         {
             for (int i = 0; i < sorted.Count(); i++)
                 collection.Move(collection.IndexOf(sorted[i]), i);
@@ -368,7 +384,7 @@ namespace Todo.Models
 
         public ItemListViewModel()
         {
-            Reports = new ObservableCollection<Item>();
+            Reports = new FixedObservableCollection<Item>();
 
             var items = Todo.App.Database.GetItems();
 
@@ -386,7 +402,7 @@ namespace Todo.Models
 
         public ItemListViewModel(Item domain)
         {
-            Reports = new ObservableCollection<Item>();
+            Reports = new FixedObservableCollection<Item>();
 
             var childElements = Todo.App.Database.GetChildItems(domain);
             if (childElements != null)

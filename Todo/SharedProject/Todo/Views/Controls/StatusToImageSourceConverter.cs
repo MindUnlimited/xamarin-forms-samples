@@ -15,6 +15,17 @@ namespace Todo.Views.Controls
             int status;
             int.TryParse(value.ToString(), out status);
 
+
+            //-1: Cancelled
+            //0: Conceived
+            //1: Planned
+            //2: Initiated (started)
+            //3: <25% completed
+            //4: <50%
+            //5: <75%
+            //6: On hold / Blocked
+            //7: Completed
+
             switch ((int) status)
             {
                 case -1:
@@ -24,7 +35,11 @@ namespace Todo.Views.Controls
                         WinPhone: "Assets/ItemIcons/TaskCancelled64.png");
                     break;
                 case 0:
-                // no icon for conceived
+                    source = Device.OnPlatform(
+                            iOS: "Images/TaskConceived64.png",
+                            Android: "TaskConceived64.png",
+                            WinPhone: "Assets/ItemIcons/TaskConceived64.png");
+                    break;
                 case 1:
                     source = Device.OnPlatform(
                             iOS: "Images/TaskNotStarted64.png",
@@ -33,9 +48,9 @@ namespace Todo.Views.Controls
                     break;
                 case 2:
                     source = Device.OnPlatform(
-                            iOS: "Images/TaskInitiated64.png",
-                            Android: "TaskInitiated64.png",
-                            WinPhone: "Assets/ItemIcons/TaskInitiated64.png");
+                            iOS: "Images/TaskStarted64.png",
+                            Android: "TaskStarted64.png",
+                            WinPhone: "Assets/ItemIcons/TaskStarted64.png");
                     break;
                 case 3:
                     source = Device.OnPlatform(
