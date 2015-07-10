@@ -18,6 +18,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Models\Item.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\ItemListViewModel - Copy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\ItemListViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\ItemPropChanged.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\MicrosoftAccountInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\UserGroupMembership.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\User.cs" />
