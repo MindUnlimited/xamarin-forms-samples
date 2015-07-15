@@ -456,6 +456,24 @@ namespace Todo
             Debug.WriteLine(exception.InnerException.Message);
 	    }
 
+        public async Task createDomains(string OwnedByID)
+        {
+            if (defGroup == null)
+                defGroup = await getDefaultGroup(userID);
+
+            Item personal = new Item { Name = "Personal", Type = 1, OwnedBy = OwnedByID, CreatedBy = defGroup.ID};
+            Item friends = new Item { Name = "Friends & Family", Type = 1, OwnedBy = OwnedByID, CreatedBy = defGroup.ID };
+            Item work = new Item { Name = "Work", Type = 1, OwnedBy = OwnedByID, CreatedBy = defGroup.ID };
+            Item community = new Item { Name = "Community", Type = 1, OwnedBy = OwnedByID, CreatedBy = defGroup.ID };
+
+            await itemTable.InsertAsync(personal);
+            await itemTable.InsertAsync(friends);
+            await itemTable.InsertAsync(work);
+            await itemTable.InsertAsync(community);
+                
+            await client.SyncContext.PushAsync();
+        }
+
         //private void CreateAndShowDialog(Exception exception, String title)
         //{
         //    CreateAndShowDialog(exception.Message, title);
@@ -793,7 +811,7 @@ namespace Todo
             return null;
         }
 
-        public async Task newUser(string microsoftID)
+        public async Task newUser(string providerID, MobileServiceAuthenticationProvider provider)
         {
             try
             {
@@ -813,7 +831,6 @@ namespace Todo
                 if (userObject != null)
                 {
                     userName = (string)userObject["name"];
-                    email = (string)userObject["emails"]["account"];
 
                     var userTable = client.GetSyncTable<User>();
                     await userTable.PullAsync(null, userTable.CreateQuery());
@@ -821,17 +838,58 @@ namespace Todo
                     //var users = await userTable.ToListAsync();
                     //var all_users = await userTable.ToListAsync();
 
-                    var existing_user = await userTable.Where(u => u.MicrosoftID == microsoftID).ToListAsync();
+                    List<User> existing_user = new List<User>();
+                    switch (provider)
+                    {
+                        case MobileServiceAuthenticationProvider.Facebook:
+                            email = (string)userObject["email"];
+                            existing_user = await userTable.Where(u => u.FacebookID == providerID).ToListAsync();
+                            break;
+                        case MobileServiceAuthenticationProvider.Google:
+                            email = (string)userObject["email"];
+                            existing_user = await userTable.Where(u => u.GoogleID == providerID).ToListAsync();
+                            break;
+                        case MobileServiceAuthenticationProvider.MicrosoftAccount:
+                            email = (string)userObject["emails"]["account"];
+                            existing_user = await userTable.Where(u => u.MicrosoftID == providerID).ToListAsync();
+                            break;
+                        case MobileServiceAuthenticationProvider.Twitter:
+                            break;
+                        case MobileServiceAuthenticationProvider.WindowsAzureActiveDirectory:
+                            break;
+                        default:
+                            break;
+                    }
+
+                    //var existing_user = await userTable.Where(u => u.MicrosoftID == userID).ToListAsync();
                     //var groups = await groupTable.ToListAsync();
 
                     if (existing_user.Count == 0)
                     {
                         User user = new User
                         {
-                            MicrosoftID = microsoftID,
                             Name = userName,
                             Email = email
                         };
+
+                        switch (provider)
+                        {
+                            case MobileServiceAuthenticationProvider.Facebook:
+                                user.FacebookID = providerID;
+                                break;
+                            case MobileServiceAuthenticationProvider.Google:
+                                user.GoogleID = providerID;
+                                break;
+                            case MobileServiceAuthenticationProvider.MicrosoftAccount:
+                                user.MicrosoftID = providerID;
+                                break;
+                            case MobileServiceAuthenticationProvider.Twitter:
+                                break;
+                            case MobileServiceAuthenticationProvider.WindowsAzureActiveDirectory:
+                                break;
+                            default:
+                                break;
+                        }
 
                         // insert new user
                         await userTable.InsertAsync(user);
@@ -859,6 +917,7 @@ namespace Todo
                         await userGroupMembershipTable.InsertAsync(ugm);
                         await client.SyncContext.PushAsync();
 
+                        await createDomains(defGroup.ID);
                     }
                     else if (existing_user.Count == 1)
                     {

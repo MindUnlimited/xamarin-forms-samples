@@ -7,7 +7,7 @@ using System.ComponentModel;
 
 namespace Todo
 {
-    public class Item : INotifyPropertyChanged
+    public class ItemPropChanged : INotifyPropertyChanged
     {
         public string ID { get; set; }
 

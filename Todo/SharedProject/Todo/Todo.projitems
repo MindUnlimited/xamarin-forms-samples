@@ -11,6 +11,7 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)App.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Data\TodoItemDatabase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IAuthenticate.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logout.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ITextToSpeech.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Group.cs" />
@@ -39,6 +40,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Views\ModalPage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\MultiSelect.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\ReorderListView.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Views\SelectLoginProviderPage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\TodoGroupCell.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\TodoGroupListPage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\Controls\BindablePicker.cs" />
@@ -54,5 +56,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="$(MSBuildThisFileDirectory)Views\CheckWeiss.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Views\facebook_fat.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Views\facebook_long.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Views\Red-signin_Long_base_44dp.png" />
   </ItemGroup>
 </Project>

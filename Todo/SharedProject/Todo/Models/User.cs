@@ -18,6 +18,10 @@ namespace Todo
 
         public string MicrosoftID { get; set; }
 
+        public string GoogleID { get; set; }
+
+        public string FacebookID { get; set; }
+
         public string LoginType { get; set; }
 
         public string LoginUserId { get; set; }

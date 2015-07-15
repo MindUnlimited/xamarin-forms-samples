@@ -298,7 +298,7 @@ namespace Todo.Views
             Appearing += (async (o, e) =>
                 {
                     //Todo.App.selectedDomainPage = this;
-                    await Refresh();
+                    //await Refresh();
                     //topLV.BeginRefresh();
                     //bottomLV.BeginRefresh();
 
@@ -366,8 +366,10 @@ namespace Todo.Views
 
                 //var friendsGoals = await Todo.App.Database.GetChildItems(friends);
                 //friendsItems.ItemsSource = friendsGoals;
+                if (domains == null)
+                    domains = (List<Item>)await Todo.App.Database.GetDomains();
 
-                if (!listsInitialized)
+                if (!listsInitialized && domains.Count == 4)
                 {
                     domains = (List<Item>)await Todo.App.Database.GetDomains();
 
