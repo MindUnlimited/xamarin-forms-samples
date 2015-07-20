@@ -68,41 +68,60 @@ namespace DraggableListView
             var icon = cell.FindViewById<ImageView>(Android.Resource.Id.Icon);
             
 
-            int iconId = -2;
+            
+
+            //-1: Cancelled
+            //0: Conceived
+            //1: Planned
+            //2: Initiated (started)
+            //3: <25% completed
+            //4: <50%
+            //5: <75%
+            //6: On hold / Blocked
+            //7: Completed
+
+            int iconId;
             switch (Items[position].Status)
             {
                 case -1:
                     iconId = Resource.Drawable.TaskCancelled64;
+                    icon.SetImageResource(iconId);
                     break;
                 case 0:
-                // no icon for conceived
+                    iconId = Resource.Drawable.TaskConceived64;
+                    icon.SetImageResource(iconId);
+                    break;
                 case 1:
                     iconId = Resource.Drawable.TaskNotStarted64;
+                    icon.SetImageResource(iconId);
                     break;
                 case 2:
-                    iconId = Resource.Drawable.TaskInitiated64;
+                    iconId = Resource.Drawable.TaskStarted64;
+                    icon.SetImageResource(iconId);
                     break;
                 case 3:
                     iconId = Resource.Drawable.Task25pComplete64;
+                    icon.SetImageResource(iconId);
                     break;
                 case 4:
                     iconId = Resource.Drawable.Task50pComplete64;
+                    icon.SetImageResource(iconId);
                     break;
                 case 5:
                     iconId = Resource.Drawable.Task75pComplete64;
+                    icon.SetImageResource(iconId);
                     break;
                 case 6:
                     iconId = Resource.Drawable.TaskOnHold64;
+                    icon.SetImageResource(iconId);
                     break;
                 case 7:
                     iconId = Resource.Drawable.TaskCompleted64;
+                    icon.SetImageResource(iconId);
                     break;
                 default:
                     break;
             }
-
-            icon.SetImageResource(iconId);
-
 
             var text = cell.FindViewById<TextView>(Android.Resource.Id.Text1);
             if (text != null)

@@ -111,6 +111,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Authenticate_Android.cs" />
     <Compile Include="DraggableListAdapter.cs" />
     <Compile Include="DraggableListView.cs" />
     <Compile Include="IDraggableListAdapter.cs" />
