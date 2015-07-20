@@ -58,6 +58,6 @@
     <Content Include="$(MSBuildThisFileDirectory)Views\CheckWeiss.png" />
     <Content Include="$(MSBuildThisFileDirectory)Views\facebook_fat.png" />
     <Content Include="$(MSBuildThisFileDirectory)Views\facebook_long.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Views\Red-signin_Long_base_44dp.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Views\SignInGoogle.png" />
   </ItemGroup>
 </Project>

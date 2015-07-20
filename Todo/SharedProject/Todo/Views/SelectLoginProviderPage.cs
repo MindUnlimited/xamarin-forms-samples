@@ -10,12 +10,12 @@ namespace Todo.Views
     {
         public SelectLoginProviderPage()
         {
-            Image googleButton = new Image { Source = "Red-signin_Long_base_44dp.png"};
+            Image googleButton = new Image { Source = "SignInGoogle.png"};
             var gGestureRecognizer = new TapGestureRecognizer();
             gGestureRecognizer.Tapped += async (s, e) =>
             {
                 await DependencyService.Get<IAuthenticate>().Authenticate(Microsoft.WindowsAzure.MobileServices.MobileServiceAuthenticationProvider.Google);
-                await Navigation.PopAsync();
+                await Todo.App.Navigation.PopModalAsync();
             };
             googleButton.GestureRecognizers.Add(gGestureRecognizer);
 
@@ -25,7 +25,7 @@ namespace Todo.Views
             fbGestureRecognizer.Tapped += async (s, e) =>
             {
                 await DependencyService.Get<IAuthenticate>().Authenticate(Microsoft.WindowsAzure.MobileServices.MobileServiceAuthenticationProvider.Facebook);
-                await Navigation.PopAsync();
+                await Todo.App.Navigation.PopModalAsync();
             };
             facebookButton.GestureRecognizers.Add(fbGestureRecognizer);
 
@@ -33,7 +33,7 @@ namespace Todo.Views
             microsoftButton.Clicked += async (o, e) => 
             { 
                 await DependencyService.Get<IAuthenticate>().Authenticate(Microsoft.WindowsAzure.MobileServices.MobileServiceAuthenticationProvider.MicrosoftAccount);
-                await Navigation.PopAsync();
+                await Todo.App.Navigation.PopModalAsync();
             };
 
             Content = new StackLayout { Children = { facebookButton, googleButton, microsoftButton } , VerticalOptions = LayoutOptions.EndAndExpand, HorizontalOptions = LayoutOptions.Center, Spacing = 10, Padding = 30 };

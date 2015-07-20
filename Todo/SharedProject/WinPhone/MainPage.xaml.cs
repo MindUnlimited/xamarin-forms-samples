@@ -199,7 +199,7 @@ namespace Todo.WinPhone
             }
             else
             {
-                await Todo.App.Navigation.PushAsync(new Todo.Views.SelectLoginProviderPage());
+                await Todo.App.Navigation.PushModalAsync(new Todo.Views.SelectLoginProviderPage());
             }
 
             await Todo.App.importantDPage.Refresh();
