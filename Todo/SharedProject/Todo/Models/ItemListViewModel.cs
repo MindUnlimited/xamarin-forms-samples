@@ -129,27 +129,31 @@ namespace Todo.Models
                 int fontSize = Device.OnPlatform(iOS: 20, Android: 15, WinPhone: 20);
                 int spacing = 5;
 
+                StackLayout stackConceived = new StackLayout { Orientation = StackOrientation.Horizontal, Padding = 0, Spacing = spacing, HorizontalOptions = LayoutOptions.CenterAndExpand };
+                stackConceived.Children.Add(new Image
+                {
+                    HeightRequest = imgSize,
+                    WidthRequest = imgSize,
+                    Source = Device.OnPlatform(
+                        iOS: ImageSource.FromFile("Images/TaskConceived64.png"),
+                        Android: ImageSource.FromFile("TaskConceived64.png"),
+                        WinPhone: ImageSource.FromFile("Assets/ItemIcons/TaskConceived64.png"))
+                });
+                stackConceived.Children.Add(new Label { Text = conceived.ToString(), YAlign = TextAlignment.Center, FontSize = fontSize, TextColor = App.BLUE });
+
                 StackLayout stackStarted = new StackLayout { Orientation = StackOrientation.Horizontal, Padding = 0, Spacing = spacing, HorizontalOptions = LayoutOptions.CenterAndExpand };
                 stackStarted.Children.Add(new Image { HeightRequest = imgSize, WidthRequest = imgSize, Source = Device.OnPlatform(
                         iOS: ImageSource.FromFile("Images/TaskStarted64.png"),
                         Android: ImageSource.FromFile("TaskStarted64.png"),
                         WinPhone: ImageSource.FromFile("Assets/ItemIcons/TaskStarted64.png"))});
-
-                stackStarted.Children.Add(new Label { Text = started.ToString(), YAlign = TextAlignment.Center, FontSize = fontSize});
-
-                StackLayout stackNotStarted = new StackLayout { Orientation = StackOrientation.Horizontal, Padding = 0, Spacing = spacing, HorizontalOptions = LayoutOptions.CenterAndExpand };
-                stackNotStarted.Children.Add(new Image { HeightRequest = imgSize, WidthRequest = imgSize, Source = Device.OnPlatform(
-                        iOS: ImageSource.FromFile("Images/TaskNotStarted64.png"),
-                        Android: ImageSource.FromFile("TaskNotStarted64.png"),
-                        WinPhone: ImageSource.FromFile("Assets/ItemIcons/TaskNotStarted64.png"))});
-                stackNotStarted.Children.Add(new Label { Text = conceived.ToString() , YAlign = TextAlignment.Center, FontSize = fontSize});
+                stackStarted.Children.Add(new Label { Text = started.ToString(), YAlign = TextAlignment.Center, FontSize = fontSize, TextColor = App.YELLOW});
 
                 StackLayout stackOnHold = new StackLayout { Orientation = StackOrientation.Horizontal, Padding = 0, Spacing = spacing, HorizontalOptions = LayoutOptions.CenterAndExpand };
                 stackOnHold.Children.Add(new Image { HeightRequest = imgSize, WidthRequest = imgSize, Source = Device.OnPlatform(
                         iOS: ImageSource.FromFile("Images/TaskOnHold64.png"),
                         Android: ImageSource.FromFile("TaskOnHold64.png"),
                         WinPhone: ImageSource.FromFile("Assets/ItemIcons/TaskOnHold64.png"))});
-                stackOnHold.Children.Add(new Label { Text = blocked.ToString(), YAlign = TextAlignment.Center, FontSize = fontSize });
+                stackOnHold.Children.Add(new Label { Text = blocked.ToString(), YAlign = TextAlignment.Center, FontSize = fontSize, TextColor = App.RED });
 
                 StackLayout stackCompleted = new StackLayout { Orientation = StackOrientation.Horizontal, Padding = 0, Spacing = spacing, HorizontalOptions = LayoutOptions.CenterAndExpand };
                 stackCompleted.Children.Add(new Image { HeightRequest = imgSize, WidthRequest = imgSize, 
@@ -157,10 +161,10 @@ namespace Todo.Models
                         iOS: ImageSource.FromFile("Images/TaskCompleted64.png"),
                         Android: ImageSource.FromFile("TaskCompleted64.png"),
                         WinPhone: ImageSource.FromFile("Assets/ItemIcons/TaskCompleted64.png")) });
-                stackCompleted.Children.Add(new Label { Text = completed.ToString(), YAlign = TextAlignment.Center, FontSize = fontSize });
+                stackCompleted.Children.Add(new Label { Text = completed.ToString(), YAlign = TextAlignment.Center, FontSize = fontSize, TextColor = App.GREEN });
 
+                footer.Children.Add(stackConceived);
                 footer.Children.Add(stackStarted);
-                footer.Children.Add(stackNotStarted);
                 footer.Children.Add(stackOnHold);
                 footer.Children.Add(stackCompleted);
 

@@ -6,8 +6,103 @@ using Xamarin.Forms;
 
 namespace Todo
 {
+    public class MenuPage : ContentPage
+    {
+        public ListView Menu { get; set; }
+
+        public MenuPage()
+        {
+            Icon = "settings.png";
+            Title = "menu"; // The Title property must be set.
+            BackgroundColor = Color.FromHex("333333");
+
+            Menu = new MenuListView();
+
+            var menuLabel = new ContentView
+            {
+                Padding = new Thickness(10, 36, 0, 5),
+                Content = new Label
+                {
+                    TextColor = Color.FromHex("AAAAAA"),
+                    Text = "MENU",
+                }
+            };
+
+            var layout = new StackLayout
+            {
+                Spacing = 0,
+                VerticalOptions = LayoutOptions.FillAndExpand
+            };
+            layout.Children.Add(menuLabel);
+            layout.Children.Add(Menu);
+
+            Content = layout;
+        }
+    }
+
+    public class MenuListView : ListView
+    {
+        public MenuListView()
+        {
+            List<MenuItem> data = new MenuListData();
+
+            ItemsSource = data;
+            VerticalOptions = LayoutOptions.FillAndExpand;
+            BackgroundColor = Color.Transparent;
+
+            var cell = new DataTemplate(typeof(ImageCell));
+            cell.SetBinding(TextCell.TextProperty, "Text");
+            cell.SetBinding(ImageCell.ImageSourceProperty, "Icon");
+
+            ItemTemplate = cell;
+        }
+    }
+
+    public class MenuListData : List<MenuItem>
+    {
+        public MenuListData()
+        {
+            this.Add(new MenuItem()
+            {
+                Text = "Contracts",
+                Icon = "contracts.png",
+                //TargetType = typeof(ContractsPage)
+            });
+
+            this.Add(new MenuItem()
+            {
+                Text = "Leads",
+                Icon = "Lead.png",
+                //TargetType = typeof(LeadsPage)
+            });
+
+            this.Add(new MenuItem()
+            {
+                Text = "Accounts",
+                Icon = "Accounts.png",
+                //TargetType = typeof(AccountsPage)
+            });
+
+            this.Add(new MenuItem()
+            {
+                Text = "Opportunities",
+                Icon = "Opportunity.png",
+                //TargetType = typeof(OpportunitiesPage)
+            });
+        }
+    }
+
+
     public class App : Application // superclass new in 1.3
     {
+        public static readonly Color ORANGE = Color.FromRgb(234, 99, 18);
+        public static readonly Color PURPLE = Color.FromRgb(158, 94, 155);
+
+        public static readonly Color BLUE = Color.FromRgb(50, 168, 174);
+        public static readonly Color YELLOW = Color.FromRgb(255, 192, 0);
+        public static readonly Color RED = Color.FromRgb(192, 0, 0);
+        public static readonly Color GREEN = Color.FromRgb(146, 208, 80);
+
         public static DomainPage selectedDomainPage;
 
         public static DomainPage importantDPage = new DomainPage(DomainPages.Important);
@@ -42,6 +137,11 @@ namespace Todo
 
             var inboxPage = new NavigationPage(inboxDPage);
             inboxPage.Title = "Inbox";
+
+            MasterDetailPage masterDetailPage = new MasterDetailPage { MasterBehavior = MasterBehavior.Popover };
+
+            masterDetailPage.Master = new MenuPage();
+
 
             TabbedPage domainTabsPage = new TabbedPage();
 

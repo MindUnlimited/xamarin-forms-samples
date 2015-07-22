@@ -251,11 +251,11 @@ namespace Todo.Views
 
             if (Device.OS == TargetPlatform.Android)
             { // BUG: Android doesn't support the icon being null
-                reorder = new ToolbarItem("reorder", "Reorder", () => topLV.ReorderEnabled = !topLV.ReorderEnabled, 0, 0);
+                reorder = new ToolbarItem("reorder", "reorder", () => topLV.ReorderEnabled = !topLV.ReorderEnabled, 0, 0);
             }
             if (Device.OS == TargetPlatform.WinPhone)
             {
-                reorder = new ToolbarItem("Reorder", "Reorder.png", () => topLV.ReorderEnabled = !topLV.ReorderEnabled, 0, 0);
+                reorder = new ToolbarItem("Reorder", "reorder.png", () => topLV.ReorderEnabled = !topLV.ReorderEnabled, 0, 0);
             }
 
             ToolbarItems.Add(reorder);
@@ -265,7 +265,7 @@ namespace Todo.Views
 
             if (Device.OS == TargetPlatform.Android)
             { // BUG: Android doesn't support the icon being null
-                modalTest = new ToolbarItem("modal", "plus", async () =>
+                modalTest = new ToolbarItem("modal", "add", async () =>
                 {
                     await Navigation.PushAsync(new Todo.Views.ModalPage());
                 }, 0, 0);
@@ -1214,16 +1214,16 @@ namespace Todo.Views
                     switch (dom.Name)
                     {
                         case "Personal":
-                            head.Children.Add(new Label { Text = dom.Name, TextColor = Color.Yellow, FontSize = 20, FontAttributes = FontAttributes.Bold });
+                            head.Children.Add(new Label { Text = dom.Name, TextColor = App.YELLOW, FontSize = 20, FontAttributes = FontAttributes.Bold });
                             break;
                         case "Friends & Family":
-                            head.Children.Add(new Label { Text = dom.Name, TextColor = Color.FromRgb(255, 105, 0), FontSize = 20, FontAttributes = FontAttributes.Bold });
+                            head.Children.Add(new Label { Text = dom.Name, TextColor = App.ORANGE, FontSize = 20, FontAttributes = FontAttributes.Bold });
                             break;
                         case "Work":
-                            head.Children.Add(new Label { Text = dom.Name, TextColor = Color.FromRgb(32, 178, 170), FontSize = 20, FontAttributes = FontAttributes.Bold });
+                            head.Children.Add(new Label { Text = dom.Name, TextColor = App.BLUE, FontSize = 20, FontAttributes = FontAttributes.Bold });
                             break;
                         case "Community":
-                            head.Children.Add(new Label { Text = dom.Name, TextColor = Color.FromRgb(153, 50, 204), FontSize = 20, FontAttributes = FontAttributes.Bold });
+                            head.Children.Add(new Label { Text = dom.Name, TextColor = App.PURPLE, FontSize = 20, FontAttributes = FontAttributes.Bold });
                             break;
                         default:
                             break;

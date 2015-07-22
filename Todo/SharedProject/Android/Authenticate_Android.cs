@@ -2,6 +2,7 @@
 using Android.Preferences;
 using Microsoft.WindowsAzure.MobileServices;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -54,7 +55,7 @@ namespace Todo.Android
                     {
                         // Try to return an item now to determine if the cached credential has expired.
                         await App.Database.client.GetTable<Item>().Take(1).ToListAsync();
-                        await App.Database.client.InvokeApiAsync("userInfo", HttpMethod.Get, null); // also gather extra user information
+                        JToken userInfo = await App.Database.client.InvokeApiAsync("userInfo", HttpMethod.Get, null); // also gather extra user information
                     }
                     catch (MobileServiceInvalidOperationException ex)
                     {
@@ -71,8 +72,6 @@ namespace Todo.Android
                 {
                     try
                     {
-
-                        var test = Todo.App.Database.client;
                         // Login with the identity provider.
                         user = await Todo.App.Database.client
                             .LoginAsync(Forms.Context, provider);

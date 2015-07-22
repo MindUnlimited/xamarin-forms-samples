@@ -97,18 +97,18 @@ namespace Todo.WinPhone
             
             //rlb.ItemsSource = Element.ItemCollection;
 
+
+
             rlb.SelectionChanged += async (obj, ev) =>
             {
                 if (ev.AddedItems.Count > 0)
                 {
                     var Item = (Item)ev.AddedItems[0];
-
                     var todoPage = new TodoItemPage();
                     todoPage.BindingContext = Item;
-                    await Todo.App.Navigation.PushAsync(todoPage);
+                    await Todo.App.selectedDomainPage.Navigation.PushAsync(todoPage);
                     //await Navigation.PushAsync(todoPage);
                 }
-
             };
 
 

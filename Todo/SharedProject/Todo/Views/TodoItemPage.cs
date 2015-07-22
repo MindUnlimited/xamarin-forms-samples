@@ -13,11 +13,13 @@ using System.Collections.ObjectModel;
 
 namespace Todo
 {
-	public class TodoItemPage : ContentPage
-	{
-		public TodoItemPage ()
-		{
-            Item Item = null;
+    public class TodoItemPage : ContentPage
+    {
+        public IEnumerable<PickerItem<string>> shareGroups {get; set; }
+
+        public TodoItemPage()
+        {
+            Item item = null;
             ObservableCollection<Item> availableItems = new ObservableCollection<Item>();
             List<Group> availableGroups = new List<Group>();
 
@@ -40,13 +42,13 @@ namespace Todo
             }
 
 
-			this.SetBinding (ContentPage.TitleProperty, "Name");
+            this.SetBinding(ContentPage.TitleProperty, "Name");
 
-			NavigationPage.SetHasNavigationBar (this, true);
-			var nameLabel = new Label { Text = "Name" };
-			var nameEntry = new Entry ();
-			
-			nameEntry.SetBinding (Entry.TextProperty, "Name");
+            NavigationPage.SetHasNavigationBar(this, true);
+            var nameLabel = new Label { Text = "Name" };
+            var nameEntry = new Entry();
+
+            nameEntry.SetBinding(Entry.TextProperty, "Name");
 
             //-1: Cancelled
             //0: Conceived
@@ -57,7 +59,7 @@ namespace Todo
             //5: <75%
             //6: On hold / Blocked
             //7: Completed
-            
+
 
             var statusLabel = new Label { Text = "Status" };
 
@@ -82,13 +84,54 @@ namespace Todo
             //                                    null, null, "Current Value: {0}"));
 
             int imgSize = Device.OnPlatform(iOS: 25, Android: 15, WinPhone: 25);
-            Image sliderImage = new Image { BindingContext = slider, HeightRequest = imgSize, WidthRequest = imgSize };
 
+            Image sliderImage = new Image { BindingContext = slider, HeightRequest = imgSize, WidthRequest = imgSize };
             sliderImage.SetBinding(Image.SourceProperty,
                                         new Binding("Value", BindingMode.OneWay, new StatusToImageSourceConverter()));
 
+            Label sliderName = new Label { BindingContext = slider, HorizontalOptions = LayoutOptions.Center };
+            sliderName.SetBinding(Label.TextProperty,
+                                        new Binding("Value", BindingMode.OneWay, new StatusToStringConverter()));
 
-            
+            var sliderImageAndText = new StackLayout { Orientation = StackOrientation.Vertical, Children = { sliderImage, sliderName } };
+
+            var sliderRow = new StackLayout
+            {
+                Orientation = StackOrientation.Horizontal,
+                Children = { sliderImageAndText, slider }
+            };
+
+            Image imgCancelled = new Image
+            {
+                Source = Device.OnPlatform(
+                    iOS: ImageSource.FromFile("Images/TaskCancelled64.png"),
+                    Android: ImageSource.FromFile("TaskCancelled64.png"),
+                    WinPhone: ImageSource.FromFile("Assets/ItemIcons/TaskCancelled64.png")),
+                HeightRequest = imgSize,
+                WidthRequest = imgSize
+            };
+
+            Image imgConceived = new Image
+            {
+                Source = Device.OnPlatform(
+                    iOS: ImageSource.FromFile("Images/TaskConceived64.png"),
+                    Android: ImageSource.FromFile("TaskConceived64.png"),
+                    WinPhone: ImageSource.FromFile("Assets/ItemIcons/TaskConceived64.png")),
+                HeightRequest = imgSize,
+                WidthRequest = imgSize
+            };
+
+
+
+            StackLayout sliderImages = new StackLayout
+            {
+                Orientation = StackOrientation.Horizontal,
+                Children = { imgCancelled, imgConceived, imgConceived, imgConceived, imgConceived, imgConceived, imgConceived, imgConceived, imgConceived },
+                HorizontalOptions = LayoutOptions.Fill
+            };
+
+
+
             //var statusEntry = new Entry();
 
             //statusEntry.SetBinding(Entry.TextProperty, "Status");
@@ -102,7 +145,7 @@ namespace Todo
 
 
 
-            
+
 
 
 
@@ -145,21 +188,21 @@ namespace Todo
 
             //ownedPicker.Style
 
-        //<Style.Triggers>
-        //    <DataTrigger Binding="{Binding IsChecked,ElementName=chk}" Value="True">
-        //        <Setter Property="ItemTemplate">
-        //            <Setter.Value>
-        //                <DataTemplate>
-        //                    <StackPanel Orientation="Horizontal">
-        //                        <TextBlock Text="{Binding ID}" />
-        //                        <TextBlock Text=": " />
-        //                        <TextBlock Text="{Binding Name}" />
-        //                    </StackPanel>
-        //                </DataTemplate>
-        //            </Setter.Value>
-        //        </Setter>
-        //    </DataTrigger>
-        //</Style.Triggers>
+            //<Style.Triggers>
+            //    <DataTrigger Binding="{Binding IsChecked,ElementName=chk}" Value="True">
+            //        <Setter Property="ItemTemplate">
+            //            <Setter.Value>
+            //                <DataTemplate>
+            //                    <StackPanel Orientation="Horizontal">
+            //                        <TextBlock Text="{Binding ID}" />
+            //                        <TextBlock Text=": " />
+            //                        <TextBlock Text="{Binding Name}" />
+            //                    </StackPanel>
+            //                </DataTemplate>
+            //            </Setter.Value>
+            //        </Setter>
+            //    </DataTrigger>
+            //</Style.Triggers>
 
             var ownedLabel = new Label { Text = "Shared With" };
 
@@ -175,14 +218,30 @@ namespace Todo
             foreach (Group group in availableGroups)
             {
                 ownedPicker.Items.Add(group.Name);
-                //ownedPicker.Items.Add(group.ID);
+                ownedPicker.Items.Add(group.ID);
                 groups[group.Name] = group.ID;
             }
-            //ownedPicker.ItemsSource = groupNameIDIENumerable;
-            //ownedPicker2.ItemsSource = groupNameIDList;
+            ////ownedPicker.ItemsSource = groupNameIDIENumerable;
+            ////ownedPicker2.ItemsSource = groupNameIDList;
 
             ownedPicker.SetBinding(BindablePicker.SelectedItemProperty, "OwnedBy", BindingMode.TwoWay);
 
+            ObservableCollection<PickerItem<string>> collectionPickerItems = new ObservableCollection<PickerItem<string>>();
+            foreach (Group grp in availableGroups)
+            {
+                PickerItem<string> pickerItem = new PickerItem<string>(grp.Name, grp.ID);
+                collectionPickerItems.Add(pickerItem);
+            }
+            shareGroups = collectionPickerItems;
+
+            //BoundPicker ownedPicker = new BoundPicker
+            //{
+            //    Title = "Share with",
+            //    VerticalOptions = LayoutOptions.CenterAndExpand,
+            //    BindingContext = this
+            //};
+            //ownedPicker.SetBinding(BoundPicker.ItemsSourceProperty, "shareGroups", BindingMode.TwoWay);
+            //ownedPicker.SetBinding(BoundPicker.SelectedItemProperty, "OwnedBy", BindingMode.TwoWay);
 
 
             var parentLabel = new Label { Text = "Parent" };
@@ -193,7 +252,9 @@ namespace Todo
                 VerticalOptions = LayoutOptions.CenterAndExpand
             };
 
-            
+
+
+
 
             Dictionary<string, string> items = new Dictionary<string, string>();
 
@@ -201,14 +262,14 @@ namespace Todo
             parentPicker.Items.Add(Todo.App.selectedDomainPage.selectedDomain.Name);
 
             //this.BindingContextChanged += ((o, e) => {
-            //    Item = (Item)BindingContext;
+            //    item = (Item)BindingContext;
 
             //    parentPicker.Items.Clear();
             //    items.Clear();
 
             //    foreach (Item item in availableItems)
             //    {
-            //        if (Item != null && item.ID != Item.ID)
+            //        if (item != null && item.ID != item.ID)
             //        {
             //            parentPicker.Items.Add(item.Name);
             //            items[item.Name] = item.ID;
@@ -216,10 +277,10 @@ namespace Todo
             //    }
             //});
 
-            foreach (Item item in availableItems)
+            foreach (Item it in availableItems)
             {
-                parentPicker.Items.Add(item.Name);
-                items[item.Name] = item.ID;
+                parentPicker.Items.Add(it.Name);
+                items[it.Name] = it.ID;
             }
 
 
@@ -237,39 +298,48 @@ namespace Todo
             //var doneEntry = new Xamarin.Forms.Switch ();
             //doneEntry.SetBinding (Xamarin.Forms.Switch.IsToggledProperty, "Complete");
 
-			var saveButton = new Button { Text = "Save" };
-			saveButton.Clicked += async (sender, e) => {
-                var selected = ownedPicker.SelectedItem;
-				Item = (Item)BindingContext;
-                Boolean itemIsNew = Item.Version == null;
-                if (Item.OwnedBy != null)
-                {
-                    if (!groups.ContainsValue(Item.OwnedBy) && groups.ContainsKey(Item.OwnedBy))
-                        Item.OwnedBy = groups[Item.OwnedBy];
 
-                    if (Item.Parent != null)
+            var scrollview = new ScrollView
+            {
+                Content = new StackLayout
+                {
+                    Padding = new Thickness(20),
+                },
+            };
+
+            ToolbarItem save = new ToolbarItem("Save", "save.png", async () =>
+            {
+                var selected = ownedPicker.SelectedItem;
+                item = (Item)BindingContext;
+                Boolean itemIsNew = item.Version == null;
+                if (item.OwnedBy != null)
+                {
+                    if (!groups.ContainsValue(item.OwnedBy) && groups.ContainsKey(item.OwnedBy))
+                        item.OwnedBy = groups[item.OwnedBy];
+
+                    if (item.Parent != null)
                     {
-                        if (!items.ContainsValue(Item.Parent) && items.ContainsKey(Item.Parent))
-                            Item.Parent = items[Item.Parent];
+                        if (!items.ContainsValue(item.Parent) && items.ContainsKey(item.Parent))
+                            item.Parent = items[item.Parent];
                     }
 
-                    var parentItem = await Todo.App.Database.GetItem(Item.Parent);
-                    Item.Type = parentItem.Type + 1;
+                    var parentItem = await Todo.App.Database.GetItem(item.Parent);
+                    item.Type = parentItem.Type + 1;
 
-                    //ownedPicker.OnSelectedItemChanged(BoundPicker.SelectedItemProperty, Item.OwnedBy, Item.OwnedBy);
-                    //var old_value = Item.OwnedBy;
-                        
+                    //ownedPicker.OnSelectedItemChanged(BoundPicker.SelectedItemProperty, item.OwnedBy, item.OwnedBy);
+                    //var old_value = item.OwnedBy;
+
                     //ownedPicker.SelectedItem = 
-                    //var ownedByGroup = await Todo.App.Database.getGroup(Item.OwnedBy);
-                    //Item.OwnedBy = ownedByGroup.ID;
+                    //var ownedByGroup = await Todo.App.Database.getGroup(item.OwnedBy);
+                    //item.OwnedBy = ownedByGroup.ID;
 
 
-                    var prevItem = Item;
-                    await App.Database.SaveItem(Item); // add to DB
-                    Item = await App.Database.GetItem(Item.ID); // DB added (new) version so need to change the Item
-                    //Item.OwnedBy = old_value;
+                    var prevItem = item;
+                    await App.Database.SaveItem(item); // add to DB
+                    item = await App.Database.GetItem(item.ID); // DB added (new) version so need to change the item
+                                                                //item.OwnedBy = old_value;
 
-                    
+
 
                     var domains = Todo.App.selectedDomainPage.domains;
 
@@ -278,7 +348,7 @@ namespace Todo
 
                     foreach (var dom in domains)
                     {
-                        if (dom.ID == Item.Parent)
+                        if (dom.ID == item.Parent)
                         {
                             domainName = dom.Name;
                             selectedDomain = dom;
@@ -290,41 +360,42 @@ namespace Todo
                     {
                         if (itemIsNew) // new item
                         {
-                            Todo.App.selectedDomainPage.viewModels[selectedDomain].Reports.Add(Item);
+                            Todo.App.selectedDomainPage.viewModels[selectedDomain].Reports.Add(item);
                             Todo.App.selectedDomainPage.viewModels[selectedDomain].FilterAndSort(Todo.App.selectedDomainPage.domainPageType);
                         }
                         else // update item
                         {
-                            var observableCollectionItem = Todo.App.selectedDomainPage.viewModels[selectedDomain].Reports.FirstOrDefault(i => i.ID == Item.ID);
+                            var observableCollectionItem = Todo.App.selectedDomainPage.viewModels[selectedDomain].Reports.FirstOrDefault(i => i.ID == item.ID);
                             if (observableCollectionItem != null)
                             {
-                                observableCollectionItem = Item;
+                                observableCollectionItem = item;
                             }
 
                             //Todo.App.selectedDomainPage.viewModels[selectedDomain].Reports.Remove(prevItem);
-                            //Todo.App.selectedDomainPage.viewModels[selectedDomain].Reports.Add(Item);
+                            //Todo.App.selectedDomainPage.viewModels[selectedDomain].Reports.Add(item);
 
                         }
                     }
                     await this.Navigation.PopAsync();
                 }
-			};
+            }, 0, 0);
 
-			var deleteButton = new Button { Text = "Delete" };
-			deleteButton.Clicked += async (sender, e) => {
-				Item = (Item)BindingContext;
+            ToolbarItem delete = new ToolbarItem("Delete", "delete.png", async () =>
+            {
+                item = (Item)BindingContext;
                 Item selectedDomain = Todo.App.selectedDomainPage.selectedDomain;
-                int numberOfDirectChildren = Todo.App.selectedDomainPage.viewModels[selectedDomain].Reports.Where(x => x.Parent == Item.ID).Count();
-
-                if (numberOfDirectChildren > 0) // still items under this item!
+                int numberOfDirectChildren = Todo.App.selectedDomainPage.viewModels[selectedDomain].Reports.Where(x => x.Parent == item.ID).Count();
+                if (item.ID == null) // item was new, so nothing to do except cancel the adding of a new item
+                    await this.Navigation.PopAsync();
+                else if (numberOfDirectChildren > 0) // still items under this item!
                 {
                     Debug.WriteLine("this item still has children!");
-                    var answer = await DisplayAlert ("This item has links to other items", "Are you sure you want to delete this item AND the items linking to it?", "Yes", "No");
+                    var answer = await DisplayAlert("This item has links to other items", "Are you sure you want to delete this item AND the items linking to it?", "Yes", "No");
                     Debug.WriteLine("Answer: " + answer); // writes true or false to the console
                 }
                 else
                 {
-                    await App.Database.DeleteItem(Item);
+                    await App.Database.DeleteItem(item);
 
                     var domains = Todo.App.selectedDomainPage.domains;
 
@@ -332,7 +403,7 @@ namespace Todo
 
                     foreach (var dom in domains)
                     {
-                        if (dom.ID == Item.Parent)
+                        if (dom.ID == item.Parent)
                         {
                             domainName = dom.Name;
                             selectedDomain = dom;
@@ -342,48 +413,47 @@ namespace Todo
 
                     if (domainName != null)
                     {
-                        Todo.App.selectedDomainPage.viewModels[selectedDomain].Reports.Remove(Item);
+                        Todo.App.selectedDomainPage.viewModels[selectedDomain].Reports.Remove(item);
                     }
 
                     await this.Navigation.PopAsync();
                 }
 
 
-			};
-							
-			var cancelButton = new Button { Text = "Cancel" };
-			cancelButton.Clicked += async (sender, e) => {
-				Item = (Item)BindingContext;
-                await this.Navigation.PopAsync();
-			};
+            }, 0, 0);
 
 
-			var speakButton = new Button { Text = "Speak" };
-			speakButton.Clicked += (sender, e) => {
-				Item = (Item)BindingContext;
-                string spokenText;
-                if (Item.Status == 7)
-                    spokenText = Item.Name + ", this item is completed";
-                else
-                    spokenText = Item.Name + ", this item is not yet completed";
-				DependencyService.Get<ITextToSpeech>().Speak(spokenText);
-			};
-
-            var scrollview = new ScrollView
+            ToolbarItem speak = new ToolbarItem("Speak", "speak.png", () =>
             {
-                Content = new StackLayout
-                {
-                    Padding = new Thickness(20),
-                },
+                item = (Item)BindingContext;
+                var statusStringConverter = new StatusToStringConverter();
+                string spokenText = item.Name + "\n" + "the status is: " + statusStringConverter.Convert(item.Status, null, null, null);
+                DependencyService.Get<ITextToSpeech>().Speak(spokenText);
+            }, 0, 0);
+
+
+
+            //ToolbarItems.Clear();
+            //ToolbarItems.Add(save);
+
+            this.Appearing += (o, e) =>
+            {
+                ToolbarItems.Clear();
+                ToolbarItems.Add(save);
+                ToolbarItems.Add(delete);
+                ToolbarItems.Add(speak);
             };
 
-			Content = new StackLayout {
+
+
+            Content = new StackLayout
+            {
                 //VerticalOptions = LayoutOptions.StartAndExpand,
                 Padding = new Thickness(10),
 
-                Children = 
+                Children =
                 {
-                    new ScrollView 
+                    new ScrollView
                     {
 				        //VerticalOptions = LayoutOptions.StartAndExpand,
 				        //Padding = new Thickness(20),
@@ -393,26 +463,28 @@ namespace Todo
 
                             Children =
                             {
-					            nameLabel, nameEntry, 
+                                nameLabel, nameEntry, 
 					            //notesLabel, notesEntry,
                                 
-					            statusLabel, slider, sliderImage,
+					            statusLabel, //slider, sliderImages,
+                                sliderImageAndText, slider,
                                 //,
 
                                 //ownedLabel, ownedEntry,
                                 ownedLabel, ownedPicker,
                                 parentLabel, parentPicker
-				            }
+                            }
                         }
 
-                    },
-
-                    new StackLayout
-                    {
-                        Children = {saveButton, deleteButton, cancelButton, speakButton}
                     }
+                    //,
+
+                    //new StackLayout
+                    //{
+                    //    Children = {saveButton, deleteButton, cancelButton, speakButton}, Orientation = StackOrientation.Horizontal, HorizontalOptions = LayoutOptions.StartAndExpand
+                    //}
                 }
-			};
-		}
-	}
+            };
+        }
+    }
 }

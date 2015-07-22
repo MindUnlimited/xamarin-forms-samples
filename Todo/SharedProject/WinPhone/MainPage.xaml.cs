@@ -202,7 +202,7 @@ namespace Todo.WinPhone
                 await Todo.App.Navigation.PushModalAsync(new Todo.Views.SelectLoginProviderPage());
             }
 
-            await Todo.App.importantDPage.Refresh();
+            await Todo.App.selectedDomainPage.Refresh();
 
             ////refresh the page if just Authenticated, to update the items/groups
             //if (justAuthenticated)

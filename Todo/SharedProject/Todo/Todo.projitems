@@ -30,6 +30,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Views\Controls\ILocalizer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\Controls\MyBoundPicker.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\Controls\PickerItem.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Views\Controls\StatusToStringConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\Controls\StringToImageConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\Controls\StatusToImageSourceConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\DomainPage.cs" />
@@ -55,9 +56,13 @@
     <Compile Include="$(MSBuildThisFileDirectory)Data\SQLite_bak.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="$(MSBuildThisFileDirectory)Views\back.png" />
     <Content Include="$(MSBuildThisFileDirectory)Views\CheckWeiss.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Views\delete.png" />
     <Content Include="$(MSBuildThisFileDirectory)Views\facebook_fat.png" />
     <Content Include="$(MSBuildThisFileDirectory)Views\facebook_long.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Views\save.png" />
     <Content Include="$(MSBuildThisFileDirectory)Views\SignInGoogle.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Views\speak.png" />
   </ItemGroup>
 </Project>

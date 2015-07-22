@@ -25,17 +25,10 @@ using Android.Preferences;// google cloud messaging (push)
 [assembly: Dependency(typeof(Todo.Android.MainActivity))]
 namespace Todo.Android
 {
-	[Activity (Label = "MindSet", Icon = "@drawable/LogoMindSet128x128", MainLauncher = true, ConfigurationChanges = 
+	[Activity (Label = "MindSet", Icon = "@drawable/LogoMindSet32", MainLauncher = true, ConfigurationChanges = 
         ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsApplicationActivity, Logout // superclass new in 1.3
 	{
-        private bool justAuthenticated = false;
-        //private MobileServiceUser mobServiceUser;// = new MobileServiceUser(null);
-        AccountStore accountStore; // for saving the authentication token
-        
-        Account currentAccount; // for logout purposes
-        string currentServiceId = "Microsoft"; // for logout purposes
-
         // NEEDED FOR PUSH
 
         // Create a new instance field for this activity.
@@ -266,6 +259,7 @@ namespace Todo.Android
             {
                 await App.Navigation.PushModalAsync(new Views.SelectLoginProviderPage());
             }
+            await Todo.App.selectedDomainPage.Refresh();
         }
 
         public void Logout()

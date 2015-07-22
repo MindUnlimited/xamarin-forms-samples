@@ -175,7 +175,7 @@
     <Content Include="LogoMindSet128x128.png" />
     <Content Include="Move.png" />
     <Content Include="README_FIRST.txt" />
-    <Content Include="Reorder.png" />
+    <Content Include="reorder.png" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\AppResources.resx">
