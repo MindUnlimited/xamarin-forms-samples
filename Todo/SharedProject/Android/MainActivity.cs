@@ -171,9 +171,7 @@ namespace Todo.Android
 
 			Xamarin.Forms.Forms.Init (this, bundle);
 
-            // Shared Preferences are the local saved value for the app. Used here to store the last used provider
 
-            //  .getDefaultSharedPreferences(this);
 
             //var mainpage = App.GetMainPage();
 
@@ -187,7 +185,7 @@ namespace Todo.Android
             //Debug.WriteLine("The modal page is now on screen");
             //var poppedPage = await Navigation.PopModalAsync();
             //Debug.WriteLine("The modal page is dismissed");
-            
+
             //await App.Navigation.PushModalAsync(loginpage);
             //Todo.App.Navigation.PushAsync(loginpage);
             //Todo.App.selectedDomainPage.Navigation.PushAsync(new Todo.Views.SelectLoginProviderPage());
@@ -196,45 +194,8 @@ namespace Todo.Android
 
             //await Todo.App.Navigation.PushAsync(new Todo.Views.SelectLoginProviderPage());
 
-            //// Try to use the latest used oauth provider           
-            //if (preferences.Contains("LastUsedProvider"))
-            //{
-            //    string providerName = preferences.GetString("LastUsedProvider", "");
-            //    MobileServiceAuthenticationProvider provider;
-            //    var auth = new Authenticate_Android();
-
-            //    switch (providerName)
-            //    {
-            //        case "Facebook":
-            //            provider = MobileServiceAuthenticationProvider.Facebook;
-            //            await auth.Authenticate(provider);
-            //            break;
-            //        case "Google":
-            //            provider = MobileServiceAuthenticationProvider.Google;
-            //            await auth.Authenticate(provider);
-            //            break;
-            //        case "MicrosoftAccount":
-            //            provider = MobileServiceAuthenticationProvider.MicrosoftAccount;
-            //            await auth.Authenticate(provider);
-            //            break;
-            //        case "Twitter":
-            //            provider = MobileServiceAuthenticationProvider.Twitter;
-            //            await auth.Authenticate(provider);
-            //            break;
-            //        case "WindowsAzureActiveDirectory":
-            //            provider = MobileServiceAuthenticationProvider.WindowsAzureActiveDirectory;
-            //            await auth.Authenticate(provider);
-            //            break;
-            //        default:
-            //            break;
-            //    }
-            //}
-            //else
-            //{
-            //    await Todo.App.Navigation.PushAsync(new Todo.Views.SelectLoginProviderPage());
-            //}
             //Task.Run(() => { Authenticate(); LoadApplication(new App()); }).Wait(); //task.run part is necessary, behaves as await     
-            
+
             //// PUSH
             //// Set the current instance of TodoActivity.
             //instance = this;
@@ -257,13 +218,54 @@ namespace Todo.Android
             //SetPage(App.GetMainPage());
             //LoadApplication(new App()); // method is new in 1.3
             //Todo.App.domainPage.Refresh();
-		}
+        }
 
-        protected override void OnStart()
+        protected async override void OnStart()
         {
             base.OnStart();
-            Todo.App.Navigation.PushModalAsync(new Todo.Views.SelectLoginProviderPage());
+            //Todo.App.Navigation.PushModalAsync(new Todo.Views.SelectLoginProviderPage());
             //Todo.App.domainPage.Refresh();
+
+            // Shared Preferences are the local saved value for the app. Used here to access the last used provider
+            var preferences = PreferenceManager.GetDefaultSharedPreferences(this);
+
+            // Try to use the latest used oauth provider           
+            if (preferences.Contains("LastUsedProvider"))
+            {
+                string providerName = preferences.GetString("LastUsedProvider", "");
+                MobileServiceAuthenticationProvider provider;
+                var auth = new Authenticate_Android();
+
+                switch (providerName)
+                {
+                    case "Facebook":
+                        provider = MobileServiceAuthenticationProvider.Facebook;
+                        await auth.Authenticate(provider);
+                        break;
+                    case "Google":
+                        provider = MobileServiceAuthenticationProvider.Google;
+                        await auth.Authenticate(provider);
+                        break;
+                    case "MicrosoftAccount":
+                        provider = MobileServiceAuthenticationProvider.MicrosoftAccount;
+                        await auth.Authenticate(provider);
+                        break;
+                    case "Twitter":
+                        provider = MobileServiceAuthenticationProvider.Twitter;
+                        await auth.Authenticate(provider);
+                        break;
+                    case "WindowsAzureActiveDirectory":
+                        provider = MobileServiceAuthenticationProvider.WindowsAzureActiveDirectory;
+                        await auth.Authenticate(provider);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            else
+            {
+                await App.Navigation.PushModalAsync(new Views.SelectLoginProviderPage());
+            }
         }
 
         public void Logout()

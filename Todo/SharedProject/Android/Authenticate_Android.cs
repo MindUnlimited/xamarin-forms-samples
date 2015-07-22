@@ -71,12 +71,14 @@ namespace Todo.Android
                 {
                     try
                     {
+
+                        var test = Todo.App.Database.client;
                         // Login with the identity provider.
                         user = await Todo.App.Database.client
                             .LoginAsync(Forms.Context, provider);
 
                         // Store the encrypted user credentials in local settings.
-                        Account currentAccount = new Account(Todo.App.Database.mobileServiceUser.UserId, new Dictionary<string, string> { { "token", Todo.App.Database.mobileServiceUser.MobileServiceAuthenticationToken } });
+                        Account currentAccount = new Account(user.UserId, new Dictionary<string, string> { { "token", user.MobileServiceAuthenticationToken } });
                         accountStore.Save(currentAccount, providerName);
                     }
                     catch (MobileServiceInvalidOperationException ex)
