@@ -14,6 +14,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)IAuthenticate.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logout.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ITextToSpeech.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\Contact.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Group.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\GroupGroupMembership.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Item.cs" />

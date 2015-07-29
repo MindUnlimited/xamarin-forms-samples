@@ -19,7 +19,7 @@ using Xamarin.Forms;
 using System.Net;
 using System.IO;
 using System.Xml;
-
+using Todo.Models;
 
 [assembly: Xamarin.Forms.Dependency(typeof(Authenticate_Android))]
 
@@ -116,44 +116,51 @@ namespace Todo.Android
                         // Try to return an item now to determine if the cached credential has expired.
                         await App.Database.client.GetTable<Item>().Take(1).ToListAsync();
                         JToken userInfo = await App.Database.client.InvokeApiAsync("userInfo", HttpMethod.Get, null); // also gather extra user information
-                        JToken response = await App.Database.client.InvokeApiAsync("getcontacts", HttpMethod.Get, null);
-                        var test = response["feed"];
 
-                        
+                        JObject response = (JObject) await App.Database.client.InvokeApiAsync("getcontacts", HttpMethod.Get, null);
+                        List<Contact> contactList = new List<Contact>();
+                        if(provider == MobileServiceAuthenticationProvider.MicrosoftAccount)
+                        {
+                            foreach (JObject usr in response["data"])
+                            {
+                                string name = usr["name"].ToString();
+                                string id = usr["id"].ToString();
+                                var pictureUrl = string.Format("https://apis.live.net/v5.0/{0}/picture", usr["id"]);
 
-                        //if (provider == MobileServiceAuthenticationProvider.Google)
-                        //{
-                        //    JToken identity = await App.Database.client.InvokeApiAsync("getIdentities", HttpMethod.Get, null);
-                        //    string accessToken = identity["google"]["accessToken"].ToString();
-                        //    var contactsUrl = "https://www.google.com/m8/feeds/contacts/default/full?access_token=" + accessToken;
+                                contactList.Add(new Contact { Id = id, Name = name, PictureUrl = pictureUrl });
+                            }
+                        }
+                        else if(provider == MobileServiceAuthenticationProvider.Google)
+                        {
+                            JToken identity = await App.Database.client.InvokeApiAsync("getIdentities", HttpMethod.Get, null);
+                            string accessToken = identity["google"]["accessToken"].ToString();
 
-                        //    XmlDocument myXMLDocument = new XmlDocument();
-                        //    myXMLDocument.Load(contactsUrl);
-                        //    var test = myXMLDocument.ToString();
+                            foreach (JObject usr in response["feed"]["entry"])
+                            {
+                                string name = usr["title"]["$t"].ToString();
+                                string id = usr["id"]["$t"].ToString().Split('/').Last();
+                                var pictureUrl = string.Format("https://www.google.com/m8/feeds/photos/media/default/{0}?access_token={1}", id, accessToken); // may not exist
 
-                        //    var json = JsonConvert.SerializeObject(
-                        //}
+                                contactList.Add(new Contact { Id = id, Name = name, PictureUrl = pictureUrl });
+                            }
+                        }
+                        else if (provider == MobileServiceAuthenticationProvider.Facebook)
+                        {
+                            JToken identity = await App.Database.client.InvokeApiAsync("getIdentities", HttpMethod.Get, null);
+                            string accessToken = identity["facebook"]["accessToken"].ToString();
 
+                            JArray contacts = (JArray) response["data"];
+                            for(int i = 0; i < contacts.Count; i++)
+                            {
+                                JObject contact = (JObject) contacts.ElementAt(i);
+                                string name = contact["name"].ToString();
+                                string id = contact["id"].ToString();
+                                //var pictureUrl = string.Format(contact["picture"]["data"]["url"].ToString() + "?access_token={0}", accessToken);
+                                var pictureUrl = String.Format("https://graph.facebook.com/{0}/picture?type=large&access_token={1}", id, accessToken);
 
-                        string var = "stop";
-
-
-                        //if (provider == MobileServiceAuthenticationProvider.Google)
-                        //{
-                        //    //WebRequest request = WebRequest.Create("");
-                        //    //StringContent xml = new StringContent("", Encoding.UTF8, "application/xml");
-                        //    //JToken response = await App.Database.client.InvokeApiAsync("getcontacts", HttpMethod.Get, null);
-                        //    //var response = await App.Database.client.InvokeApiAsync<string>("getcontacts", HttpMethod.Get, null);
-                        //    //HttpResponseMessage response = await App.Database.client.InvokeApiAsync("getcontacts", null, HttpMethod.Get, null, null);
-                        //    //string xmlResponse =  await response.Content.ReadAsStringAsync();
-                        //    //Debug.WriteLine(response);
-                        //    //string json = Newtonsoft.Json.JsonConvert.SerializeObject(response);
-                        //}
-                        //else
-                        //{
-                        //    JToken contacts = await App.Database.client.InvokeApiAsync("getcontacts", HttpMethod.Get, null); // also gather contacts information
-                        //    Debug.WriteLine(contacts.ToString());
-                        //}
+                                contactList.Add(new Contact { Id = id, Name = name, PictureUrl = pictureUrl });
+                            }
+                        }
                     }
                     catch (MobileServiceInvalidOperationException ex)
                     {

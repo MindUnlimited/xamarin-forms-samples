@@ -12,7 +12,7 @@ namespace Todo
 
         public MenuPage()
         {
-            Icon = "settings.png";
+            Icon = "hamburger.png";
             Title = "menu"; // The Title property must be set.
             BackgroundColor = Color.FromHex("333333");
 
@@ -64,29 +64,46 @@ namespace Todo
         {
             this.Add(new MenuItem()
             {
-                Text = "Contracts",
-                Icon = "contracts.png",
+                Text = "Important",
+                Command = new Command(o => {
+                    var page = new NavigationPage(App.importantDPage);
+                    page.Title = "Important";
+                    App.masterDetailPage.Detail.Navigation.PushAsync(page);
+                })
+                //Icon = "contracts.png",
                 //TargetType = typeof(ContractsPage)
             });
 
             this.Add(new MenuItem()
             {
-                Text = "Leads",
-                Icon = "Lead.png",
+                Text = "Urgent",
+                Command = new Command(o => {
+                    var page = new NavigationPage(App.urgentDPage);
+                    page.Title = "Urgent";
+                    App.masterDetailPage.Detail.Navigation.PushAsync(page);
+                })
+                //Icon = "Lead.png",
                 //TargetType = typeof(LeadsPage)
             });
 
             this.Add(new MenuItem()
             {
-                Text = "Accounts",
-                Icon = "Accounts.png",
+                Text = "Current",
+                //Icon = "Accounts.png",
                 //TargetType = typeof(AccountsPage)
             });
 
             this.Add(new MenuItem()
             {
-                Text = "Opportunities",
-                Icon = "Opportunity.png",
+                Text = "Completed",
+                //Icon = "Opportunity.png",
+                //TargetType = typeof(OpportunitiesPage)
+            });
+
+            this.Add(new MenuItem()
+            {
+                Text = "Inbox",
+                //Icon = "Opportunity.png",
                 //TargetType = typeof(OpportunitiesPage)
             });
         }
@@ -110,6 +127,8 @@ namespace Todo
         public static DomainPage currentDPage = new DomainPage(DomainPages.Current);
         public static DomainPage completedDPage = new DomainPage(DomainPages.Completed);
         public static InboxPage inboxDPage = new InboxPage();
+
+        public static MasterDetailPage masterDetailPage;
 
         public enum DomainPages
         {
@@ -137,11 +156,6 @@ namespace Todo
 
             var inboxPage = new NavigationPage(inboxDPage);
             inboxPage.Title = "Inbox";
-
-            MasterDetailPage masterDetailPage = new MasterDetailPage { MasterBehavior = MasterBehavior.Popover };
-
-            masterDetailPage.Master = new MenuPage();
-
 
             TabbedPage domainTabsPage = new TabbedPage();
 
@@ -201,10 +215,19 @@ namespace Todo
                     break;
             }
 
-            MainPage = domainTabsPage;
+            masterDetailPage = new MasterDetailPage { MasterBehavior = MasterBehavior.Popover, Master = new MenuPage(), Detail = importantPage };
 
-            //MainPage = new NavigationPage(domainTabsPage); // The root page of your application
+            if (Device.OS == TargetPlatform.WinPhone)
+                MainPage = domainTabsPage;
+            else
+                MainPage = masterDetailPage;
+
             Navigation = MainPage.Navigation;
+
+            //MainPage = domainTabsPage;
+
+            ////MainPage = new NavigationPage(domainTabsPage); // The root page of your application
+            //Navigation = MainPage.Navigation;
 
             //MainPage = new NavigationPage(new FormsGallery.GridDemoPage());//GetMainPage(); // property new in 1.3
             //MainPage = new FormsGallery.GridDemoPage();//GetMainPage(); // property new in 1.3
