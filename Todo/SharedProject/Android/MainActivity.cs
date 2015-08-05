@@ -25,7 +25,9 @@ using Android.Preferences;// google cloud messaging (push)
 [assembly: Dependency(typeof(Todo.Android.MainActivity))]
 namespace Todo.Android
 {
-	[Activity (Label = "MindSet", Icon = "@drawable/LogoMindSet32", MainLauncher = true, ConfigurationChanges = 
+	[Activity (Label = "MindSet", 
+        Icon = "@drawable/LogoMindSet32", 
+        MainLauncher = true, ConfigurationChanges = 
         ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsApplicationActivity, Logout // superclass new in 1.3
 	{
@@ -260,6 +262,8 @@ namespace Todo.Android
                 await App.Navigation.PushModalAsync(new Views.SelectLoginProviderPage());
             }
             await Todo.App.selectedDomainPage.Refresh();
+
+            RequestedOrientation = ScreenOrientation.Portrait;
         }
 
         public void Logout()

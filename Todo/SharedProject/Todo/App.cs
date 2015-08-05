@@ -6,13 +6,44 @@ using Xamarin.Forms;
 
 namespace Todo
 {
+    public class RootPage : MasterDetailPage
+    {
+        public RootPage()
+        {
+            var menuPage = new MenuPage();
+
+            menuPage.Menu.ItemSelected += (sender, e) => NavigateTo(e.SelectedItem as MenuItem);
+
+            Master = menuPage;
+            Detail = new NavigationPage(App.importantDPage);
+        }
+
+        async void NavigateTo(MenuItem menu)
+        {
+            if (menu.Title != "Inbox")
+            {
+                App.selectedDomainPage = (DomainPage)menu.associatedPage;
+                await App.selectedDomainPage.Refresh();
+            }
+            else
+                App.selectedDomainPage = null;
+
+            var navPage = new NavigationPage(menu.associatedPage);
+            navPage.Title = menu.Title;
+
+            Detail = navPage;
+
+            IsPresented = false;
+        }
+    }
+
     public class MenuPage : ContentPage
     {
         public ListView Menu { get; set; }
 
         public MenuPage()
         {
-            Icon = "hamburger.png";
+            Icon = "LogoMindSet32";
             Title = "menu"; // The Title property must be set.
             BackgroundColor = Color.FromHex("333333");
 
@@ -40,6 +71,15 @@ namespace Todo
         }
     }
 
+    public class MenuItem
+    {
+        public string Title { get; set; }
+
+        public string IconSource { get; set; }
+
+        public Page associatedPage { get; set; }
+    }
+
     public class MenuListView : ListView
     {
         public MenuListView()
@@ -51,7 +91,7 @@ namespace Todo
             BackgroundColor = Color.Transparent;
 
             var cell = new DataTemplate(typeof(ImageCell));
-            cell.SetBinding(TextCell.TextProperty, "Text");
+            cell.SetBinding(TextCell.TextProperty, "Title");
             cell.SetBinding(ImageCell.ImageSourceProperty, "Icon");
 
             ItemTemplate = cell;
@@ -64,47 +104,37 @@ namespace Todo
         {
             this.Add(new MenuItem()
             {
-                Text = "Important",
-                Command = new Command(o => {
-                    var page = new NavigationPage(App.importantDPage);
-                    page.Title = "Important";
-                    App.masterDetailPage.Detail.Navigation.PushAsync(page);
-                })
+                Title = "Important",
                 //Icon = "contracts.png",
-                //TargetType = typeof(ContractsPage)
+                associatedPage = App.importantDPage
             });
 
             this.Add(new MenuItem()
             {
-                Text = "Urgent",
-                Command = new Command(o => {
-                    var page = new NavigationPage(App.urgentDPage);
-                    page.Title = "Urgent";
-                    App.masterDetailPage.Detail.Navigation.PushAsync(page);
-                })
+                Title = "Urgent",
                 //Icon = "Lead.png",
-                //TargetType = typeof(LeadsPage)
+                associatedPage = App.urgentDPage
             });
 
             this.Add(new MenuItem()
             {
-                Text = "Current",
+                Title = "Current",
                 //Icon = "Accounts.png",
-                //TargetType = typeof(AccountsPage)
+                associatedPage = App.currentDPage
             });
 
             this.Add(new MenuItem()
             {
-                Text = "Completed",
+                Title = "Completed",
                 //Icon = "Opportunity.png",
-                //TargetType = typeof(OpportunitiesPage)
+                associatedPage = App.completedDPage
             });
 
             this.Add(new MenuItem()
             {
-                Text = "Inbox",
+                Title = "Inbox",
                 //Icon = "Opportunity.png",
-                //TargetType = typeof(OpportunitiesPage)
+                associatedPage = App.inboxDPage
             });
         }
     }
@@ -121,12 +151,19 @@ namespace Todo
         public static readonly Color GREEN = Color.FromRgb(146, 208, 80);
 
         public static DomainPage selectedDomainPage;
+        public static NavigationPage selectedNavigationPage;
 
         public static DomainPage importantDPage = new DomainPage(DomainPages.Important);
         public static DomainPage urgentDPage = new DomainPage(DomainPages.Urgent);
         public static DomainPage currentDPage = new DomainPage(DomainPages.Current);
         public static DomainPage completedDPage = new DomainPage(DomainPages.Completed);
         public static InboxPage inboxDPage = new InboxPage();
+
+        public static NavigationPage importantPage;
+        public static NavigationPage urgentPage;
+        public static NavigationPage currentPage;
+        public static NavigationPage completedPage;
+        public static NavigationPage inboxPage;
 
         public static MasterDetailPage masterDetailPage;
 
@@ -142,19 +179,19 @@ namespace Todo
 
         public App()
         {
-            var importantPage = new NavigationPage(importantDPage);
+            importantPage = new NavigationPage(importantDPage);
             importantPage.Title = "Important";
 
-            var urgentPage = new NavigationPage(urgentDPage);
+            urgentPage = new NavigationPage(urgentDPage);
             urgentPage.Title = "Urgent";
 
-            var currentPage = new NavigationPage(currentDPage);
+            currentPage = new NavigationPage(currentDPage);
             currentPage.Title = "Current";
 
-            var completedPage = new NavigationPage(completedDPage);
+            completedPage = new NavigationPage(completedDPage);
             completedPage.Title = "Completed";
 
-            var inboxPage = new NavigationPage(inboxDPage);
+            inboxPage = new NavigationPage(inboxDPage);
             inboxPage.Title = "Inbox";
 
             TabbedPage domainTabsPage = new TabbedPage();
@@ -171,22 +208,27 @@ namespace Todo
                 {
                     case "Important":
                         selectedDomainPage = importantDPage;
+                        selectedNavigationPage = importantPage;
                         await importantDPage.Refresh();
                         break;
                     case "Urgent":
                         selectedDomainPage = urgentDPage;
+                        selectedNavigationPage = urgentPage;
                         await urgentDPage.Refresh();
                         break;
                     case "Current":
                         selectedDomainPage = currentDPage;
+                        selectedNavigationPage = currentPage;
                         await currentDPage.Refresh();
                         break;
                     case "Completed":
                         selectedDomainPage = completedDPage;
+                        selectedNavigationPage = completedPage;
                         await completedDPage.Refresh();
                         break;
                     case "Inbox":
                         selectedDomainPage = null;
+                        selectedNavigationPage = inboxPage;
                         inboxDPage.Refresh();
                         break;
                     default:
@@ -198,24 +240,29 @@ namespace Todo
             {
                 case "Important":
                     selectedDomainPage = importantDPage;
+                    selectedNavigationPage = importantPage;
                     break;
                 case "Urgent":
                     selectedDomainPage = urgentDPage;
+                    selectedNavigationPage = urgentPage;
                     break;
                 case "Current":
                     selectedDomainPage = currentDPage;
+                    selectedNavigationPage = currentPage;
                     break;
                 case "Completed":
                     selectedDomainPage = completedDPage;
+                    selectedNavigationPage = completedPage;
                     break;
                 case "Inbox":
                     selectedDomainPage = null;
+                    selectedNavigationPage = inboxPage;
                     break;
                 default:
                     break;
             }
 
-            masterDetailPage = new MasterDetailPage { MasterBehavior = MasterBehavior.Popover, Master = new MenuPage(), Detail = importantPage };
+            masterDetailPage = new RootPage();// new MasterDetailPage { MasterBehavior = MasterBehavior.Popover, Master = new MenuPage {}, Detail = importantPage };
 
             if (Device.OS == TargetPlatform.WinPhone)
                 MainPage = domainTabsPage;

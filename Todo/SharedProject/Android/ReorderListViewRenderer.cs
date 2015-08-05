@@ -71,7 +71,7 @@ namespace Todo.Android
         }
 
 
-		protected override void OnElementPropertyChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e)
+		protected override void OnElementPropertyChanged (object sender, PropertyChangedEventArgs e)
 		{
             base.OnElementPropertyChanged(sender, e);
 

@@ -63,15 +63,17 @@ namespace Todo.WinPhone
                     Foreground=""{StaticResource PhoneForegroundBrush}"">
 
                     <rlb:ReorderListBox.Resources>
-                    <wp:StatusToImageSourceConverterWP x:Key=""converter"" />
+                        <wp:StatusToImageSourceConverterWP x:Key=""StatusConverter"" />
+                        <wp:TypeToImageSourceConverterWP x:Key=""TypeConverter"" />
                     </rlb:ReorderListBox.Resources>
 
                     <rlb:ReorderListBox.ItemTemplate>
                         <DataTemplate>
 
                             <StackPanel Orientation=""Horizontal"">
-                                <Image Width=""25"" Height=""25"" Source=""{Binding Status, Mode=OneWay, Converter={StaticResource converter}, ConverterParameter=\{0:d\}}""></Image>
-                                <TextBlock Text=""{Binding Path=Name}"" Margin=""12,4,12,4"" FontSize=""26"" TextTrimming=""WordEllipsis""></TextBlock>
+                                <Image Width=""25"" Height=""25"" Margin=""0,0,5,0"" Source=""{Binding Type, Mode=OneWay, Converter={StaticResource TypeConverter}, ConverterParameter=\{0:d\}}""></Image>
+                                <Image Width=""25"" Height=""25"" Margin=""0,0,0,0"" Source=""{Binding Status, Mode=OneWay, Converter={StaticResource StatusConverter}, ConverterParameter=\{0:d\}}""></Image>
+                                <TextBlock Text=""{Binding Path=Name}"" Margin=""8,4,8,4"" FontSize=""26"" TextTrimming=""WordEllipsis""></TextBlock>
                             </StackPanel>
                         </DataTemplate>
                     </rlb:ReorderListBox.ItemTemplate>
@@ -106,8 +108,11 @@ namespace Todo.WinPhone
                     var Item = (Item)ev.AddedItems[0];
                     var todoPage = new TodoItemPage();
                     todoPage.BindingContext = Item;
-                    await Todo.App.selectedDomainPage.Navigation.PushAsync(todoPage);
-                    //await Navigation.PushAsync(todoPage);
+                    var test = Todo.App.selectedDomainPage;
+                    await Todo.App.selectedNavigationPage.Navigation.PushAsync(todoPage);
+                    //await Todo.App.importantDPage.Navigation.PushAsync(todoPage);
+                    //await Todo.App.selectedDomainPage.Navigation.PushAsync(todoPage);
+                    //await Todo.App.Navigation.PushAsync(todoPage);
                 }
             };
 

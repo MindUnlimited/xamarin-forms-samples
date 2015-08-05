@@ -49,12 +49,12 @@ namespace DraggableListView
             if (cell == null)
             {
                 //Android.Resource.Id.
-                cell = context.LayoutInflater.Inflate(Android.Resource.Layout.ActivityListItem, parent, false);//SimpleListItem1, parent, false);
+                cell = context.LayoutInflater.Inflate(Resource.Layout.row, parent, false);//SimpleListItem1, parent, false);
                 //cell = context.LayoutInflater.Inflate(Android.Resource.Layout.listitem, parent, false);//  .listitem, parent, false);
   //              context.LayoutInflater.Inflate(Android.Resource.Layout. .inflate(R.layout.rowlayout, parent, false);
  
                 //TextView textView = (TextView) cell.FindViewById(Android.Resource.Id.Text1);
-                ImageView image = (ImageView)cell.FindViewById(Android.Resource.Id.Icon);
+                //ImageView image = (ImageView)cell.FindViewById(Android.Resource.Id.Icon1);
 
                 //textView.setText(values[positon]);
 
@@ -65,10 +65,28 @@ namespace DraggableListView
                 //cell.SetBackgroundColor(Color.DarkViolet);
             }
 
-            var icon = cell.FindViewById<ImageView>(Android.Resource.Id.Icon);
-            
+            var level = cell.FindViewById<ImageView>(Resource.Id.level);
+            var progress = cell.FindViewById<ImageView>(Resource.Id.progress);
 
-            
+
+            int levelResID;
+            switch (Items[position].Type)
+            {
+                case 2: // Goal
+                    levelResID = Resource.Drawable.Goal64;
+                    level.SetImageResource(levelResID);
+                    break;
+                case 3: // Project
+                    levelResID = Resource.Drawable.Project64;
+                    level.SetImageResource(levelResID);
+                    break;
+                case 4: // Task
+                    levelResID = Resource.Drawable.Task64;
+                    level.SetImageResource(levelResID);
+                    break;
+                default:
+                    break;
+            }
 
             //-1: Cancelled
             //0: Conceived
@@ -80,50 +98,51 @@ namespace DraggableListView
             //6: On hold / Blocked
             //7: Completed
 
-            int iconId;
+            int progressResID;
             switch (Items[position].Status)
             {
                 case -1:
-                    iconId = Resource.Drawable.TaskCancelled64;
-                    icon.SetImageResource(iconId);
+                    progressResID = Resource.Drawable.TaskCancelled64;
+                    progress.SetImageResource(progressResID);
                     break;
                 case 0:
-                    iconId = Resource.Drawable.TaskConceived64;
-                    icon.SetImageResource(iconId);
+                    progressResID = Resource.Drawable.TaskConceived64;
+                    progress.SetImageResource(progressResID);
                     break;
                 case 1:
-                    iconId = Resource.Drawable.TaskNotStarted64;
-                    icon.SetImageResource(iconId);
+                    progressResID = Resource.Drawable.TaskNotStarted64;
+                    progress.SetImageResource(progressResID);
                     break;
                 case 2:
-                    iconId = Resource.Drawable.TaskStarted64;
-                    icon.SetImageResource(iconId);
+                    progressResID = Resource.Drawable.TaskStarted64;
+                    progress.SetImageResource(progressResID);
                     break;
                 case 3:
-                    iconId = Resource.Drawable.Task25pComplete64;
-                    icon.SetImageResource(iconId);
+                    progressResID = Resource.Drawable.Task25pComplete64;
+                    progress.SetImageResource(progressResID);
                     break;
                 case 4:
-                    iconId = Resource.Drawable.Task50pComplete64;
-                    icon.SetImageResource(iconId);
+                    progressResID = Resource.Drawable.Task50pComplete64;
+                    progress.SetImageResource(progressResID);
                     break;
                 case 5:
-                    iconId = Resource.Drawable.Task75pComplete64;
-                    icon.SetImageResource(iconId);
+                    progressResID = Resource.Drawable.Task75pComplete64;
+                    progress.SetImageResource(progressResID);
                     break;
                 case 6:
-                    iconId = Resource.Drawable.TaskOnHold64;
-                    icon.SetImageResource(iconId);
+                    progressResID = Resource.Drawable.TaskOnHold64;
+                    progress.SetImageResource(progressResID);
                     break;
                 case 7:
-                    iconId = Resource.Drawable.TaskCompleted64;
-                    icon.SetImageResource(iconId);
+                    progressResID = Resource.Drawable.TaskCompleted64;
+                    progress.SetImageResource(progressResID);
                     break;
                 default:
                     break;
             }
 
-            var text = cell.FindViewById<TextView>(Android.Resource.Id.Text1);
+
+            var text = cell.FindViewById<TextView>(Resource.Id.title);
             if (text != null)
             {
                 text.Text = Items[position].Name;// position.ToString();

@@ -103,7 +103,7 @@ namespace Todo
 					}, 0, 0);
 			}
 			if (Device.OS == TargetPlatform.Android) { // BUG: Android doesn't support the icon being null
-				tbi = new ToolbarItem ("+", "plus", async () => {
+				tbi = new ToolbarItem ("+", "add", async () => {
                     var Item = new Item();
                     var todoPage = new TodoItemPage();
 

@@ -67,7 +67,7 @@ namespace Todo
             }
             if (Device.OS == TargetPlatform.Android)
             { // BUG: Android doesn't support the icon being null
-                tbi = new ToolbarItem("+", "plus", () =>
+                tbi = new ToolbarItem("+", "add", () =>
                 {
                     var Group = new Group();
                     var groupPage = new TodoGroupPage();

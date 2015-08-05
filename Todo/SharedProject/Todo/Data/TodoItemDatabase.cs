@@ -70,29 +70,46 @@ namespace Todo
 
         public async Task getContactsThatUseApp()
         {
+            String contactsFound = "";
+
+
             if (contacts.Count > 0 && userID != null)
             {
-                var contactsString = "";
-                foreach (User contact in contacts)
+                int sliceSize = 25;
+                List<List<User>> listOfContactLists = new List<List<User>>();
+                for (int i = 0; i < contacts.Count; i += sliceSize)
+                    listOfContactLists.Add(contacts.GetRange(i, Math.Min(sliceSize, contacts.Count - i)));
+
+                foreach (List<User> contactList in listOfContactLists)
                 {
-                    contactsString += "'" + contact.Email + "'" + ",";
+                    var contactsString = "";
+                    foreach (User contact in contactList)
+                    {
+                        contactsString += "'" + contact.Email + "'" + ",";
+                    }
+                    contactsString = contactsString.TrimEnd(',');
+
+                    //var json = (Newtonsoft.Json.Linq.JObject) await client.InvokeApiAsync("userInfo", HttpMethod.Get, null);
+
+
+                    var parameters = new Dictionary<string, string>
+                    {
+                        { "contacts", contactsString }
+                    };
+
+                    var contactsThatUseAppAPIResult = await client.InvokeApiAsync("contactsthatuseapp", HttpMethod.Get, parameters);
+                    contactsFound += contactsThatUseAppAPIResult.ToString();
+
+                    
+
+                    //if (contactsThatUseAppAPIResult != null)
+                    //{
+                    //    Newtonsoft.Json.Linq.JObject calcResult = (Newtonsoft.Json.Linq.JObject)contactsThatUseAppAPIResult.Result;
+                    //}
                 }
-                contactsString = contactsString.TrimEnd(',');
 
-                //var json = (Newtonsoft.Json.Linq.JObject) await client.InvokeApiAsync("userInfo", HttpMethod.Get, null);
-
-
-                var parameters = new Dictionary<string, string>
-                {
-                    { "contacts", contactsString }
-                };
-
-                var contactsThatUseAppAPIResult = await client.InvokeApiAsync("contactsthatuseapp", HttpMethod.Get, parameters);
-                //if (contactsThatUseAppAPIResult != null)
-                //{
-                //    Newtonsoft.Json.Linq.JObject calcResult = (Newtonsoft.Json.Linq.JObject)contactsThatUseAppAPIResult.Result;
-                //}
             }
+            Debug.WriteLine(contactsFound);
         }
 
 	    public TodoItemDatabase()
