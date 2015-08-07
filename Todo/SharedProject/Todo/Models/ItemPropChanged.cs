@@ -4,15 +4,26 @@ using System.Text;
 using Newtonsoft.Json;
 using Microsoft.WindowsAzure.MobileServices;
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace Todo
 {
-    public class ItemPropChanged : INotifyPropertyChanged
+    public class Item : INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void OnPropertyChanged([CallerMemberName] string caller = "")
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(caller));
+            }
+        }
+
         public string ID { get; set; }
 
         [JsonIgnore]
-        String _ownedby;
+        private String _ownedby;
 
         public String OwnedBy
         {
@@ -29,7 +40,7 @@ namespace Todo
         }
 
         [JsonIgnore]
-        string _parent;
+        private String _parent;
 
         public string Parent
         {
@@ -46,7 +57,7 @@ namespace Todo
         }
 
         [JsonIgnore]
-        int _type;
+        private int _type;
 
         public int Type
         {
@@ -63,7 +74,7 @@ namespace Todo
         }
 
         [JsonIgnore]
-        string name;
+        private string name;
 
         public string Name
         {
@@ -80,7 +91,7 @@ namespace Todo
         }
 
         [JsonIgnore]
-        int status;
+        private int status;
 
         public int Status
         {
@@ -97,7 +108,7 @@ namespace Todo
         }
 
         [JsonIgnore]
-        int importance;
+        private int importance;
 
         public int Importance
         {
@@ -114,7 +125,7 @@ namespace Todo
         }
 
         [JsonIgnore]
-        int urgency;
+        private int urgency;
 
         public int Urgency
         {
@@ -131,7 +142,7 @@ namespace Todo
         }
 
         [JsonIgnore]
-        int order;
+        private int order;
 
         public int Order
         {
@@ -148,7 +159,7 @@ namespace Todo
         }
 
         [JsonIgnore]
-        string notes;
+        private string notes;
 
         public string Notes
         {
@@ -165,7 +176,7 @@ namespace Todo
         }
 
         [JsonIgnore]
-        string createdby;
+        private string createdby;
 
         public string CreatedBy
         {
@@ -182,7 +193,7 @@ namespace Todo
         }
 
         [JsonIgnore]
-        string updatedby;
+        private string updatedby;
 
         public string UpdatedBy
         {
@@ -199,7 +210,7 @@ namespace Todo
         }
 
         [JsonIgnore]
-        string deletedby;
+        private string deletedby;
 
         public string DeletedBy
         {
@@ -216,7 +227,7 @@ namespace Todo
         }
 
         [JsonIgnore]
-        string assignedto;
+        private string assignedto;
 
         public string AssignedTo
         {
@@ -232,7 +243,7 @@ namespace Todo
             }
         }
         [JsonIgnore]
-        string startdate;
+        private string startdate;
 
         public string StartDate
         {
@@ -249,7 +260,7 @@ namespace Todo
         }
 
         [JsonIgnore]
-        string enddate;
+        private string enddate;
 
         public string EndDate
         {
@@ -266,7 +277,7 @@ namespace Todo
         }
 
         [JsonIgnore]
-        string effortestimate;
+        private string effortestimate;
 
         public string EffortEstimate
         {
@@ -283,7 +294,7 @@ namespace Todo
         }
 
         [JsonIgnore]
-        int recurrent;
+        private int recurrent;
 
         public int Recurrent
         {
@@ -300,7 +311,7 @@ namespace Todo
         }
 
         [JsonIgnore]
-        string rewardtype;
+        private string rewardtype;
 
         public string RewardType
         {
@@ -317,7 +328,7 @@ namespace Todo
         }
 
         [JsonIgnore]
-        float rewardamount;
+        private float rewardamount;
 
         public float RewardAmount
         {
@@ -334,7 +345,7 @@ namespace Todo
         }
 
         [JsonIgnore]
-        string punishmenttype;
+        private string punishmenttype;
 
         public string PunishmentType
         {
@@ -351,7 +362,7 @@ namespace Todo
         }
 
         [JsonIgnore]
-        float punishmentamount;
+        private float punishmentamount;
 
         public float PunishmentAmount
         {
@@ -368,7 +379,7 @@ namespace Todo
         }
 
         [JsonIgnore]
-        string dependenton;
+        private string dependenton;
 
         public string DependentOn
         {
@@ -384,14 +395,14 @@ namespace Todo
             }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        //public event PropertyChangedEventHandler PropertyChanged;
 
-        void OnPropertyChanged(string propertyName = null)
-        {
-            PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null)
-                handler(this, new PropertyChangedEventArgs(propertyName));
-        }
+        //void OnPropertyChanged(string propertyName = null)
+        //{
+        //    PropertyChangedEventHandler handler = PropertyChanged;
+        //    if (handler != null)
+        //        handler(this, new PropertyChangedEventArgs(propertyName));
+        //}
 
         [Version]
         public string Version { get; set; }

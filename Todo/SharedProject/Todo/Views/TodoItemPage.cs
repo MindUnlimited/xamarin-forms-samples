@@ -309,9 +309,11 @@ namespace Todo
 
             ToolbarItem save = new ToolbarItem("Save", "save.png", async () =>
             {
-                var selected = ownedPicker.SelectedItem;
+                //var selected = ownedPicker.SelectedItem;
                 item = (Item)BindingContext;
                 Boolean itemIsNew = item.Version == null;
+
+                
                 if (item.OwnedBy != null)
                 {
                     if (!groups.ContainsValue(item.OwnedBy) && groups.ContainsKey(item.OwnedBy))
@@ -320,11 +322,24 @@ namespace Todo
                     if (item.Parent != null)
                     {
                         if (!items.ContainsValue(item.Parent) && items.ContainsKey(item.Parent))
+                        {
+                            Debug.WriteLine(item.Parent);
+                            Debug.WriteLine(items[item.Parent]);
                             item.Parent = items[item.Parent];
+                            Debug.WriteLine(item.Parent);
+                        }
+                            
+                        
                     }
 
                     var parentItem = await Todo.App.Database.GetItem(item.Parent);
-                    item.Type = parentItem.Type + 1;
+                    if (parentItem != null)
+                    {
+                        if (parentItem.Type != null)
+                            item.Type = parentItem.Type + 1;
+                    }
+                    else
+                        item.Type = 2;
 
                     //ownedPicker.OnSelectedItemChanged(BoundPicker.SelectedItemProperty, item.OwnedBy, item.OwnedBy);
                     //var old_value = item.OwnedBy;
@@ -445,7 +460,6 @@ namespace Todo
             };
 
 
-
             Content = new StackLayout
             {
                 //VerticalOptions = LayoutOptions.StartAndExpand,
@@ -477,7 +491,6 @@ namespace Todo
                         }
 
                     }
-                    //,
 
                     //new StackLayout
                     //{

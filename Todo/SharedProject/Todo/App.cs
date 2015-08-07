@@ -6,138 +6,138 @@ using Xamarin.Forms;
 
 namespace Todo
 {
-    public class RootPage : MasterDetailPage
-    {
-        public RootPage()
-        {
-            var menuPage = new MenuPage();
+    //public class RootPage : MasterDetailPage
+    //{
+    //    public RootPage()
+    //    {
+    //        var menuPage = new MenuPage();
 
-            menuPage.Menu.ItemSelected += (sender, e) => NavigateTo(e.SelectedItem as MenuItem);
+    //        menuPage.Menu.ItemSelected += (sender, e) => NavigateTo(e.SelectedItem as MenuItem);
 
-            Master = menuPage;
-            Detail = new NavigationPage(App.importantDPage);
-        }
+    //        Master = menuPage;
+    //        Detail = new NavigationPage(App.importantDPage);
+    //    }
 
-        async void NavigateTo(MenuItem menu)
-        {
-            if (menu.Title != "Inbox")
-            {
-                App.selectedDomainPage = (DomainPage)menu.associatedPage;
-                await App.selectedDomainPage.Refresh();
-            }
-            else
-                App.selectedDomainPage = null;
+    //    async void NavigateTo(MenuItem menu)
+    //    {
+    //        if (menu.Title != "Inbox")
+    //        {
+    //            App.selectedDomainPage = (DomainPage)menu.associatedPage;
+    //            await App.selectedDomainPage.Refresh();
+    //        }
+    //        else
+    //            App.selectedDomainPage = null;
 
-            var navPage = new NavigationPage(menu.associatedPage);
-            navPage.Title = menu.Title;
+    //        var navPage = new NavigationPage(menu.associatedPage);
+    //        navPage.Title = menu.Title;
 
-            Detail = navPage;
+    //        Detail = navPage;
 
-            IsPresented = false;
-        }
-    }
+    //        IsPresented = false;
+    //    }
+    //}
 
-    public class MenuPage : ContentPage
-    {
-        public ListView Menu { get; set; }
+    //public class MenuPage : ContentPage
+    //{
+    //    public ListView Menu { get; set; }
 
-        public MenuPage()
-        {
-            Icon = "LogoMindSet32";
-            Title = "menu"; // The Title property must be set.
-            BackgroundColor = Color.FromHex("333333");
+    //    public MenuPage()
+    //    {
+    //        Icon = "LogoMindSet32";
+    //        Title = "menu"; // The Title property must be set.
+    //        BackgroundColor = Color.FromHex("333333");
 
-            Menu = new MenuListView();
+    //        Menu = new MenuListView();
 
-            var menuLabel = new ContentView
-            {
-                Padding = new Thickness(10, 36, 0, 5),
-                Content = new Label
-                {
-                    TextColor = Color.FromHex("AAAAAA"),
-                    Text = "MENU",
-                }
-            };
+    //        var menuLabel = new ContentView
+    //        {
+    //            Padding = new Thickness(10, 36, 0, 5),
+    //            Content = new Label
+    //            {
+    //                TextColor = Color.FromHex("AAAAAA"),
+    //                Text = "MENU",
+    //            }
+    //        };
 
-            var layout = new StackLayout
-            {
-                Spacing = 0,
-                VerticalOptions = LayoutOptions.FillAndExpand
-            };
-            layout.Children.Add(menuLabel);
-            layout.Children.Add(Menu);
+    //        var layout = new StackLayout
+    //        {
+    //            Spacing = 0,
+    //            VerticalOptions = LayoutOptions.FillAndExpand
+    //        };
+    //        layout.Children.Add(menuLabel);
+    //        layout.Children.Add(Menu);
 
-            Content = layout;
-        }
-    }
+    //        Content = layout;
+    //    }
+    //}
 
-    public class MenuItem
-    {
-        public string Title { get; set; }
+    //public class MenuItem
+    //{
+    //    public string Title { get; set; }
 
-        public string IconSource { get; set; }
+    //    public string IconSource { get; set; }
 
-        public Page associatedPage { get; set; }
-    }
+    //    public Page associatedPage { get; set; }
+    //}
 
-    public class MenuListView : ListView
-    {
-        public MenuListView()
-        {
-            List<MenuItem> data = new MenuListData();
+    //public class MenuListView : ListView
+    //{
+    //    public MenuListView()
+    //    {
+    //        List<MenuItem> data = new MenuListData();
 
-            ItemsSource = data;
-            VerticalOptions = LayoutOptions.FillAndExpand;
-            BackgroundColor = Color.Transparent;
+    //        ItemsSource = data;
+    //        VerticalOptions = LayoutOptions.FillAndExpand;
+    //        BackgroundColor = Color.Transparent;
 
-            var cell = new DataTemplate(typeof(ImageCell));
-            cell.SetBinding(TextCell.TextProperty, "Title");
-            cell.SetBinding(ImageCell.ImageSourceProperty, "Icon");
+    //        var cell = new DataTemplate(typeof(ImageCell));
+    //        cell.SetBinding(TextCell.TextProperty, "Title");
+    //        cell.SetBinding(ImageCell.ImageSourceProperty, "Icon");
 
-            ItemTemplate = cell;
-        }
-    }
+    //        ItemTemplate = cell;
+    //    }
+    //}
 
-    public class MenuListData : List<MenuItem>
-    {
-        public MenuListData()
-        {
-            this.Add(new MenuItem()
-            {
-                Title = "Important",
-                //Icon = "contracts.png",
-                associatedPage = App.importantDPage
-            });
+    //public class MenuListData : List<MenuItem>
+    //{
+    //    public MenuListData()
+    //    {
+    //        this.Add(new MenuItem()
+    //        {
+    //            Title = "Important",
+    //            //Icon = "contracts.png",
+    //            associatedPage = App.importantDPage
+    //        });
 
-            this.Add(new MenuItem()
-            {
-                Title = "Urgent",
-                //Icon = "Lead.png",
-                associatedPage = App.urgentDPage
-            });
+    //        this.Add(new MenuItem()
+    //        {
+    //            Title = "Urgent",
+    //            //Icon = "Lead.png",
+    //            associatedPage = App.urgentDPage
+    //        });
 
-            this.Add(new MenuItem()
-            {
-                Title = "Current",
-                //Icon = "Accounts.png",
-                associatedPage = App.currentDPage
-            });
+    //        this.Add(new MenuItem()
+    //        {
+    //            Title = "Current",
+    //            //Icon = "Accounts.png",
+    //            associatedPage = App.currentDPage
+    //        });
 
-            this.Add(new MenuItem()
-            {
-                Title = "Completed",
-                //Icon = "Opportunity.png",
-                associatedPage = App.completedDPage
-            });
+    //        this.Add(new MenuItem()
+    //        {
+    //            Title = "Completed",
+    //            //Icon = "Opportunity.png",
+    //            associatedPage = App.completedDPage
+    //        });
 
-            this.Add(new MenuItem()
-            {
-                Title = "Inbox",
-                //Icon = "Opportunity.png",
-                associatedPage = App.inboxDPage
-            });
-        }
-    }
+    //        this.Add(new MenuItem()
+    //        {
+    //            Title = "Inbox",
+    //            //Icon = "Opportunity.png",
+    //            associatedPage = App.inboxDPage
+    //        });
+    //    }
+    //}
 
 
     public class App : Application // superclass new in 1.3
@@ -159,11 +159,11 @@ namespace Todo
         public static DomainPage completedDPage = new DomainPage(DomainPages.Completed);
         public static InboxPage inboxDPage = new InboxPage();
 
-        public static NavigationPage importantPage;
-        public static NavigationPage urgentPage;
-        public static NavigationPage currentPage;
-        public static NavigationPage completedPage;
-        public static NavigationPage inboxPage;
+        //public static NavigationPage importantPage;
+        //public static NavigationPage urgentPage;
+        //public static NavigationPage currentPage;
+        //public static NavigationPage completedPage;
+        //public static NavigationPage inboxPage;
 
         public static MasterDetailPage masterDetailPage;
 
@@ -179,19 +179,19 @@ namespace Todo
 
         public App()
         {
-            importantPage = new NavigationPage(importantDPage);
+            NavigationPage importantPage = new NavigationPage(importantDPage);
             importantPage.Title = "Important";
 
-            urgentPage = new NavigationPage(urgentDPage);
+            NavigationPage urgentPage = new NavigationPage(urgentDPage);
             urgentPage.Title = "Urgent";
 
-            currentPage = new NavigationPage(currentDPage);
+            NavigationPage currentPage = new NavigationPage(currentDPage);
             currentPage.Title = "Current";
 
-            completedPage = new NavigationPage(completedDPage);
+            NavigationPage completedPage = new NavigationPage(completedDPage);
             completedPage.Title = "Completed";
 
-            inboxPage = new NavigationPage(inboxDPage);
+            NavigationPage inboxPage = new NavigationPage(inboxDPage);
             inboxPage.Title = "Inbox";
 
             TabbedPage domainTabsPage = new TabbedPage();
@@ -262,12 +262,18 @@ namespace Todo
                     break;
             }
 
-            masterDetailPage = new RootPage();// new MasterDetailPage { MasterBehavior = MasterBehavior.Popover, Master = new MenuPage {}, Detail = importantPage };
+           
 
             if (Device.OS == TargetPlatform.WinPhone)
+            {
                 MainPage = domainTabsPage;
+            }
             else
-                MainPage = masterDetailPage;
+            {
+                //masterDetailPage = new RootPage();// new MasterDetailPage { MasterBehavior = MasterBehavior.Popover, Master = new MenuPage {}, Detail = importantPage };
+                //MainPage = masterDetailPage;
+            }
+                
 
             Navigation = MainPage.Navigation;
 

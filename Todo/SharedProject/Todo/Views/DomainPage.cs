@@ -178,7 +178,7 @@ namespace Todo.Views
                 {
                     if (selectedDomain != null && selectedDomain.Name != null && selectedDomain.Name != "")
                     {
-                        var Item = new Item { Type = 2 };
+                        var Item = new Item { Type = 2, OwnedBy = App.Database.defGroup.ID };
 
                         var domains = Todo.App.selectedDomainPage.domains;
                         if (selectedDomain.Name == "Personal")
@@ -214,7 +214,7 @@ namespace Todo.Views
                 {
                     if (selectedDomain != null && selectedDomain.Name != null && selectedDomain.Name != "")
                     {
-                        var Item = new Item { Type = 2 };
+                        var Item = new Item { Type = 2, OwnedBy = App.Database.defGroup.ID };
 
                         var domains = Todo.App.selectedDomainPage.domains;
                         if (selectedDomain.Name == "Personal")

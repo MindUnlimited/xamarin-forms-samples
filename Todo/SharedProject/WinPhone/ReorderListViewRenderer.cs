@@ -108,7 +108,6 @@ namespace Todo.WinPhone
                     var Item = (Item)ev.AddedItems[0];
                     var todoPage = new TodoItemPage();
                     todoPage.BindingContext = Item;
-                    var test = Todo.App.selectedDomainPage;
                     await Todo.App.selectedNavigationPage.Navigation.PushAsync(todoPage);
                     //await Todo.App.importantDPage.Navigation.PushAsync(todoPage);
                     //await Todo.App.selectedDomainPage.Navigation.PushAsync(todoPage);
