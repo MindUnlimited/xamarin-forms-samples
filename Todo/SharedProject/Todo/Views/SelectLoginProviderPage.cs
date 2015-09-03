@@ -10,6 +10,7 @@ namespace Todo.Views
     {
         public SelectLoginProviderPage()
         {
+            Title = "Login";
             Image mindSetLogo = new Image { Source = "LogoMindSet128x128.png", HorizontalOptions = LayoutOptions.Center};
             Label mindSetLabel = new Label { Text = "MindSet", FontSize = 50, HorizontalOptions = LayoutOptions.Center };
 
@@ -18,9 +19,34 @@ namespace Todo.Views
             gGestureRecognizer.Tapped += async (s, e) =>
             {
                 await DependencyService.Get<IAuthenticate>().Authenticate(Microsoft.WindowsAzure.MobileServices.MobileServiceAuthenticationProvider.Google);
-                IsBusy = true;
-                await Todo.App.Navigation.PopModalAsync();
-                IsBusy = false;
+
+                if (Device.OS == TargetPlatform.WinPhone)
+                {
+                    if ( Todo.App.Database.mobileServiceUser != null)
+                    {
+                        IsBusy = true;
+
+                        while(Todo.App.Navigation.ModalStack.Count > 1)
+                            await Todo.App.Navigation.PopModalAsync(false);
+
+                        IsBusy = false;
+                    }
+                }
+                else
+                {
+                    IsBusy = true;
+                    await Todo.App.Navigation.PopModalAsync(false);
+                    IsBusy = false;
+                }
+
+                    //{
+
+                    //}
+                //}
+                //catch(Microsoft.WindowsAzure.MobileServices.MobileServiceInvalidOperationException) { }
+
+
+
             };
             googleButton.GestureRecognizers.Add(gGestureRecognizer);
 
@@ -29,20 +55,59 @@ namespace Todo.Views
             var fbGestureRecognizer = new TapGestureRecognizer();
             fbGestureRecognizer.Tapped += async (s, e) =>
             {
-                await DependencyService.Get<IAuthenticate>().Authenticate(Microsoft.WindowsAzure.MobileServices.MobileServiceAuthenticationProvider.Facebook);
-                IsBusy = true;
-                await Todo.App.Navigation.PopModalAsync();
-                IsBusy = false;
+                //try
+                //{
+                    await DependencyService.Get<IAuthenticate>().Authenticate(Microsoft.WindowsAzure.MobileServices.MobileServiceAuthenticationProvider.Facebook);
+
+                    if (Device.OS == TargetPlatform.WinPhone)
+                    {
+                        if (Todo.App.Database.mobileServiceUser != null)
+                        {
+                            IsBusy = true;
+
+                            while (Todo.App.Navigation.ModalStack.Count > 1)
+                                await Todo.App.Navigation.PopModalAsync(false);
+
+                            IsBusy = false;
+                        }
+                    }
+                    else
+                    {
+                        IsBusy = true;
+                        await Todo.App.Navigation.PopModalAsync(false);
+                        IsBusy = false;
+                    }
+                //}
+                //catch (Microsoft.WindowsAzure.MobileServices.MobileServiceInvalidOperationException)  {}
             };
             facebookButton.GestureRecognizers.Add(fbGestureRecognizer);
 
             Button microsoftButton = new Button { Text = "Sign in with Microsoft", WidthRequest = googleButton.Width, HorizontalOptions = LayoutOptions.Center};
             microsoftButton.Clicked += async (o, e) => 
             { 
-                await DependencyService.Get<IAuthenticate>().Authenticate(Microsoft.WindowsAzure.MobileServices.MobileServiceAuthenticationProvider.MicrosoftAccount);
-                IsBusy = true;
-                await Todo.App.Navigation.PopModalAsync();
-                IsBusy = false;
+                //try
+                //{
+                    await DependencyService.Get<IAuthenticate>().Authenticate(Microsoft.WindowsAzure.MobileServices.MobileServiceAuthenticationProvider.MicrosoftAccount);
+                    if (Device.OS == TargetPlatform.WinPhone)
+                    {
+                        if (Todo.App.Database.mobileServiceUser != null)
+                        {
+                            IsBusy = true;
+
+                            while (Todo.App.Navigation.ModalStack.Count > 1)
+                                await Todo.App.Navigation.PopModalAsync(false);
+
+                            IsBusy = false;
+                        }
+                    }
+                    else
+                    {
+                        IsBusy = true;
+                        await Todo.App.Navigation.PopModalAsync(false);
+                        IsBusy = false;
+                    }
+                //}
+                //catch (Microsoft.WindowsAzure.MobileServices.MobileServiceInvalidOperationException) { }
             };
 
 

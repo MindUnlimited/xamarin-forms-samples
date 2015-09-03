@@ -44,6 +44,25 @@ namespace Todo.Android
 			}
 		}
 		
+		public partial class Color
+		{
+			
+			// aapt resource value: 0x7f050000
+			public const int actionBarBackgroundColor = 2131034112;
+			
+			// aapt resource value: 0x7f050001
+			public const int actionBarTextColor = 2131034113;
+			
+			static Color()
+			{
+				global::Android.Runtime.ResourceIdManager.UpdateIdValues();
+			}
+			
+			private Color()
+			{
+			}
+		}
+		
 		public partial class Drawable
 		{
 			
@@ -150,29 +169,29 @@ namespace Todo.Android
 		public partial class Id
 		{
 			
-			// aapt resource value: 0x7f050000
-			public const int icon1 = 2131034112;
+			// aapt resource value: 0x7f070000
+			public const int icon1 = 2131165184;
 			
-			// aapt resource value: 0x7f050005
-			public const int level = 2131034117;
+			// aapt resource value: 0x7f070005
+			public const int level = 2131165189;
 			
-			// aapt resource value: 0x7f050003
-			public const int months_list = 2131034115;
+			// aapt resource value: 0x7f070003
+			public const int months_list = 2131165187;
 			
-			// aapt resource value: 0x7f050004
-			public const int myButton = 2131034116;
+			// aapt resource value: 0x7f070004
+			public const int myButton = 2131165188;
 			
-			// aapt resource value: 0x7f050006
-			public const int progress = 2131034118;
+			// aapt resource value: 0x7f070006
+			public const int progress = 2131165190;
 			
-			// aapt resource value: 0x7f050001
-			public const int textview = 2131034113;
+			// aapt resource value: 0x7f070001
+			public const int textview = 2131165185;
 			
-			// aapt resource value: 0x7f050002
-			public const int textview1 = 2131034114;
+			// aapt resource value: 0x7f070002
+			public const int textview1 = 2131165186;
 			
-			// aapt resource value: 0x7f050007
-			public const int title = 2131034119;
+			// aapt resource value: 0x7f070007
+			public const int title = 2131165191;
 			
 			static Id()
 			{
@@ -233,6 +252,28 @@ namespace Todo.Android
 			}
 			
 			private String()
+			{
+			}
+		}
+		
+		public partial class Style
+		{
+			
+			// aapt resource value: 0x7f060000
+			public const int MyTheme = 2131099648;
+			
+			// aapt resource value: 0x7f060002
+			public const int MyTheme_ActionBar_TitleTextStyle = 2131099650;
+			
+			// aapt resource value: 0x7f060001
+			public const int MyTheme_ActionBarStyle = 2131099649;
+			
+			static Style()
+			{
+				global::Android.Runtime.ResourceIdManager.UpdateIdValues();
+			}
+			
+			private Style()
 			{
 			}
 		}

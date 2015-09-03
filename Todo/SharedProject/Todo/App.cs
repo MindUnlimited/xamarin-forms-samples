@@ -55,17 +55,39 @@ namespace Todo
                 Content = new Label
                 {
                     TextColor = Color.FromHex("AAAAAA"),
-                    Text = "MENU",
+                    Text = "Sort On",
+                }
+            };
+
+            var settingsLabel = new ContentView
+            {
+                Padding = new Thickness(10, 36, 0, 5),
+                Content = new Label
+                {
+                    TextColor = Color.FromHex("AAAAAA"),
+                    Text = "Settings",
+                }
+            };
+            var helpLabel = new ContentView
+            {
+                Padding = new Thickness(10, 36, 0, 5),
+                Content = new Label
+                {
+                    TextColor = Color.FromHex("AAAAAA"),
+                    Text = "Help and feedback",
                 }
             };
 
             var layout = new StackLayout
             {
                 Spacing = 0,
-                VerticalOptions = LayoutOptions.FillAndExpand
+                VerticalOptions = LayoutOptions.Start
             };
             layout.Children.Add(menuLabel);
             layout.Children.Add(Menu);
+            layout.Children.Add(new BoxView() { Color = Color.Gray, WidthRequest = 100, HeightRequest = 1});
+            layout.Children.Add(settingsLabel);
+            layout.Children.Add(helpLabel);
 
             Content = layout;
         }
@@ -87,7 +109,7 @@ namespace Todo
             List<MenuItem> data = new MenuListData();
 
             ItemsSource = data;
-            VerticalOptions = LayoutOptions.FillAndExpand;
+            VerticalOptions = LayoutOptions.StartAndExpand;
             BackgroundColor = Color.Transparent;
 
             var cell = new DataTemplate(typeof(ImageCell));

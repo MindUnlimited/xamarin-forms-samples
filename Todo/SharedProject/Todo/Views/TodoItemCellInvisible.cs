@@ -13,16 +13,11 @@ namespace Todo
 			};
 			label.SetBinding (Label.TextProperty, "Name");
 
-			var tick = new Image {
-				Source = FileImageSource.FromFile ("check.png"),
-			};
-			tick.SetBinding (Image.IsVisibleProperty, "Status");
-
 			var layout = new StackLayout {
 				Padding = new Thickness(20, 0, 0, 0),
 				Orientation = StackOrientation.Horizontal,
 				HorizontalOptions = LayoutOptions.StartAndExpand,
-				Children = {label, tick}
+				Children = {label}
 			};
 			View = layout;
 		}

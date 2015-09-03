@@ -35,6 +35,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Views\Controls\StatusToStringConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\Controls\StringToImageConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\Controls\StatusToImageSourceConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Views\Controls\TypeToImageSourceConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\DomainPage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\DomainRow.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\GridDemoPage.cs" />

@@ -193,7 +193,18 @@ namespace Todo.Android
                     {
                         message = "You must log in. Login Required";
                     }
+                    catch (Exception ex)
+                    {
+                        if (ex.Message.Contains("Authentication was cancelled by the user"))
+                        {
+                            // user probably pushed back button, return to select login page
+                            //await Todo.App.Navigation.PushModalAsync(new Views.SelectLoginProviderPage());
+                            return;
+                        }
+                    }
                 }
+
+                Todo.App.Current.MainPage.IsBusy = true;
 
                 // add last user provider, so that you don't have to click on which login provider you want to use
                 editor.PutString("LastUsedProvider", providerName);
@@ -217,6 +228,8 @@ namespace Todo.Android
                 message = string.Format("You are now logged in - {0}", user.UserId);
                 Debug.WriteLine(message);
                 //MessageBox.Show(message);
+
+                Todo.App.Current.MainPage.IsBusy = false;
             }
         }
     }

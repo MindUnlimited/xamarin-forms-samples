@@ -257,7 +257,8 @@ namespace Todo.Android
             }
             else
             {
-                await App.Navigation.PushModalAsync(new Views.SelectLoginProviderPage());
+                var loginpage = new NavigationPage(new Views.SelectLoginProviderPage());
+                await App.Navigation.PushModalAsync(loginpage);
             }
             await Todo.App.selectedDomainPage.Refresh();
 

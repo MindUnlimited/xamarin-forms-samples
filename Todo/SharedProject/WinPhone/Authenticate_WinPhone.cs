@@ -92,77 +92,115 @@ namespace Todo.WinPhone
                     {
                         message = "You must log in. Login Required";
                     }
+                    catch (System.InvalidOperationException ex)
+                    {
+                        if (ex.Message.Contains("Authentication was cancelled by the user"))
+                        {
+                            // user probably pushed back button, return to select login page
+                            //await Todo.App.Navigation.PushModalAsync(new Views.SelectLoginProviderPage());
+                            //await Todo.App.Navigation.PopModalAsync();
+                            return;
+                            //return;
+                        }
+
+                    }
+                    catch (Exception ex)
+                    {
+                        if (ex.Message.Contains("Authentication was cancelled by the user"))
+                        {
+                            // user probably pushed back button, return to select login page
+                            //await Todo.App.Navigation.PushModalAsync(new Views.SelectLoginProviderPage());
+                            //await Todo.App.Navigation.PopModalAsync();
+                            return;
+                            //return;
+                        }
+                    }
                 }
                 
-                // add last user provider, so that you don't have to click on which login provider you want to use
-                if (settings.Contains("LastUsedProvider"))
+                if (user != null)
                 {
-                    settings["LastUsedProvider"] = provider;
+                    Todo.App.Current.MainPage.IsBusy = true;
+                    // add last user provider, so that you don't have to click on which login provider you want to use
+                    if (settings.Contains("LastUsedProvider"))
+                    {
+                        settings["LastUsedProvider"] = provider;
+                    }
+                    else
+                    {
+                        settings.Add("LastUsedProvider", provider);
+                    }
+                    settings.Save();
+
+                    Todo.App.Database.mobileServiceUser = user;
+                    Todo.App.Database.userID = user.UserId;
+
+                    await Todo.App.Database.InitLocalStoreAsync();
+                    await Todo.App.Database.newUser(Todo.App.Database.mobileServiceUser.UserId, provider);
+                    await Todo.App.Database.OnRefreshItemsSelected(); // pull database tables
+
+                    await Todo.App.Database.getContactsThatUseApp();
+
+                    message = string.Format("You are now logged in - {0}", user.UserId);
+                    Debug.WriteLine(message);
+                    //MessageBox.Show(message);
+
+                    Todo.App.Current.MainPage.IsBusy = false;
                 }
-                else
-                {
-                    settings.Add("LastUsedProvider", provider);
-                }
-                settings.Save();
 
-                Todo.App.Database.mobileServiceUser = user;
-                Todo.App.Database.userID = user.UserId;
-
-                await Todo.App.Database.InitLocalStoreAsync();
-                await Todo.App.Database.newUser(Todo.App.Database.mobileServiceUser.UserId, provider);
-                await Todo.App.Database.OnRefreshItemsSelected(); // pull database tables
-
-                await Todo.App.Database.getContactsThatUseApp();
-
-                message = string.Format("You are now logged in - {0}", user.UserId);
-                Debug.WriteLine(message);
-                //MessageBox.Show(message);
             }
 
-            JObject response = (JObject)await Todo.App.Database.client.InvokeApiAsync("getcontacts", HttpMethod.Get, null);
-            List<Contact> contactList = new List<Contact>();
-            if (provider == MobileServiceAuthenticationProvider.MicrosoftAccount)
+            if (user != null)
             {
-                foreach (JObject usr in response["data"])
+                Todo.App.Current.MainPage.IsBusy = true;
+
+                JObject response = (JObject)await Todo.App.Database.client.InvokeApiAsync("getcontacts", HttpMethod.Get, null);
+                List<Contact> contactList = new List<Contact>();
+                if (provider == MobileServiceAuthenticationProvider.MicrosoftAccount)
                 {
-                    string name = usr["name"].ToString();
-                    string id = usr["id"].ToString();
-                    var pictureUrl = string.Format("https://apis.live.net/v5.0/{0}/picture", usr["id"]);
+                    foreach (JObject usr in response["data"])
+                    {
+                        string name = usr["name"].ToString();
+                        string id = usr["id"].ToString();
+                        var pictureUrl = string.Format("https://apis.live.net/v5.0/{0}/picture", usr["id"]);
 
-                    contactList.Add(new Contact { Id = id, Name = name, PictureUrl = pictureUrl });
+                        contactList.Add(new Contact { Id = id, Name = name, PictureUrl = pictureUrl });
+                    }
                 }
-            }
-            else if (provider == MobileServiceAuthenticationProvider.Google)
-            {
-                JToken identity = await Todo.App.Database.client.InvokeApiAsync("getIdentities", HttpMethod.Get, null);
-                string accessToken = identity["google"]["accessToken"].ToString();
-
-                foreach (JObject usr in response["feed"]["entry"])
+                else if (provider == MobileServiceAuthenticationProvider.Google)
                 {
-                    string name = usr["title"]["$t"].ToString();
-                    string id = usr["id"]["$t"].ToString().Split('/').Last();
-                    var pictureUrl = string.Format("https://www.google.com/m8/feeds/photos/media/default/{0}?access_token={1}", id, accessToken); // may not exist
+                    JToken identity = await Todo.App.Database.client.InvokeApiAsync("getIdentities", HttpMethod.Get, null);
+                    string accessToken = identity["google"]["accessToken"].ToString();
 
-                    contactList.Add(new Contact { Id = id, Name = name, PictureUrl = pictureUrl });
+                    foreach (JObject usr in response["feed"]["entry"])
+                    {
+                        string name = usr["title"]["$t"].ToString();
+                        string id = usr["id"]["$t"].ToString().Split('/').Last();
+                        var pictureUrl = string.Format("https://www.google.com/m8/feeds/photos/media/default/{0}?access_token={1}", id, accessToken); // may not exist
+
+                        contactList.Add(new Contact { Id = id, Name = name, PictureUrl = pictureUrl });
+                    }
                 }
-            }
-            else if (provider == MobileServiceAuthenticationProvider.Facebook)
-            {
-                JToken identity = await Todo.App.Database.client.InvokeApiAsync("getIdentities", HttpMethod.Get, null);
-                string accessToken = identity["facebook"]["accessToken"].ToString();
-
-                JArray contacts = (JArray)response["data"];
-                for (int i = 0; i < contacts.Count; i++)
+                else if (provider == MobileServiceAuthenticationProvider.Facebook)
                 {
-                    JObject contact = (JObject)contacts.ElementAt(i);
-                    string name = contact["name"].ToString();
-                    string id = contact["id"].ToString();
-                    //var pictureUrl = string.Format(contact["picture"]["data"]["url"].ToString() + "?access_token={0}", accessToken);
-                    var pictureUrl = String.Format("https://graph.facebook.com/{0}/picture?type=large&access_token={1}", id, accessToken);
+                    JToken identity = await Todo.App.Database.client.InvokeApiAsync("getIdentities", HttpMethod.Get, null);
+                    string accessToken = identity["facebook"]["accessToken"].ToString();
 
-                    contactList.Add(new Contact { Id = id, Name = name, PictureUrl = pictureUrl });
+                    JArray contacts = (JArray)response["data"];
+                    for (int i = 0; i < contacts.Count; i++)
+                    {
+                        JObject contact = (JObject)contacts.ElementAt(i);
+                        string name = contact["name"].ToString();
+                        string id = contact["id"].ToString();
+                        //var pictureUrl = string.Format(contact["picture"]["data"]["url"].ToString() + "?access_token={0}", accessToken);
+                        var pictureUrl = String.Format("https://graph.facebook.com/{0}/picture?type=large&access_token={1}", id, accessToken);
+
+                        contactList.Add(new Contact { Id = id, Name = name, PictureUrl = pictureUrl });
+                    }
                 }
+
+                Todo.App.Current.MainPage.IsBusy = false;
             }
+
         }
 
 

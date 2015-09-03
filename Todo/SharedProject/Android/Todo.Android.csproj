@@ -119,6 +119,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Authenticate_Android.cs" />
+    <Compile Include="CustomNavigationRenderer.cs" />
     <Compile Include="DraggableListAdapter.cs" />
     <Compile Include="DraggableListView.cs" />
     <Compile Include="IDraggableListAdapter.cs" />
@@ -241,6 +242,9 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\Task64.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\values\styles.xml" />
   </ItemGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

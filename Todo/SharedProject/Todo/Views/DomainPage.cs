@@ -30,7 +30,7 @@ namespace Todo.Views
         };
 
         private bool expanded = false;
-        public Item selectedDomain = new Item();
+        public Item selectedDomain;// = new Item();
 
         private RelativeLayout objRelativeLayout = new RelativeLayout();
 
@@ -181,22 +181,22 @@ namespace Todo.Views
                         var Item = new Item { Type = 2, OwnedBy = App.Database.defGroup.ID };
 
                         var domains = Todo.App.selectedDomainPage.domains;
-                        if (selectedDomain.Name == "Personal")
+                        if (selectedDomain != null && selectedDomain.Name == "Personal")
                         {
                             var friends = domains[0];
                             Item.Parent = friends.ID;
                         }
-                        else if (selectedDomain.Name == "Friends & Family")
+                        else if (selectedDomain != null && selectedDomain.Name == "Friends & Family")
                         {
                             var friends = domains[1];
                             Item.Parent = friends.ID;
                         }
-                        else if (selectedDomain.Name == "Work")
+                        else if (selectedDomain != null && selectedDomain.Name == "Work")
                         {
                             var friends = domains[2];
                             Item.Parent = friends.ID;
                         }
-                        else if (selectedDomain.Name == "Community")
+                        else if (selectedDomain != null && selectedDomain.Name == "Community")
                         {
                             var friends = domains[3];
                             Item.Parent = friends.ID;
@@ -217,22 +217,22 @@ namespace Todo.Views
                         var Item = new Item { Type = 2, OwnedBy = App.Database.defGroup.ID };
 
                         var domains = Todo.App.selectedDomainPage.domains;
-                        if (selectedDomain.Name == "Personal")
+                        if (selectedDomain != null && selectedDomain.Name == "Personal")
                         {
                             var friends = domains[0];
                             Item.Parent = friends.ID;
                         }
-                        else if (selectedDomain.Name == "Friends & Family")
+                        else if (selectedDomain != null && selectedDomain.Name == "Friends & Family")
                         {
                             var friends = domains[1];
                             Item.Parent = friends.ID;
                         }
-                        else if (selectedDomain.Name == "Work")
+                        else if (selectedDomain != null && selectedDomain.Name == "Work")
                         {
                             var friends = domains[2];
                             Item.Parent = friends.ID;
                         }
-                        else if (selectedDomain.Name == "Community")
+                        else if (selectedDomain != null && selectedDomain.Name == "Community")
                         {
                             var friends = domains[3];
                             Item.Parent = friends.ID;
@@ -309,7 +309,7 @@ namespace Todo.Views
 
         public async Task expandAnimation()
         {
-            selectedDomain = new Item();
+            //selectedDomain = new Item();
 
             foreach (var row in rowList)
             {
@@ -454,7 +454,7 @@ namespace Todo.Views
                         ,
                         heightConstraint: Constraint.RelativeToParent((parent) =>
                         {
-                            return (selectedDomain.Name == "Personal" ? 0 : borderSize);
+                            return (selectedDomain != null && selectedDomain != null && selectedDomain.Name == "Personal" ? 0 : borderSize);
                         })
                         );
 
@@ -475,7 +475,7 @@ namespace Todo.Views
                         ,
                         heightConstraint: Constraint.RelativeToParent((parent) =>
                         {
-                            return (selectedDomain.Name == "Friends & Family" ? 0 : borderSize);
+                            return (selectedDomain != null && selectedDomain != null && selectedDomain.Name == "Friends & Family" ? 0 : borderSize);
                         })
                         );
 
@@ -493,7 +493,7 @@ namespace Todo.Views
                         ,
                         heightConstraint: Constraint.RelativeToParent((parent) =>
                         {
-                            return (expanded && selectedDomain.Name == "Personal" || selectedDomain.Name == "Friends & Family" ? parent.Height * 0.8 : 0);
+                            return (expanded && selectedDomain != null && selectedDomain != null && selectedDomain.Name == "Personal" || selectedDomain != null && selectedDomain != null && selectedDomain.Name == "Friends & Family" ? parent.Height * 0.8 : 0);
                         })
                         );
 
@@ -542,7 +542,7 @@ namespace Todo.Views
                         ,
                         heightConstraint: Constraint.RelativeToParent((parent) =>
                         {
-                            return (selectedDomain.Name == "Work" ? 0 : borderSize);
+                            return (selectedDomain != null && selectedDomain != null && selectedDomain.Name == "Work" ? 0 : borderSize);
                         })
                         );
 
@@ -563,7 +563,7 @@ namespace Todo.Views
                         ,
                         heightConstraint: Constraint.RelativeToParent((parent) =>
                         {
-                            return (selectedDomain.Name == "Community" ? 0 : borderSize);
+                            return (selectedDomain != null && selectedDomain.Name == "Community" ? 0 : borderSize);
                         })
                         );
 
@@ -581,7 +581,7 @@ namespace Todo.Views
                         ,
                         heightConstraint: Constraint.RelativeToParent((parent) =>
                         {
-                            return (expanded && selectedDomain.Name == "Work" || selectedDomain.Name == "Community" ? parent.Height * 0.8 : 0);
+                            return (expanded && selectedDomain != null && selectedDomain.Name == "Work" || selectedDomain != null && selectedDomain.Name == "Community" ? parent.Height * 0.8 : 0);
                         })
                         );
 
@@ -598,7 +598,7 @@ namespace Todo.Views
                             leftOverlay.Clicked += (async (obj, ev) =>
                             {
                                 // collapse
-                                if (expanded && selectedDomain.Name == "Personal")
+                                if (expanded && selectedDomain != null && selectedDomain.Name == "Personal")
                                 {
                                     await expandAnimation();
                                 }
@@ -606,7 +606,7 @@ namespace Todo.Views
                                 else if (expanded)
                                 {
                                     
-                                    if (selectedDomain.Name == "Friends & Family")
+                                    if (selectedDomain != null && selectedDomain.Name == "Friends & Family")
                                     {
                                         selectedDomain = domains.Find(x => x.Name == "Personal");// DefaultDomains.Personal;
                                         //topLV.ItemsSource = array;      
@@ -737,14 +737,14 @@ namespace Todo.Views
                             rightOverlay.Clicked += (async (obj, ev) =>
                             {
                                 // collapse
-                                if (expanded && selectedDomain.Name == "Friends & Family")
+                                if (expanded && selectedDomain != null && selectedDomain.Name == "Friends & Family")
                                 {
                                     await expandAnimation();
                                 }
                                 // collapse personal expand selected
                                 else if (expanded)
                                 {
-                                    if (selectedDomain.Name == "Personal")
+                                    if (selectedDomain != null && selectedDomain.Name == "Personal")
                                     {
                                         selectedDomain = domains.Find(x => x.Name == "Friends & Family");
 
@@ -887,14 +887,14 @@ namespace Todo.Views
                             leftOverlay.Clicked += (async (obj, ev) =>
                             {
                                 // collapse
-                                if (expanded && selectedDomain.Name == "Work")
+                                if (expanded && selectedDomain != null && selectedDomain.Name == "Work")
                                 {
                                     await expandAnimation();
                                 }
                                 // collapse personal expand selected
                                 else if (expanded)
                                 {
-                                    if (selectedDomain.Name == "Community")
+                                    if (selectedDomain != null && selectedDomain.Name == "Community")
                                     {
                                         selectedDomain = domains.Find(x => x.Name == "Work");
 
@@ -994,14 +994,14 @@ namespace Todo.Views
                             rightOverlay.Clicked += (async (obj, ev) =>
                             {
                                 // collapse
-                                if (expanded && selectedDomain.Name == "Community")
+                                if (expanded && selectedDomain != null && selectedDomain.Name == "Community")
                                 {
                                     await expandAnimation();
                                 }
                                 // collapse personal expand selected
                                 else if (expanded)
                                 {
-                                    if (selectedDomain.Name == "Work")
+                                    if (selectedDomain != null && selectedDomain.Name == "Work")
                                     {
                                         selectedDomain = domains.Find(x => x.Name == "Community");
 
