@@ -18,6 +18,7 @@ namespace Todo.Android
     public class ReorderListViewRenderer : ViewRenderer<ReorderListView, MyListView>
     {
         private DraggableListAdapter adapter;
+        private double currentHeight;
 
         protected override void OnElementChanged(ElementChangedEventArgs<ReorderListView> e)
 		{
@@ -34,30 +35,28 @@ namespace Todo.Android
 
 			if (e.NewElement != null) {
 				// subscribe
-                //Control.Adapter = new ArrayAdapter<Item>(Forms.Context as Activity, Resource.Layout.listitem, e.NewElement.ItemCollection);// Resource.Id.months_list);//new NativeListViewAdapter (Forms.Context as Activity, e.NewElement);
-                //Control.ItemClick += clicked;
-
-                //var list = FindViewById<DraggableListView.DraggableListView>(Resource.Id.months_list);
-
-
-                //List<string> items = new List<string> {
-                //"Vegetables",
-                //"Fruits",
-                //"Flower Buds",
-                //"Legumes",
-                //"Vegetables",
-                //"Fruits",
-                //"Flower Buds",
-                //"Legumes",
-                //};
-                
-                //draggableListAdapter = new DraggableListAdapter(Forms.Context as Activity, items);
-                //new ArrayAdapter(Forms.Context as Activity, Resource.Layout.listitem, Element.ItemCollection);
-                //Control.Adapter = new ArrayAdapter<Item>(Forms.Context, Resource.Layout.listitem, Element.ItemCollection);
                 adapter = new DraggableListAdapter(Forms.Context as Activity, Element.ItemCollection);
                 Control.Adapter = adapter;// new ArrayAdapter<Item>(Forms.Context, Resource.Layout.listitem, Element.ItemCollection); //draggableListAdapter;// new DraggableListAdapter(this, items);
                 Control.ItemClick  += clicked;
-			}
+
+                currentHeight = e.NewElement.Height;
+
+                // make the listview invisible if its being collapsed
+                e.NewElement.SizeChanged += (sender, args) =>
+                {
+                    if(currentHeight <= e.NewElement.Height)
+                    {
+                        currentHeight = e.NewElement.Height;
+                        e.NewElement.Opacity = 1;
+                    }
+                    else
+                    {
+                        currentHeight = e.NewElement.Height;
+                        e.NewElement.Opacity = 0;
+                    }
+                };
+
+            }
 		}
 
         private async void clicked(object sender, AdapterView.ItemClickEventArgs e)
@@ -67,7 +66,6 @@ namespace Todo.Android
             var todoPage = new TodoItemPage();
             todoPage.BindingContext = item;
             await Todo.App.selectedDomainPage.Navigation.PushAsync(todoPage);
-            //Todo.App.Navigation.PushAsync(todoPage);
         }
 
 
@@ -83,7 +81,6 @@ namespace Todo.Android
             }
             else if (e.PropertyName == ReorderListView.ItemsProperty.PropertyName)
             {
-                //Control.Adapter = new ArrayAdapter<Item>(Forms.Context, Resource.Layout.listitem, Element.ItemCollection);
                 adapter = new DraggableListAdapter(Forms.Context as Activity, Element.ItemCollection);
                 Control.Adapter = adapter;
             }           

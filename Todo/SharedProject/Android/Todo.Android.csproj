@@ -119,7 +119,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Authenticate_Android.cs" />
-    <Compile Include="CustomNavigationRenderer.cs" />
     <Compile Include="DraggableListAdapter.cs" />
     <Compile Include="DraggableListView.cs" />
     <Compile Include="IDraggableListAdapter.cs" />
@@ -151,7 +150,7 @@
     <AndroidResource Include="Resources\layout\listitem.axml">
       <SubType>AndroidResource</SubType>
     </AndroidResource>
-    <AndroidResource Include="Resources\layout\row.axml">
+    <AndroidResource Include="Resources\layout\Row.axml">
       <SubType>AndroidResource</SubType>
     </AndroidResource>
   </ItemGroup>

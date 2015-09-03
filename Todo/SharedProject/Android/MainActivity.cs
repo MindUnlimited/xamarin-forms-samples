@@ -218,8 +218,6 @@ namespace Todo.Android
         protected async override void OnStart()
         {
             base.OnStart();
-            //Todo.App.Navigation.PushModalAsync(new Todo.Views.SelectLoginProviderPage());
-            //Todo.App.domainPage.Refresh();
 
             // Shared Preferences are the local saved value for the app. Used here to access the last used provider
             var preferences = PreferenceManager.GetDefaultSharedPreferences(this);

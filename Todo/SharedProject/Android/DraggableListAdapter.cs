@@ -49,7 +49,7 @@ namespace DraggableListView
             if (cell == null)
             {
                 //Android.Resource.Id.
-                cell = context.LayoutInflater.Inflate(Resource.Layout.row, parent, false);//SimpleListItem1, parent, false);
+                cell = context.LayoutInflater.Inflate(Resource.Layout.Row, parent, false);//SimpleListItem1, parent, false);
                 //cell = context.LayoutInflater.Inflate(Android.Resource.Layout.listitem, parent, false);//  .listitem, parent, false);
   //              context.LayoutInflater.Inflate(Android.Resource.Layout. .inflate(R.layout.rowlayout, parent, false);
  

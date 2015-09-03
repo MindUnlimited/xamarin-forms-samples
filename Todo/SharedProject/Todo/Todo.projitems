@@ -25,6 +25,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Models\UserGroupMembership.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\User.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\TodoItem_bak.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Views\ContactsPage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\Controls\BoundPicker.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\Controls\DescriptionAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\Controls\ExtendedSlider.cs" />
@@ -34,7 +35,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Views\Controls\StatusToStringConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\Controls\StringToImageConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\Controls\StatusToImageSourceConverter.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Views\Controls\TypeToImageSourceConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\DomainPage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\DomainRow.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\GridDemoPage.cs" />
@@ -42,6 +42,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Views\KategorienViewCell.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\ModalPage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\MultiSelect.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Views\SelectContactsView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\ReorderListView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\SelectLoginProviderPage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\TodoGroupCell.cs" />

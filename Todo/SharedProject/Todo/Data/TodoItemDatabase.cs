@@ -15,6 +15,7 @@ using Xamarin.Forms;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Xamarin.Contacts;
+using System.Collections.ObjectModel;
 
 namespace Todo
 {

@@ -20,6 +20,8 @@ namespace Todo.WinPhone
 {
     public class ReorderListViewRenderer : ViewRenderer<ReorderListView, ReorderListBox.ReorderListBox>
     {
+        private double currentHeight;
+
         protected override void OnElementPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             base.OnElementPropertyChanged(sender, e);
@@ -44,6 +46,23 @@ namespace Todo.WinPhone
             base.OnElementChanged(e);
             if (e.OldElement != null || this.Element == null)
                 return;
+
+            currentHeight = e.NewElement.Height;
+
+            // make the listview invisible if its being collapsed
+            e.NewElement.SizeChanged += (sender, args) =>
+            {
+                if (currentHeight <= e.NewElement.Height)
+                {
+                    currentHeight = e.NewElement.Height;
+                    e.NewElement.Opacity = 1;
+                }
+                else
+                {
+                    currentHeight = e.NewElement.Height;
+                    e.NewElement.Opacity = 0;
+                }
+            };
 
 
             //var listboxTest = System.Windows.Markup.XamlReader.Load( as MyReorderListBox;

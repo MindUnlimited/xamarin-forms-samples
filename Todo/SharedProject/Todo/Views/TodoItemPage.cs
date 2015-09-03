@@ -73,6 +73,22 @@ namespace Todo
 
             slider.SetBinding(Slider.ValueProperty, "Status");
 
+            Button share = new Button { Text = "Share!" };
+            share.Clicked += async (o, e) =>
+            {
+                SelectContactsView selectContacts = new SelectContactsView();
+                selectContacts.HorizontalOptions = LayoutOptions.FillAndExpand;
+                selectContacts.VerticalOptions = LayoutOptions.FillAndExpand;
+                selectContacts.ContactsCollection = Todo.App.Database.contacts;
+
+                ToolbarItem SelectContactsButton = new ToolbarItem("Select", "CheckWeiss.png", async () => { }, 0, 0);
+
+                ContentPage SelectContactsPage = new ContentPage { Content = selectContacts };
+                SelectContactsPage.ToolbarItems.Add(SelectContactsButton);
+
+                await Navigation.PushAsync(SelectContactsPage);
+            };
+
             //var labelSlideValue = new Label
             //{
             //    HorizontalOptions = LayoutOptions.CenterAndExpand,
@@ -486,7 +502,9 @@ namespace Todo
 
                                 //ownedLabel, ownedEntry,
                                 ownedLabel, ownedPicker,
-                                parentLabel, parentPicker
+                                parentLabel, parentPicker,
+
+                                share
                             }
                         }
 

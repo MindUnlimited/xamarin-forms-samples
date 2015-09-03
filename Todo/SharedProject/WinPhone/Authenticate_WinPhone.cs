@@ -1,5 +1,6 @@
 ﻿using Microsoft.WindowsAzure.MobileServices;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -10,6 +11,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using Todo.Models;
 using Todo.WinPhone;
 
 [assembly: Xamarin.Forms.Dependency(typeof(Authenticate_WinPhone))]
@@ -48,6 +50,7 @@ namespace Todo.WinPhone
                 {
                     // Set the user from the stored credentials.
                     Todo.App.Database.client.CurrentUser = user;
+                    Todo.App.Current.MainPage.IsBusy = true;
 
                     try
                     {
@@ -65,6 +68,8 @@ namespace Todo.WinPhone
                             continue;
                         }
                     }
+
+                    Todo.App.Current.MainPage.IsBusy = false;
                 }
                 else
                 {
@@ -113,6 +118,53 @@ namespace Todo.WinPhone
                 Debug.WriteLine(message);
                 //MessageBox.Show(message);
             }
+
+            JObject response = (JObject)await Todo.App.Database.client.InvokeApiAsync("getcontacts", HttpMethod.Get, null);
+            List<Contact> contactList = new List<Contact>();
+            if (provider == MobileServiceAuthenticationProvider.MicrosoftAccount)
+            {
+                foreach (JObject usr in response["data"])
+                {
+                    string name = usr["name"].ToString();
+                    string id = usr["id"].ToString();
+                    var pictureUrl = string.Format("https://apis.live.net/v5.0/{0}/picture", usr["id"]);
+
+                    contactList.Add(new Contact { Id = id, Name = name, PictureUrl = pictureUrl });
+                }
+            }
+            else if (provider == MobileServiceAuthenticationProvider.Google)
+            {
+                JToken identity = await Todo.App.Database.client.InvokeApiAsync("getIdentities", HttpMethod.Get, null);
+                string accessToken = identity["google"]["accessToken"].ToString();
+
+                foreach (JObject usr in response["feed"]["entry"])
+                {
+                    string name = usr["title"]["$t"].ToString();
+                    string id = usr["id"]["$t"].ToString().Split('/').Last();
+                    var pictureUrl = string.Format("https://www.google.com/m8/feeds/photos/media/default/{0}?access_token={1}", id, accessToken); // may not exist
+
+                    contactList.Add(new Contact { Id = id, Name = name, PictureUrl = pictureUrl });
+                }
+            }
+            else if (provider == MobileServiceAuthenticationProvider.Facebook)
+            {
+                JToken identity = await Todo.App.Database.client.InvokeApiAsync("getIdentities", HttpMethod.Get, null);
+                string accessToken = identity["facebook"]["accessToken"].ToString();
+
+                JArray contacts = (JArray)response["data"];
+                for (int i = 0; i < contacts.Count; i++)
+                {
+                    JObject contact = (JObject)contacts.ElementAt(i);
+                    string name = contact["name"].ToString();
+                    string id = contact["id"].ToString();
+                    //var pictureUrl = string.Format(contact["picture"]["data"]["url"].ToString() + "?access_token={0}", accessToken);
+                    var pictureUrl = String.Format("https://graph.facebook.com/{0}/picture?type=large&access_token={1}", id, accessToken);
+
+                    contactList.Add(new Contact { Id = id, Name = name, PictureUrl = pictureUrl });
+                }
+            }
         }
+
+
     }
 }

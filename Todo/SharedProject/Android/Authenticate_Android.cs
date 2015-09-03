@@ -111,6 +111,8 @@ namespace Todo.Android
                     // Set the user from the stored credentials.
                     Todo.App.Database.client.CurrentUser = user;
 
+                    Todo.App.Current.MainPage.IsBusy = true;
+
                     try
                     {
                         // Try to return an item now to determine if the cached credential has expired.
@@ -172,6 +174,8 @@ namespace Todo.Android
                             continue;
                         }
                     }
+
+                    Todo.App.Current.MainPage.IsBusy = false;
                 }
                 else
                 {

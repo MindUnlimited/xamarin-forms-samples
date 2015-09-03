@@ -203,6 +203,9 @@ namespace Todo.WinPhone
             }
 
             await Todo.App.selectedDomainPage.Refresh();
+            await Todo.App.importantDPage.Refresh();
+
+            Orientation = PageOrientation.Portrait;
 
             ////refresh the page if just Authenticated, to update the items/groups
             //if (justAuthenticated)

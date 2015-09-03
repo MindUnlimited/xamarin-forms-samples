@@ -18,7 +18,9 @@ namespace Todo.Views
             gGestureRecognizer.Tapped += async (s, e) =>
             {
                 await DependencyService.Get<IAuthenticate>().Authenticate(Microsoft.WindowsAzure.MobileServices.MobileServiceAuthenticationProvider.Google);
+                IsBusy = true;
                 await Todo.App.Navigation.PopModalAsync();
+                IsBusy = false;
             };
             googleButton.GestureRecognizers.Add(gGestureRecognizer);
 
@@ -28,7 +30,9 @@ namespace Todo.Views
             fbGestureRecognizer.Tapped += async (s, e) =>
             {
                 await DependencyService.Get<IAuthenticate>().Authenticate(Microsoft.WindowsAzure.MobileServices.MobileServiceAuthenticationProvider.Facebook);
+                IsBusy = true;
                 await Todo.App.Navigation.PopModalAsync();
+                IsBusy = false;
             };
             facebookButton.GestureRecognizers.Add(fbGestureRecognizer);
 
@@ -36,7 +40,9 @@ namespace Todo.Views
             microsoftButton.Clicked += async (o, e) => 
             { 
                 await DependencyService.Get<IAuthenticate>().Authenticate(Microsoft.WindowsAzure.MobileServices.MobileServiceAuthenticationProvider.MicrosoftAccount);
+                IsBusy = true;
                 await Todo.App.Navigation.PopModalAsync();
+                IsBusy = false;
             };
 
 
@@ -64,6 +70,8 @@ namespace Todo.Views
             widthConstraint: Constraint.RelativeToParent((parent) => {
                 return parent.Width;
             }));
+
+            
 
             Content = relativeLayout;
         }

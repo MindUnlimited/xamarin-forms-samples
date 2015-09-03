@@ -30,7 +30,7 @@ namespace Todo.Views
         };
 
         private bool expanded = false;
-        public Item selectedDomain = new Item { Name = "" };
+        public Item selectedDomain = new Item();
 
         private RelativeLayout objRelativeLayout = new RelativeLayout();
 
@@ -297,7 +297,7 @@ namespace Todo.Views
 
             Appearing += (async (o, e) =>
                 {
-                    //Todo.App.selectedDomainPage = this;
+                    Todo.App.selectedDomainPage = this;
                     //await Refresh();
                     //topLV.BeginRefresh();
                     //bottomLV.BeginRefresh();
@@ -309,7 +309,7 @@ namespace Todo.Views
 
         public async Task expandAnimation()
         {
-            selectedDomain = new Item { Name = "" };
+            selectedDomain = new Item();
 
             foreach (var row in rowList)
             {
@@ -359,6 +359,7 @@ namespace Todo.Views
 
         public async Task Refresh()
         {
+            #region
             if (Todo.App.Database != null && Todo.App.Database.userID != null)
             {
                 IsBusy = true;
@@ -1206,6 +1207,7 @@ namespace Todo.Views
 
                     listsInitialized = true;
                 }
+                #endregion
 
                 foreach (Item dom in domains)
                 {
