@@ -6,8 +6,9 @@ using Microsoft.WindowsAzure.MobileServices;
 
 namespace Todo
 {
-    public class Item
+    public class ItemOld
     {
+        // no notify prop changed
         public string ID { get; set; }
 
         public String OwnedBy { get; set; }

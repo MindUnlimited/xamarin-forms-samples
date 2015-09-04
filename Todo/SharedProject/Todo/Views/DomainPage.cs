@@ -297,7 +297,7 @@ namespace Todo.Views
 
             Appearing += ((o, e) =>
                 {
-                    Todo.App.selectedDomainPage = this;
+                    //Todo.App.selectedDomainPage = this;
                     //await Refresh();
 
                     //if (selectedDomain != null)

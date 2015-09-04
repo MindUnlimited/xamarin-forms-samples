@@ -22,7 +22,11 @@ namespace Todo
             Item item = null;
             ObservableCollection<Item> availableItems = new ObservableCollection<Item>();
             List<Group> availableGroups = new List<Group>();
+            Debug.WriteLine(Todo.App.selectedDomainPage.Title);
+            Debug.WriteLine(Todo.App.selectedDomainPage.selectedDomain);
             var selectedDomain = Todo.App.selectedDomainPage.selectedDomain;
+
+           
 
             Group defGroup;
             //Task.Run(async () => { defGroup = await Todo.App.Database.getDefaultGroup(Todo.App.Database.userID); });
@@ -41,7 +45,7 @@ namespace Todo
                 //var keys = Todo.App.selectedDomainPage.viewModels.Keys;
                 //var test = Todo.App.selectedDomainPage.viewModels[Todo.App.selectedDomainPage.selectedDomain].Reports;
 
-                //if(selectedDomain != null)
+                if(selectedDomain != null)
                     availableItems = Todo.App.selectedDomainPage.viewModels[selectedDomain].Reports;
             }
 
@@ -276,8 +280,13 @@ namespace Todo
 
             Dictionary<string, string> items = new Dictionary<string, string>();
 
-            items[Todo.App.selectedDomainPage.selectedDomain.Name] = Todo.App.selectedDomainPage.selectedDomain.ID;
-            parentPicker.Items.Add(Todo.App.selectedDomainPage.selectedDomain.Name);
+            if (selectedDomain != null)
+            {
+                items[selectedDomain.Name] = selectedDomain.ID;
+                parentPicker.Items.Add(selectedDomain.Name);
+            }
+                
+            
 
 
             //this.BindingContextChanged += ((o, e) => {

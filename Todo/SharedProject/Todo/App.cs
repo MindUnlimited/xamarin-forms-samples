@@ -286,7 +286,7 @@ namespace Todo
                     break;
             }
 
-            
+            //domainTabsPage.CurrentPage
 
             if (Device.OS == TargetPlatform.WinPhone)
             {
