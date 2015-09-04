@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Text;
 using Xamarin.Forms;
@@ -10,12 +11,23 @@ namespace Todo.Views.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            Item it = (Item)value;
-            return it.ID;
+            string output = "";
+            if (value is string)
+                output = (string) value;
+            else if (value is Item)
+            {
+                Debug.WriteLine(value.ToString());
+                Item it = (Item)value;
+                output = it.Parent;
+            }
+            return output;
         }
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            throw new NotImplementedException();
+            string id = (string)value;
+            Item it = Todo.App.Database.GetItem(id).Result;
+
+            return it;
         }
     }
 }
