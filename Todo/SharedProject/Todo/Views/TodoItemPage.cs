@@ -375,17 +375,19 @@ namespace Todo
                     var domains = Todo.App.selectedDomainPage.domains;
 
                     string domainName = null;
-                    Item selectedDomain = null;
+                    Item selectedDomain = Todo.App.selectedDomainPage.selectedDomain;
 
-                    foreach (var dom in domains)
-                    {
-                        if (dom.ID == item.Parent)
-                        {
-                            domainName = dom.Name;
-                            selectedDomain = dom;
-                            break;
-                        }
-                    }
+                    //Debug.WriteLine(Todo.App.selectedDomainPage.selectedDomain);
+
+                    //foreach (var dom in domains)
+                    //{
+                    //    if (dom.ID == item.Parent)
+                    //    {
+                    //        domainName = dom.Name;
+                    //        selectedDomain = dom;
+                    //        break;
+                    //    }
+                    //}
 
                     if (selectedDomain != null)
                     {
@@ -423,6 +425,18 @@ namespace Todo
                     Debug.WriteLine("this item still has children!");
                     var answer = await DisplayAlert("This item has links to other items", "Are you sure you want to delete this item AND the items linking to it?", "Yes", "No");
                     Debug.WriteLine("Answer: " + answer); // writes true or false to the console
+
+                    if(answer)
+                    {
+                        //await App.Database.DeleteItem(item);
+
+                        //if (selectedDomain != null)
+                        //{
+                        //    Todo.App.selectedDomainPage.viewModels[selectedDomain].Reports.Remove(item);
+                        //}
+
+                        //await this.Navigation.PopAsync();
+                    }
                 }
                 else
                 {
@@ -430,19 +444,19 @@ namespace Todo
 
                     var domains = Todo.App.selectedDomainPage.domains;
 
-                    string domainName = null;
+                    //string domainName = null;
 
-                    foreach (var dom in domains)
-                    {
-                        if (dom.ID == item.Parent)
-                        {
-                            domainName = dom.Name;
-                            selectedDomain = dom;
-                            break;
-                        }
-                    }
+                    //foreach (var dom in domains)
+                    //{
+                    //    if (dom.ID == item.Parent)
+                    //    {
+                    //        domainName = dom.Name;
+                    //        selectedDomain = dom;
+                    //        break;
+                    //    }
+                    //}
 
-                    if (domainName != null)
+                    if (selectedDomain != null)
                     {
                         Todo.App.selectedDomainPage.viewModels[selectedDomain].Reports.Remove(item);
                     }
