@@ -36,15 +36,15 @@ namespace Todo.Views.Controls
                     break;
                 case 3: // Task
                     source = Device.OnPlatform(
-                            iOS: "Images/Task64.png",
-                            Android: "Resources/drawable/Task64.png",
-                            WinPhone: "Assets/ItemIcons/Task64.png");
+                            iOS: "Images/Project64.png",
+                            Android: "Resources/drawable/Project64.png",
+                            WinPhone: "Assets/ItemIcons/Project64.png");
                     break;
                 case 4: // Subtask
                     source = Device.OnPlatform(
-                            iOS: "Images/Subtask64.png",
-                            Android: "Subtask64.png",
-                            WinPhone: "Assets/ItemIcons/Subtask64.png");
+                            iOS: "Images/Task64.png",
+                            Android: "Task64.png",
+                            WinPhone: "Assets/ItemIcons/Task64.png");
                     break;
                 default:
                     break;

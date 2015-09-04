@@ -8,7 +8,7 @@ using System.Runtime.CompilerServices;
 
 namespace Todo
 {
-    public class Item : INotifyPropertyChanged
+    public class ItemNew : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 

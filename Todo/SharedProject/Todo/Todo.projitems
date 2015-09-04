@@ -30,6 +30,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Views\Controls\DescriptionAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\Controls\ExtendedSlider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\Controls\ILocalizer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Views\Controls\ItemToIDConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\Controls\MyBoundPicker.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\Controls\PickerItem.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\Controls\StatusToStringConverter.cs" />

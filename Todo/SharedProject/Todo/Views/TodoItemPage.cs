@@ -22,6 +22,7 @@ namespace Todo
             Item item = null;
             ObservableCollection<Item> availableItems = new ObservableCollection<Item>();
             List<Group> availableGroups = new List<Group>();
+            var selectedDomain = Todo.App.selectedDomainPage.selectedDomain;
 
             Group defGroup;
             //Task.Run(async () => { defGroup = await Todo.App.Database.getDefaultGroup(Todo.App.Database.userID); });
@@ -35,10 +36,13 @@ namespace Todo
                 var _defGroup = Todo.App.Database.getDefaultGroup(Todo.App.Database.userID);
                 defGroup = _defGroup.Result;
 
-                var test1 = Todo.App.selectedDomainPage.selectedDomain;
-                var keys = Todo.App.selectedDomainPage.viewModels.Keys;
-                var test = Todo.App.selectedDomainPage.viewModels[Todo.App.selectedDomainPage.selectedDomain].Reports;
-                availableItems = Todo.App.selectedDomainPage.viewModels[Todo.App.selectedDomainPage.selectedDomain].Reports;
+
+                
+                //var keys = Todo.App.selectedDomainPage.viewModels.Keys;
+                //var test = Todo.App.selectedDomainPage.viewModels[Todo.App.selectedDomainPage.selectedDomain].Reports;
+
+                //if(selectedDomain != null)
+                    availableItems = Todo.App.selectedDomainPage.viewModels[selectedDomain].Reports;
             }
 
 
@@ -270,12 +274,11 @@ namespace Todo
 
 
 
-
-
             Dictionary<string, string> items = new Dictionary<string, string>();
 
             items[Todo.App.selectedDomainPage.selectedDomain.Name] = Todo.App.selectedDomainPage.selectedDomain.ID;
             parentPicker.Items.Add(Todo.App.selectedDomainPage.selectedDomain.Name);
+
 
             //this.BindingContextChanged += ((o, e) => {
             //    item = (Item)BindingContext;
@@ -315,6 +318,17 @@ namespace Todo
             //doneEntry.SetBinding (Xamarin.Forms.Switch.IsToggledProperty, "Complete");
 
 
+
+            BindablePicker parentPickerWConverter = new BindablePicker
+            {
+                Title = "Parent",
+                VerticalOptions = LayoutOptions.CenterAndExpand
+            };
+
+            //parentPickerWConverter.BindingContext = Todo.App.selectedDomainPage.viewModels[selectedDomain];
+            //parentPickerWConverter.SetBinding(BindablePicker.ItemsSourceProperty, "Reports", BindingMode.TwoWay, new ItemToIDConverter());
+
+
             var scrollview = new ScrollView
             {
                 Content = new StackLayout
@@ -325,25 +339,30 @@ namespace Todo
 
             ToolbarItem save = new ToolbarItem("Save", "save.png", async () =>
             {
-                //var selected = ownedPicker.SelectedItem;
-                item = (Item)BindingContext;
-                Boolean itemIsNew = item.Version == null;
+            //var selected = ownedPicker.SelectedItem;
+            item = (Item)BindingContext;
+            Boolean itemIsNew = item.Version == null;
 
-                
-                if (item.OwnedBy != null)
+
+            if (item.OwnedBy != null)
+            {
+                if (!groups.ContainsValue(item.OwnedBy) && groups.ContainsKey(item.OwnedBy))
+                    item.OwnedBy = groups[item.OwnedBy];
+
+                if (item.Parent != null)
                 {
-                    if (!groups.ContainsValue(item.OwnedBy) && groups.ContainsKey(item.OwnedBy))
-                        item.OwnedBy = groups[item.OwnedBy];
-
-                    if (item.Parent != null)
+                    if (!items.ContainsValue(item.Parent) && items.ContainsKey(item.Parent))
                     {
-                        if (!items.ContainsValue(item.Parent) && items.ContainsKey(item.Parent))
-                        {
-                            Debug.WriteLine(item.Parent);
-                            Debug.WriteLine(items[item.Parent]);
-                            item.Parent = items[item.Parent];
-                            Debug.WriteLine(item.Parent);
-                        }
+                            //Debug.WriteLine(item.Parent);
+                            //Debug.WriteLine(items[item.Parent]);
+                        string test;
+                        if(items.TryGetValue(item.Parent, out test))
+                            {
+                                item.Parent = test;
+                            }
+                            //item.Parent = items[item.Parent];
+                            //Debug.WriteLine(item.Parent);
+                    }
                             
                         
                     }
@@ -351,8 +370,7 @@ namespace Todo
                     var parentItem = await Todo.App.Database.GetItem(item.Parent);
                     if (parentItem != null)
                     {
-                        if (parentItem.Type != null)
-                            item.Type = parentItem.Type + 1;
+                        item.Type = parentItem.Type + 1;
                     }
                     else
                         item.Type = 2;
@@ -373,9 +391,6 @@ namespace Todo
 
 
                     var domains = Todo.App.selectedDomainPage.domains;
-
-                    string domainName = null;
-                    Item selectedDomain = Todo.App.selectedDomainPage.selectedDomain;
 
                     //Debug.WriteLine(Todo.App.selectedDomainPage.selectedDomain);
 
@@ -416,7 +431,7 @@ namespace Todo
             ToolbarItem delete = new ToolbarItem("Delete", "delete.png", async () =>
             {
                 item = (Item)BindingContext;
-                Item selectedDomain = Todo.App.selectedDomainPage.selectedDomain;
+                //Item selectedDomain = Todo.App.selectedDomainPage.selectedDomain;
                 int numberOfDirectChildren = Todo.App.selectedDomainPage.viewModels[selectedDomain].Reports.Where(x => x.Parent == item.ID).Count();
                 if (item.ID == null) // item was new, so nothing to do except cancel the adding of a new item
                     await this.Navigation.PopAsync();
@@ -516,9 +531,9 @@ namespace Todo
 
                                 //ownedLabel, ownedEntry,
                                 ownedLabel, ownedPicker,
-                                parentLabel, parentPicker,
+                                parentLabel, parentPicker//,
 
-                                share
+                                //share
                             }
                         }
 

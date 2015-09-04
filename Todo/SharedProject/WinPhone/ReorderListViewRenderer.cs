@@ -48,18 +48,26 @@ namespace Todo.WinPhone
                 return;
 
             currentHeight = e.NewElement.Height;
+            double expandedHeight = 0;
+            bool heightEstablished = false;
 
             // make the listview invisible if its being collapsed
             e.NewElement.SizeChanged += (sender, args) =>
             {
-                if (currentHeight <= e.NewElement.Height)
+                // one time establishing the height off the lv
+                if (expandedHeight < e.NewElement.Height && !heightEstablished)
                 {
-                    currentHeight = e.NewElement.Height;
+                    expandedHeight = e.NewElement.Height;
+                    heightEstablished = true;
+                }
+
+                if (e.NewElement.Height > expandedHeight - 2 && e.NewElement.Height < expandedHeight + 2) // some margin of error for returning from other screens
+                {
                     e.NewElement.Opacity = 1;
                 }
-                else
+                else // collapsing
                 {
-                    currentHeight = e.NewElement.Height;
+                    Debug.WriteLine(expandedHeight.ToString() + ' ' + e.NewElement.Height.ToString());
                     e.NewElement.Opacity = 0;
                 }
             };

@@ -295,10 +295,16 @@ namespace Todo.Views
                 ToolbarItems.Add(tbi2);
             }
 
-            Appearing += (async (o, e) =>
+            Appearing += ((o, e) =>
                 {
                     Todo.App.selectedDomainPage = this;
                     //await Refresh();
+
+                    //if (selectedDomain != null)
+                    //{
+                    //    ForceLayout();
+
+                    //}
                     //topLV.BeginRefresh();
                     //bottomLV.BeginRefresh();
 
@@ -309,7 +315,7 @@ namespace Todo.Views
 
         public async Task expandAnimation()
         {
-            //selectedDomain = new Item();
+            selectedDomain = null;
 
             foreach (var row in rowList)
             {
@@ -454,7 +460,7 @@ namespace Todo.Views
                         ,
                         heightConstraint: Constraint.RelativeToParent((parent) =>
                         {
-                            return (selectedDomain != null && selectedDomain != null && selectedDomain.Name == "Personal" ? 0 : borderSize);
+                            return (selectedDomain != null && selectedDomain.Name == "Personal" ? 0 : borderSize);
                         })
                         );
 
@@ -475,7 +481,7 @@ namespace Todo.Views
                         ,
                         heightConstraint: Constraint.RelativeToParent((parent) =>
                         {
-                            return (selectedDomain != null && selectedDomain != null && selectedDomain.Name == "Friends & Family" ? 0 : borderSize);
+                            return (selectedDomain != null && selectedDomain.Name == "Friends & Family" ? 0 : borderSize);
                         })
                         );
 
@@ -493,7 +499,7 @@ namespace Todo.Views
                         ,
                         heightConstraint: Constraint.RelativeToParent((parent) =>
                         {
-                            return (expanded && selectedDomain != null && selectedDomain != null && selectedDomain.Name == "Personal" || selectedDomain != null && selectedDomain != null && selectedDomain.Name == "Friends & Family" ? parent.Height * 0.8 : 0);
+                            return (expanded && selectedDomain != null && selectedDomain.Name == "Personal" || selectedDomain != null && selectedDomain.Name == "Friends & Family" ? parent.Height * 0.8 : 0);
                         })
                         );
 
@@ -542,7 +548,7 @@ namespace Todo.Views
                         ,
                         heightConstraint: Constraint.RelativeToParent((parent) =>
                         {
-                            return (selectedDomain != null && selectedDomain != null && selectedDomain.Name == "Work" ? 0 : borderSize);
+                            return (selectedDomain != null && selectedDomain.Name == "Work" ? 0 : borderSize);
                         })
                         );
 

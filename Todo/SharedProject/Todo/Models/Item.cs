@@ -6,7 +6,7 @@ using Microsoft.WindowsAzure.MobileServices;
 
 namespace Todo
 {
-    public class ItemOld
+    public class Item
     {
         public string ID { get; set; }
 
