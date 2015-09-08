@@ -22,14 +22,15 @@ namespace WorkingWithListview
 				((ListView)sender).SelectedItem = null; // de-select the row
 			};
 
-			// If using ItemSelected
-//			listView.ItemSelected += (sender, e) => {
-//				if (e.SelectedItem == null) return;
-//				Debug.WriteLine("Selected: " + e.SelectedItem);
-//				((ListView)sender).SelectedItem = null; // de-select the row
-//			};
+            // If using ItemSelected
+            //			listView.ItemSelected += (sender, e) => {
+            //				if (e.SelectedItem == null) return;
+            //				Debug.WriteLine("Selected: " + e.SelectedItem);
+            //				((ListView)sender).SelectedItem = null; // de-select the row
+            //			};
 
-			Padding = new Thickness (0,20,0,0);
+            //Padding = new Thickness (0,20,0,0);
+            BackgroundColor = Color.White;
 			Content = listView;
 		}
 	}

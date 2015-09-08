@@ -10,9 +10,9 @@ namespace WorkingWithListview
 		{
 			var listView = new ListView ();
             listView.HasUnevenRows = true;
-            listView.SeparatorColor = Color.FromHex("#ddd");
+            listView.SeparatorColor = Color.Transparent;
 
-			listView.ItemsSource = new [] { "a", "b", "c" };
+			listView.ItemsSource = new [] { "Cards UI afmaken", "Android Material design afmaken", "iOS oriënteren" };
 			listView.ItemTemplate = new DataTemplate(typeof(CustomCell));
 
 			listView.ItemTapped += (sender, e) => {
@@ -20,8 +20,9 @@ namespace WorkingWithListview
 				((ListView)sender).SelectedItem = null; // de-select the row
 			};
 
-			Padding = new Thickness (0,20,0,0);
-			Content = listView;
+			//Padding = new Thickness (20,0,20,0);
+            BackgroundColor = Color.FromHex("d3d3d3");
+            Content = listView;
 		}
 	}
 }

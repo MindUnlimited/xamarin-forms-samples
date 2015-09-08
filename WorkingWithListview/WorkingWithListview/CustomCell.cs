@@ -14,14 +14,14 @@ namespace WorkingWithListview
 	{
 		public CustomCell ()
 		{
-			var label1 = new Label { Text = "Label 1", Font = Font.SystemFontOfSize(NamedSize.Small, FontAttributes.Bold) };
+			var label1 = new Label { Text = "Label 1", Font = Font.SystemFontOfSize(NamedSize.Large, FontAttributes.Bold), TextColor = Color.Black };
 			label1.SetBinding(Label.TextProperty, new Binding("."));
 
-			var label2 = new Label { Text = "Label 2", Font = Font.SystemFontOfSize(NamedSize.Small) };
+			var label2 = new Label { Text = "Label 2", Font = Font.SystemFontOfSize(NamedSize.Small), TextColor = Color.Black };
 
-            var comments = new Label { Text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum." };
+            var comments = new Label { Text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.", TextColor = Color.Black };
 
-            var slider = new Slider();
+            var slider = new Slider {  };
 
 			var button = new ListButton { 
 				Text = "X",
@@ -40,7 +40,8 @@ namespace WorkingWithListview
             {
                 Orientation = StackOrientation.Vertical,
                 HorizontalOptions = LayoutOptions.StartAndExpand,
-                Padding = new Thickness(15, 5, 5, 15),
+                Padding = new Thickness(15, 15, 15, 15),
+                BackgroundColor = Color.White,
 
                 Children = {
                     new StackLayout
@@ -55,7 +56,9 @@ namespace WorkingWithListview
                             button
                         }
                     },
+                    new BoxView {HeightRequest = 1, Color = Color.FromHex("d3d3d3") },
                     comments,
+                    new BoxView {HeightRequest = 1, Color = Color.FromHex("d3d3d3") },
                     slider
 
                 }
