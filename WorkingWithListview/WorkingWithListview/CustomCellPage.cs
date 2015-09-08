@@ -9,6 +9,8 @@ namespace WorkingWithListview
 		public CustomCellPage ()
 		{
 			var listView = new ListView ();
+            listView.HasUnevenRows = true;
+            listView.SeparatorColor = Color.FromHex("#ddd");
 
 			listView.ItemsSource = new [] { "a", "b", "c" };
 			listView.ItemTemplate = new DataTemplate(typeof(CustomCell));

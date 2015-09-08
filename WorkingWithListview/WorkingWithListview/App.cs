@@ -14,15 +14,15 @@ namespace WorkingWithListview
 
 			// USE C#
 
-            var tabs = new TabbedPage { Title = "Working with ListView" };
+   //         var tabs = new TabbedPage { Title = "Working with ListView" };
 
-			tabs.Children.Add (new BasicListPage {Title="Basic", Icon = "csharp.png" });
+			//tabs.Children.Add (new BasicListPage {Title="Basic", Icon = "csharp.png" });
 
-			tabs.Children.Add (new UnevenRowsPage {Title="Uneven", Icon = "csharp.png" });
+			//tabs.Children.Add (new UnevenRowsPage {Title="Uneven", Icon = "csharp.png" });
 
-			tabs.Children.Add (new CustomCellPage {Title="Button", Icon = "csharp.png" });
+			//tabs.Children.Add (new CustomCellPage {Title="Button", Icon = "csharp.png" });
 
-			return tabs;
+			//return tabs;
 
 
 			// USE XAML
@@ -35,7 +35,7 @@ namespace WorkingWithListview
 
 			tabsXaml.Children.Add (new CustomCellXaml {Title="ButtonX", Icon = "xaml.png" });
 
-//			return tabsXaml;
+			return new CustomCellPage { Title = "Button", Icon = "csharp.png" };
 		}
 	}
 }
